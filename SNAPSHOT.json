@@ -1,0 +1,382 @@
+{
+  "schema_version": 1,
+  "description": "Exact installed skill and local tool snapshot, excluding runtime data",
+  "captured_at": "2026-09-05T13:20:41.9074938+08:00",
+  "files": [
+    {
+      "path": "config/codex-mcp.example.toml",
+      "sha256": "B0DEC0953C084E49F6CE04128783A9C17A4D8E126A578BED6DFA633A15EB79D9",
+      "bytes": 403
+    },
+    {
+      "path": "scripts/extract_last_video_frame.cjs",
+      "sha256": "BE94D2E3D11C7138FDAD11C14BA1B92F2F3310FAAFF2F67A0E88A30600CA5E96",
+      "bytes": 2814
+    },
+    {
+      "path": "scripts/extract_video_keyframes.cjs",
+      "sha256": "E5D6B55C071C19CF148E672B852E814A696A22BB089BEEC8FAEE7F2FC4A72035",
+      "bytes": 3010
+    },
+    {
+      "path": "scripts/make_keyframe_contact_sheet.py",
+      "sha256": "CFF8DA0AC45E889AF0A8B8BCFC579FF6402973D4518C30CB3E17592FD7A4132E",
+      "bytes": 1110
+    },
+    {
+      "path": "shared/scripts/validate_asset_manifest.ps1",
+      "sha256": "E7C1CEAE04BC9984B11F9E40D4DC2D08D69D4AA946C1699FD6609AB78A959BE5",
+      "bytes": 4133
+    },
+    {
+      "path": "skills/character-image-prompts/SKILL.md",
+      "sha256": "4B402D134204A0DA011DF39A4380EB2400B1960555CFA6B5045B79DE44CECC75",
+      "bytes": 3538
+    },
+    {
+      "path": "skills/character-image-prompts/agents/openai.yaml",
+      "sha256": "8ACB635C90FC4DBDEF43FFD2C45FDFFD67A7FB73DFD941BFFEB433CA7C9A31BF",
+      "bytes": 257
+    },
+    {
+      "path": "skills/character-image-prompts/references/execution-contract.md",
+      "sha256": "C3E39DDEF41D87F027393A9FF580C78B9E76BF4D33863C0A7D0455A38FAD5665",
+      "bytes": 4221
+    },
+    {
+      "path": "skills/character-image-prompts/references/original-prompt.md",
+      "sha256": "8D368CA0F105A7BE4881BC2701F3C6D70701610965915CBC9839BCC39C312126",
+      "bytes": 26803
+    },
+    {
+      "path": "skills/character-image-prompts/references/prompt-template.md",
+      "sha256": "028C172C2E1E94788FC2EAC5F943D76595CB48716BA88EDCE1BCC601728AB933",
+      "bytes": 6565
+    },
+    {
+      "path": "skills/chatgpt-image-production/SKILL.md",
+      "sha256": "7F9B1395279243D12692D7700E42C1242F4EC4637FF03910AD74190B3E436F1E",
+      "bytes": 4265
+    },
+    {
+      "path": "skills/chatgpt-image-production/agents/openai.yaml",
+      "sha256": "0A0F37AEEE59CBFACE6293B80CA1DD7E58849163499F2C46A099D47DB1858234",
+      "bytes": 260
+    },
+    {
+      "path": "skills/chatgpt-image-production/references/asset-contract.md",
+      "sha256": "B44066023005498455EB563B400B32EB8FF97AD764A79E0A9F4E6BE66C2CBEC8",
+      "bytes": 2782
+    },
+    {
+      "path": "skills/chatgpt-image-production/references/browser-mcp.md",
+      "sha256": "9323D5687206C5CCC6AC5E9EFF591998D5EBD2B2E8FCD7DFE5394133F91E6FCB",
+      "bytes": 3418
+    },
+    {
+      "path": "skills/chatgpt-image-production/references/troubleshooting.md",
+      "sha256": "C145BED416C366502FA9E597DF95BECC449877031E851DA479A9772486A6E8B7",
+      "bytes": 3225
+    },
+    {
+      "path": "skills/chatgpt-image-production/references/workflow.md",
+      "sha256": "F756A520F0F1C759204D8771117AD05003DD4646174D456EFABAD7EEE4F8D09A",
+      "bytes": 6343
+    },
+    {
+      "path": "skills/chatgpt-image-production/scripts/extract_image_jobs.ps1",
+      "sha256": "A82CB2DC615C248094D957691304CC12C1616D8D5A21B9E7ED758BEB8AD001AB",
+      "bytes": 7857
+    },
+    {
+      "path": "skills/chatgpt-image-production/scripts/image_progress.ps1",
+      "sha256": "6994FA1D6574C7ED3E8B8B6DF7EC84795C0CDA2097CF1D48305419B2DEBA044B",
+      "bytes": 3813
+    },
+    {
+      "path": "skills/chatgpt-image-production/scripts/inspect_image_file.ps1",
+      "sha256": "638BA42B79DBB775EC6E853FFE012EA5445B6B1B3600F57E143A65DDE183CF4E",
+      "bytes": 1953
+    },
+    {
+      "path": "skills/chatgpt-image-production/scripts/register_image_asset.ps1",
+      "sha256": "FEFDC82758BEC1F447374FEFC547759612BE340E1FD2B4CD60908971B29944EA",
+      "bytes": 3594
+    },
+    {
+      "path": "skills/doubao-video-production/SKILL.md",
+      "sha256": "AE4558266CA37524B9E76C6E3B8B3373B43D3EADBF03982398CF1C83118ACA01",
+      "bytes": 5730
+    },
+    {
+      "path": "skills/doubao-video-production/agents/openai.yaml",
+      "sha256": "BFA8249FF9E8A812860E9D8398747E13DF986BDD3EF901858B46C50F5A630EC2",
+      "bytes": 247
+    },
+    {
+      "path": "skills/doubao-video-production/references/browser-mcp.md",
+      "sha256": "DD49D7693235DAC59C48C620797B1207DD35262605D9D4633F5E682296AC978C",
+      "bytes": 2291
+    },
+    {
+      "path": "skills/doubao-video-production/references/workflow.md",
+      "sha256": "D10D1F65A49430BADB0CFA53AE7C18C5D20E4F252163C4E3A2F2CADCBE303FDD",
+      "bytes": 9884
+    },
+    {
+      "path": "skills/doubao-video-production/scripts/playwright_video_backend.cjs",
+      "sha256": "44228B4CCE799B7D8A10944FAF54EA1267280D0D6667EF5EF60C9CE8072C281F",
+      "bytes": 5666
+    },
+    {
+      "path": "skills/doubao-video-production/scripts/register_tail_frame.ps1",
+      "sha256": "DA0D594A626601627C8CC1AD41B0EAA24A055BE93A507AB7792B51DD942B64A8",
+      "bytes": 2307
+    },
+    {
+      "path": "skills/doubao-video-production/scripts/resolve_shot_bindings.ps1",
+      "sha256": "8452DDE9B1DD48BB3D54A7FC70982BA76A68AE6E89439BC1012E492684E5ECE3",
+      "bytes": 4400
+    },
+    {
+      "path": "skills/doubao-video-production/scripts/validate_asset_manifest.ps1",
+      "sha256": "B9C027E7E6F6AC0CBFBC3B238CA5292B9A8EAAA73A0C53925B5A39CF508FD6CD",
+      "bytes": 4206
+    },
+    {
+      "path": "skills/doubao-video-production/scripts/video_progress.ps1",
+      "sha256": "C166775EF804D5EE028A06881C6F2EB32AF8BD97114B200490C98D3DFE2A6543",
+      "bytes": 3379
+    },
+    {
+      "path": "skills/novel-to-screenplay/SKILL.md",
+      "sha256": "6E5FEB1E1C46B73042D23E8862DA98EA84C379591151AE6DB8D9E8F2449A046E",
+      "bytes": 2756
+    },
+    {
+      "path": "skills/novel-to-screenplay/agents/openai.yaml",
+      "sha256": "CB65B979170946297BA0D8A8BC21403D32DB016B7B8952F037C51012CA306F1C",
+      "bytes": 247
+    },
+    {
+      "path": "skills/novel-to-screenplay/references/execution-contract.md",
+      "sha256": "AE2D96817373C29CB37B0362D2F8C389984CB1E0E0E3D15E168C4726144928DE",
+      "bytes": 3554
+    },
+    {
+      "path": "skills/novel-to-screenplay/references/original-prompt.md",
+      "sha256": "5D42F2C4EA132E4E8E8B2656C3A6EA315706F7EB437103044ACB191AE93EA323",
+      "bytes": 49843
+    },
+    {
+      "path": "skills/novel-to-screenplay/scripts/validate_screenplay_output.ps1",
+      "sha256": "12292EC91FD3921EAC74D008277BE4E900788F64F2557AA7A45556ADDC6817AD",
+      "bytes": 3790
+    },
+    {
+      "path": "skills/novel-video-orchestrator/SKILL.md",
+      "sha256": "35919DA6182CD4FD25EF9B7CA50EAEFFB22629612C6167C7554E61CEE7C18A95",
+      "bytes": 4478
+    },
+    {
+      "path": "skills/novel-video-orchestrator/agents/openai.yaml",
+      "sha256": "C52703E2B697430CD40EB0A94DE56AA69C07E6E9EE6F2B7F6B137C2263C182AA",
+      "bytes": 250
+    },
+    {
+      "path": "skills/novel-video-orchestrator/references/state-contract.md",
+      "sha256": "68ECFDBFC41205DC6C63231C30179D32F78F927410A32FABF555D8C3E61C74DA",
+      "bytes": 2595
+    },
+    {
+      "path": "skills/novel-video-orchestrator/references/workflow.md",
+      "sha256": "6AB972C2658C10498B5AB1B4728DD4C891C519D69E8C8D74A5C5728526F45E1C",
+      "bytes": 6618
+    },
+    {
+      "path": "skills/novel-video-orchestrator/scripts/orchestrator_state.ps1",
+      "sha256": "7B97977BFABC9C1FBED48DF8B82D7F732987A56B4300363E9432CC3F2592B278",
+      "bytes": 10431
+    },
+    {
+      "path": "skills/prop-image-prompts/SKILL.md",
+      "sha256": "BFE1509859F31609BCCC8BEE1046F82721E6AF5BC7E99A33613F0FA988B854DD",
+      "bytes": 2315
+    },
+    {
+      "path": "skills/prop-image-prompts/agents/openai.yaml",
+      "sha256": "65EF08970BC8E9E0A627017F8DBA31EB343BA2A2D3DB5685AD0682AF9A62A6F5",
+      "bytes": 252
+    },
+    {
+      "path": "skills/prop-image-prompts/references/execution-contract.md",
+      "sha256": "3A5D4F5F4793BF01B8640B19A3FAB56EE2E3CAA0B5C7C04ACE2DF30CA482BC5B",
+      "bytes": 5703
+    },
+    {
+      "path": "skills/prop-image-prompts/references/original-prompt.md",
+      "sha256": "7BEAF274006E89CFB87048E7514964BCFBF0D44233AF5FE30888A9725B9F7ACE",
+      "bytes": 20101
+    },
+    {
+      "path": "skills/scene-image-prompts/SKILL.md",
+      "sha256": "BE15E1C857CD70229BD350FD59799D345979B07CEE7F28FA8AE801B179EDD0F5",
+      "bytes": 2260
+    },
+    {
+      "path": "skills/scene-image-prompts/agents/openai.yaml",
+      "sha256": "7FFF65A65493DC4A9B5425B8C9A3349DEE942CA4FFBE4606C6992B69C2B4AD5F",
+      "bytes": 253
+    },
+    {
+      "path": "skills/scene-image-prompts/references/execution-contract.md",
+      "sha256": "CB17278941846037875A18E7DD373EC160E4FB3CF5CFF27D94E0A415CA61CA52",
+      "bytes": 4578
+    },
+    {
+      "path": "skills/scene-image-prompts/references/original-prompt.md",
+      "sha256": "976C0C4108BBECF73917BA6CF2F98126A06D66686869796ACBF8544747C160A4",
+      "bytes": 9757
+    },
+    {
+      "path": "skills/video-prompts-v10/SKILL.md",
+      "sha256": "25A007B35A9C2E3988DEEDF61997F3CA519E953D0CC7475237C1B9F3C59A0051",
+      "bytes": 6984
+    },
+    {
+      "path": "skills/video-prompts-v10/agents/openai.yaml",
+      "sha256": "805F83A4C864FA802C646DEAF81DDE449FAEFE94A2610066E659CDAD7E52798F",
+      "bytes": 257
+    },
+    {
+      "path": "skills/video-prompts-v10/references/execution-contract.md",
+      "sha256": "179AFAEC23EDC0CA9D013C77FA2EC894D1A5DF14DB15E3C63F75D0C08753A468",
+      "bytes": 8885
+    },
+    {
+      "path": "skills/video-prompts-v10/references/original-prompt.md",
+      "sha256": "857D400BEC3C8B39F5C7CC932FF1D8B82E56333CDED5C608A61144637B6FCBB7",
+      "bytes": 750646
+    },
+    {
+      "path": "skills/video-prompts-v10/scripts/link_asset_manifest.ps1",
+      "sha256": "004ABA235441000D798532498B7AAA5F06C147EEB08C098B46BD42B0AD19C58A",
+      "bytes": 3665
+    },
+    {
+      "path": "skills/video-prompts-v10/scripts/sync_v10_asset_requirements.ps1",
+      "sha256": "F0CC6DADE803214AD8827BFB3D47FC3C5D1540D7D63EDE92BA6FAEA2B16EFA43",
+      "bytes": 4808
+    },
+    {
+      "path": "skills/video-prompts-v10/scripts/validate_v10_output.ps1",
+      "sha256": "714AC48F3B6BBDCE97C46A05FDBC4DD75D80E34C92FC21B41133EF49ED6D3CD6",
+      "bytes": 19486
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/close-empty-image-tabs.cjs",
+      "sha256": "9742741EF86698B6A359ADA0E22F477961B322F27C1F90CD100C13F87A954464",
+      "bytes": 993
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/close-page-fragment.cjs",
+      "sha256": "AC7EB790A23F2863446C6A72826C969735505592AB295F32F5B205B3EA2B2E49",
+      "bytes": 992
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/image-worker-control.ps1",
+      "sha256": "821BE6806F41E3A380ECA5C68C5A7B908529268190279C1FDA51C9CB274D599F",
+      "bytes": 2001
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/image-worker.cjs",
+      "sha256": "9AC651FBA143AA530286D7657ED7C275883B9E04B74C0D40E7F436EE47969FF8",
+      "bytes": 26682
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/inspect-pages.cjs",
+      "sha256": "000E73744BAC7E3D17FFD7C75D3B3BF2C9C5DCA7B34BB1B9A8A04E073D8ED719",
+      "bytes": 1673
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/inspect-result-controls.cjs",
+      "sha256": "F0D0B9DBFB80D693B7D9D053217C18D2501106B5E36E076E70926AF64E41422A",
+      "bytes": 1455
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/mark-rescued-download.cjs",
+      "sha256": "B6AE1C7979D4C83D72C6002E2BFD65D8837A06FFE61D87DD67E77A70CC3002D2",
+      "bytes": 1694
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/package.json",
+      "sha256": "BC455D69DDC1D7B2A2C20CA39659DEFD03C7F01C5255366ECF66C39212B5FE25",
+      "bytes": 315
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/pnpm-lock.yaml",
+      "sha256": "6C8A39F7C8294B08320542E45EE15AD3B28B09FD0FCF57C3E85140389500F77D",
+      "bytes": 24391
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/pnpm-workspace.yaml",
+      "sha256": "DDEEC1313FF3C5E4B352F871C189F92521D4B751C404CF4EF98AF4F8F1A2AB58",
+      "bytes": 19
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/rescue-download.cjs",
+      "sha256": "165F7C3E31C98DAB5976BA31E4644BB058F61518774B08500FA8664FFC9278F2",
+      "bytes": 1850
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/save-visible-generated-image.cjs",
+      "sha256": "08E573D5D129CE8B1511E13D25FB82753EAA2EFC829AD40C1D76339B25D1C46B",
+      "bytes": 3673
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/start-image-worker.cmd",
+      "sha256": "C0E4DA49F061FD6059EAC7DB177318A6191BA8682F29AC1DE28EA376C0742F2F",
+      "bytes": 319
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/start-mcp.cmd",
+      "sha256": "9A911B7CDFD5051AE8486039E66F6FAFA5617C430C60C34B4FA52FED3C4BFF83",
+      "bytes": 1100
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/submit-existing-draft.cjs",
+      "sha256": "CE60C6808F16BF55779CD39FB7D45FC6EAC9585FB98B09677977300BDEEFFC86",
+      "bytes": 2653
+    },
+    {
+      "path": "tools/chatgpt-image-playwright-mcp/test-connection.mjs",
+      "sha256": "990E93B06DF2E4131ABF12DFF26A86F5E13895EDDC7BE05FBEC869313A323FF0",
+      "bytes": 1615
+    },
+    {
+      "path": "tools/doubao-playwright-mcp/package.json",
+      "sha256": "6F5FDACC1851AA6A2F238D4E0ACEC464D07E8FBFC1992B65A3FE2C794B52FEE3",
+      "bytes": 306
+    },
+    {
+      "path": "tools/doubao-playwright-mcp/pnpm-lock.yaml",
+      "sha256": "6C8A39F7C8294B08320542E45EE15AD3B28B09FD0FCF57C3E85140389500F77D",
+      "bytes": 24391
+    },
+    {
+      "path": "tools/doubao-playwright-mcp/pnpm-workspace.yaml",
+      "sha256": "7F089F3EBECB76DCEEAF0FA48798655B27F0E54AEE08D95A17724CD2B05F249B",
+      "bytes": 55
+    },
+    {
+      "path": "tools/doubao-playwright-mcp/start-mcp.cmd",
+      "sha256": "086DBB478037DE025FEBED1F0BE7E37A0427A0D5DD9B26FE629640D7509CA121",
+      "bytes": 1071
+    },
+    {
+      "path": "tools/doubao-playwright-mcp/test-connection.mjs",
+      "sha256": "193371697DE180FBCBA05172BA25D5C016159D81964D3B6AEC9BDF78B7913E84",
+      "bytes": 1605
+    }
+  ]
+}

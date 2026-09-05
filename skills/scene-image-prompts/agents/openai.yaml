@@ -1,0 +1,4 @@
+interface:
+  display_name: "场景图片提示词"
+  short_description: "依据完整剧本生成中文、单一空景画面的场景图片提示词"
+  default_prompt: "使用 $scene-image-prompts 根据这份完整剧本生成场景图片提示词。"

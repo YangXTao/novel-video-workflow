@@ -1,0 +1,40 @@
+# Local dependencies and generated output
+node_modules/
+__pycache__/
+*.pyc
+*.log
+*.tmp
+artifacts/
+downloads/
+backups/
+novel-video-browser/
+*-profile/
+chatgpt-image-worker/
+jobs.json
+image_progress.json
+video_progress.json
+chapter_pipeline_state.json
+asset_manifest.json
+# Browser state and credentials must stay local
+.env
+.env.*
+!.env.example
+Cookies*
+Login Data*
+Local State
+Preferences
+storage-state*.json
+storageState*.json
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+# Media belongs in chapter workspaces
+*.mp4
+*.mov
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.wav
+*.mp3

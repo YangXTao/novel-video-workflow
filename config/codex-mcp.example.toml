@@ -1,0 +1,13 @@
+[mcp_servers.doubao_playwright]
+command = "D:\\jimeng\\novel-video-tools\\doubao-playwright-mcp\\start-mcp.cmd"
+cwd = "D:\\jimeng"
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+enabled = true
+
+[mcp_servers.chatgpt_image_playwright]
+command = "D:\\jimeng\\novel-video-tools\\chatgpt-image-playwright-mcp\\start-mcp.cmd"
+cwd = "D:\\jimeng"
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+enabled = true

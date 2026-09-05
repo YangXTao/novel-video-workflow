@@ -1,0 +1,4 @@
+interface:
+  display_name: "人物图片提示词"
+  short_description: "依据完整剧本生成角色定妆、造型与人物资产图片提示词"
+  default_prompt: "使用 $character-image-prompts 根据这份完整剧本生成人物图片提示词。"

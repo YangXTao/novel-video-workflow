@@ -1,0 +1,4 @@
+interface:
+  display_name: "小说转剧本"
+  short_description: "将中文小说章节改编为后续资产和视频制作使用的完整剧本"
+  default_prompt: "使用 $novel-to-screenplay 将我提供的小说章节转换为完整剧本。"

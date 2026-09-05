@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+  - '@playwright/mcp@0.0.80'

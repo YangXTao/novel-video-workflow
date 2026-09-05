@@ -1,0 +1,12 @@
+{
+  "name": "doubao-playwright-mcp-local",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Project-local Playwright MCP runtime for the novel video Doubao workflow.",
+  "dependencies": {
+    "@playwright/mcp": "0.0.80"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "1.25.2"
+  }
+}

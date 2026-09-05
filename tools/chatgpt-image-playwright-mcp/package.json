@@ -1,0 +1,12 @@
+{
+  "name": "chatgpt-image-playwright-mcp-local",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Project-local resumable Playwright worker for ChatGPT web image production.",
+  "dependencies": {
+    "@playwright/mcp": "0.0.80"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "1.25.2"
+  }
+}

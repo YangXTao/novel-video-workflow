@@ -1,0 +1,4 @@
+interface:
+  display_name: "V10视频提示词"
+  short_description: "依据完整剧本和参考资产生成可用于视频制作的逐镜头提示词"
+  default_prompt: "使用 $video-prompts-v10 根据完整剧本和参考资产生成视频提示词。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "豆包视频制作"
+  short_description: "依据真实资产逐镜提交豆包视频并支持下载、尾帧与断点续做"
+  default_prompt: "使用本章V10提示词和asset_manifest.json逐镜制作豆包视频。"

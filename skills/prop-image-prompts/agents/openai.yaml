@@ -1,0 +1,4 @@
+interface:
+  display_name: "道具图片提示词"
+  short_description: "依据完整剧本生成中文、单一道具单一状态的图片提示词"
+  default_prompt: "使用 $prop-image-prompts 根据这份完整剧本生成道具图片提示词。"
