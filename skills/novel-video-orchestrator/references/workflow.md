@@ -19,7 +19,7 @@ SCREENPLAY-SCENE-v2 输入不预造 S 镜头。三类资产先关联 SC 场次�
 
 `editing` 新章默认 pending；历史 not_enabled 保留到用户明确启用。由 jianying-editing 读取正式视频、镜头顺序和基准剧本，使用 Computer Use 的 node_repl/@oai/sky 操作剪映；预设默认“字幕-居中”，可由项目配置 editing.subtitle_preset 或用户指令指定。
 
-- `screenplay`：基准剧本完整并通过小说转剧本 Skill 的检查。
+- `screenplay`：基准剧本完整并通过小说转剧本 Skill 的检查，同时登记 `screenplay_trigger_audit.json`。新产物须为 `screenplay-trigger-audit-v2` 且 `downstream_gate.status=ready`；`needs-resolution` 时将剧本阶段标记 blocked，先解决其中会影响资产、实体状态、参考图映射、镜头衔接、对白归属或结果正确性的阻断项。非阻断备注不影响继续。
 - 三类提示词：分别由对应 Skill 基于同一份正式剧本生成；不能用其中一类代替另一类。
 - `image_production`：新建项均为 `qa_approved`，复用项均为 `reuse_approved`，免建图项没有被误生成。
 - `asset_manifest`：真实文件、状态、哈希、适用镜头和尾帧依赖校验通过。

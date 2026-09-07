@@ -37,13 +37,14 @@ if (!$AuditPath) { $AuditPath=Join-Path (Split-Path -Parent (Resolve-Path -Liter
 if (!(Test-Path -LiteralPath $AuditPath)) { $issues.Add('缺少独立触发审计') }
 else {
     $audit=Get-Content -LiteralPath $AuditPath -Raw -Encoding utf8 | ConvertFrom-Json
-    if ($audit.schema_version -ne 'screenplay-trigger-audit-v1') {$issues.Add('审计版本错误')}
-    if ($audit.rule_version -ne '12.4.0' -or $audit.rule_sha256 -notmatch '^[A-Fa-f0-9]{64}$') {$issues.Add('母版版本/哈希缺失')}
+    if ($audit.schema_version -ne 'screenplay-trigger-audit-v2') {$issues.Add('审计版本错误')}
+    if ($audit.rule_version -notmatch '^\d+\.\d+\.\d+$' -or $audit.rule_sha256 -notmatch '^[A-Fa-f0-9]{64}$') {$issues.Add('母版版本/哈希缺失')}
     if($RulePath) {
         if ((Split-Path -Leaf $RulePath) -eq 'rule-bundle.json') {
             $ruleRoot=Split-Path -Parent (Split-Path -Parent (Resolve-Path -LiteralPath $RulePath).Path)
             $verified=& (Join-Path $ruleRoot 'scripts/validate_rule_bundle.ps1') -SkillDirectory $ruleRoot
             $actualRuleHash=$verified.sha256
+            if($audit.rule_version -ne $verified.version) {$issues.Add('母版版本不匹配')}
         } else { $actualRuleHash=(Get-FileHash -LiteralPath $RulePath -Algorithm SHA256).Hash }
         if($audit.rule_sha256 -ne $actualRuleHash) {$issues.Add('母版哈希不匹配')}
     }
@@ -62,6 +63,29 @@ else {
             }
             if(!$block.Contains([string]$event.screenplay_phrase)) {$issues.Add('触发动作未出现在对应场次')}
             if($SourcePath -and !$source.Contains([string]$event.source_quote)) {$issues.Add('原文证据不存在')}
+        }
+    }
+    if($null -eq $audit.downstream_gate) {$issues.Add('缺少下游门禁')}
+    else {
+        $gate=$audit.downstream_gate
+        if([string]$gate.status -notin @('ready','needs-resolution')) {$issues.Add('下游门禁状态错误')}
+        if($null -eq $gate.blocking_ambiguities) {$issues.Add('缺少 blocking_ambiguities 数组')}
+        if($null -eq $gate.nonblocking_notes) {$issues.Add('缺少 nonblocking_notes 数组')}
+        $blocking=@($gate.blocking_ambiguities)
+        if($gate.status -eq 'ready' -and $blocking.Count -gt 0) {$issues.Add('ready 状态仍有阻断歧义')}
+        if($gate.status -eq 'needs-resolution' -and $blocking.Count -eq 0) {$issues.Add('needs-resolution 状态没有阻断歧义')}
+        foreach($ambiguity in $blocking) {
+            foreach($field in @('id','issue','downstream_impact','resolution_required')) {
+                if([string]::IsNullOrWhiteSpace([string]$ambiguity.$field)) {$issues.Add("阻断歧义缺少 $field")}
+            }
+            $evidence=@($ambiguity.source_evidence)
+            if($evidence.Count -eq 0 -or @($evidence | Where-Object {![string]::IsNullOrWhiteSpace([string]$_)}).Count -eq 0) {
+                $issues.Add('阻断歧义缺少 source_evidence')
+            } elseif($SourcePath) {
+                foreach($quote in $evidence) {
+                    if(!$source.Contains([string]$quote)) {$issues.Add('歧义原文证据不存在')}
+                }
+            }
         }
     }
 }

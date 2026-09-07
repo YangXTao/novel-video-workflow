@@ -2,11 +2,15 @@
 
 当前实际使用的 8 个 Skill、专用 Chrome 启动配置、Playwright MCP 执行工具及图片/视频文件处理脚本的完整快照。图片通过 ChatGPT 网页生成，视频通过豆包网页生成，暂不包含剪辑流程。
 
-Skill 来自当前已安装目录，正文及其 references 原样保存；此次归档未优化或改写规则。`SNAPSHOT.json` 记录归档文件的 SHA-256，可检查原文是否完整。
+Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新及小说转剧本流水线门禁优化。`SNAPSHOT.json` 记录归档文件的 SHA-256，可检查快照完整性。
 
 ## v12.6 更新说明
 
 本分支已将视频提示词生成器更新为 `video-prompts-v12` 12.6.0，并同步了与它配合的剧本、图片、豆包制作、总控 Skill 及 Playwright MCP 工具。详细变更、与旧版的差异及验证结果见 [v12.6 变更说明](docs/video-prompts-v12.6-changes.md)。
+
+## 小说转剧本流水线门禁更新
+
+`novel-to-screenplay` 已补充有效表演密度、关键动作可拆镜检查、跨场状态继承及原文歧义门禁；`novel-video-orchestrator` 会读取新版审计状态，阻止未解决的制作级歧义流入资产和逐镜阶段。详见 [novel-to-screenplay v2.1 变更说明](docs/novel-to-screenplay-v2.1-changes.md)。
 
 ## 流程与目录
 

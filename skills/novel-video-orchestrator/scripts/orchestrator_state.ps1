@@ -11,7 +11,7 @@ param(
 
     [switch]$DisableEditing,
 
-    [ValidateSet('screenplay', 'character_prompts', 'scene_prompts', 'prop_prompts', 'image_production', 'asset_manifest', 'v10_prompts', 'v12_prompts', 'video_production', 'chapter_audit', 'editing')]
+    [ValidateSet('screenplay', 'character_prompts', 'scene_prompts', 'prop_prompts', 'image_production', 'asset_manifest', 'v10_prompts', 'video_production', 'chapter_audit', 'editing')]
     [string]$Stage,
 
     [ValidateSet('pending', 'in_progress', 'completed', 'blocked', 'not_enabled')]
@@ -90,6 +90,24 @@ function Add-Event($State, [string]$Kind, [string]$Target, [string]$EventMessage
         message = $EventMessage
     }
     $State.events = @($State.events) + @($event)
+}
+
+function Assert-ScreenplayReady($State) {
+    $audit = $null
+    foreach ($artifact in @($State.stages.screenplay.artifacts)) {
+        if (-not (Test-Path -LiteralPath $artifact.path -PathType Leaf)) { continue }
+        if ((Get-FileHash -LiteralPath $artifact.path -Algorithm SHA256).Hash -ne $artifact.sha256) { continue }
+        try { $candidate = Get-Content -LiteralPath $artifact.path -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100 }
+        catch { continue }
+        if ($candidate.schema_version -eq 'screenplay-trigger-audit-v2') { $audit = $candidate; break }
+    }
+    if ($null -eq $audit) { throw 'Screenplay completion requires a registered, unchanged screenplay-trigger-audit-v2 artifact.' }
+    if ($null -eq $audit.downstream_gate) { throw 'Screenplay audit is missing downstream_gate.' }
+    $blocking = @($audit.downstream_gate.blocking_ambiguities)
+    if ($audit.downstream_gate.status -ne 'ready' -or $blocking.Count -gt 0) {
+        $ids = @($blocking | ForEach-Object { [string]$_.id }) -join ', '
+        throw "Screenplay downstream gate is not ready. Resolve blocking ambiguities first: $ids"
+    }
 }
 
 function Assert-EditingReady($State, [switch]$Completed) {
@@ -195,6 +213,13 @@ if ($Action -eq 'SetStage') {
         throw 'Stage and Status are required for SetStage.'
     }
     if ($Status -eq 'not_enabled' -and $Stage -ne 'editing') { throw 'not_enabled is only valid for editing.' }
+    if ($Stage -eq 'screenplay' -and $Status -eq 'completed') {
+        Assert-ScreenplayReady $state
+    }
+    if ($Stage -ne 'screenplay' -and $Stage -ne 'editing' -and $Status -in @('in_progress', 'completed')) {
+        if ($state.stages.screenplay.status -ne 'completed') { throw "$Stage requires completed screenplay stage." }
+        Assert-ScreenplayReady $state
+    }
     if ($Stage -eq 'editing') {
         if ($state.execution_policy.editing -ne 'enabled' -and $Status -ne 'not_enabled') {
             throw 'Editing is disabled. Use EnableEditing for this chapter when requested.'
@@ -260,22 +285,6 @@ if ($Action -eq 'SetShot') {
     }
     else {
         $shot = $property.Value
-        $defaults = [ordered]@{
-            attempt = 0
-            depends_on = $null
-            technical_qa = 'pending'
-            risk_qa = 'pending'
-            tail_gate = 'pending'
-            batch_qa = 'pending'
-            dependency_signature = $null
-            message = $null
-            updated_at = $null
-        }
-        foreach ($entry in $defaults.GetEnumerator()) {
-            if ($null -eq $shot.PSObject.Properties[$entry.Key]) {
-                $shot | Add-Member -NotePropertyName $entry.Key -NotePropertyValue $entry.Value
-            }
-        }
     }
 
     if ($PSBoundParameters.ContainsKey('ShotStatus')) { $shot.status = $ShotStatus }

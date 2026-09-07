@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Exact installed skill and local tool snapshot, excluding runtime data",
-  "captured_at": "2026-09-07T23:46:49.0230860+08:00",
+  "captured_at": "2026-09-08T01:48:50.513736+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -525,18 +525,18 @@
     },
     {
       "path": "skills/novel-video-orchestrator/scripts/orchestrator_state.ps1",
-      "sha256": "FEBAD7CE6EAB9EE973FC4F9AE7F1F2ADFE1E2AC831669FB8BB98F5215322BFE9",
-      "bytes": 15297
+      "sha256": "7AE803C41BD6F124F778216754F36FDCABD3CEAD3F9C2BF7AED5460E641C6590",
+      "bytes": 16219
     },
     {
       "path": "skills/novel-video-orchestrator/references/workflow.md",
-      "sha256": "174E8209B6426F824322C536DB4A68A3CF2B13C75927FFD75B002D23247291E4",
-      "bytes": 9209
+      "sha256": "9C73C837D565EBAF4DCA8B850365B8E5C8E16B8406A481E7848B90372E1AE180",
+      "bytes": 9552
     },
     {
       "path": "skills/novel-video-orchestrator/references/state-contract.md",
-      "sha256": "358039EED163AD3585BAA7759054E568F976A601C40BCA2BBF39A660B6B51E53",
-      "bytes": 4055
+      "sha256": "4D9A571674653B74724061E72B38FB1A1235FDB2B0C56E8E6A24E8D84A1EEED3",
+      "bytes": 4242
     },
     {
       "path": "skills/novel-video-orchestrator/references/duration-and-model-planning.md",
@@ -550,33 +550,33 @@
     },
     {
       "path": "skills/novel-video-orchestrator/SKILL.md",
-      "sha256": "86EC003A6EF5D008DCA30AF12E41D95DDD4E0039BA33230BD9B6C24C2F22B2E1",
-      "bytes": 6375
+      "sha256": "ABE9F0577971D858C6295DB8BCF9D1F3201DE6F82B1433D8E680F8FC466279D2",
+      "bytes": 6538
     },
     {
       "path": "skills/novel-to-screenplay/scripts/validate_screenplay_output.ps1",
-      "sha256": "1811D3499E2FFD8032F974708D4BD76E571C299D3F0A741D19C08C8B2F918D88",
-      "bytes": 4399
+      "sha256": "13CB68848F9F02CD45D1E99AF4BCAC7D8E5E68E654B3C0001B34FF699E4F8450",
+      "bytes": 5985
     },
     {
       "path": "skills/novel-to-screenplay/scripts/test_screenplay_validator.ps1",
-      "sha256": "4AD5C80D1F09EC870E2A4F4DF35FC5C36645ADC38696C08D23022C7FB5A7A6E3",
-      "bytes": 2898
+      "sha256": "48AD7F9B14F65C3EB541334067E575D325B082CA9B074879889C85FFFA4EBF6A",
+      "bytes": 4733
     },
     {
       "path": "skills/novel-to-screenplay/references/v12-trigger-bridge.md",
-      "sha256": "A3A4DB9F9B869E88372E0ADCAA80A2905CADD8B312CB9CB09BF1B3F7FA7317C7",
-      "bytes": 5552
+      "sha256": "0A79FB104D156319FF3D0841F3C9F8609AE7F914EE45A03655E919A643CF9142",
+      "bytes": 6447
     },
     {
       "path": "skills/novel-to-screenplay/references/original-prompt.md",
-      "sha256": "B2E115B9C831DA78C669B149C8C7512642A7AEBE676F9F6C9C5C4574DA80C78D",
-      "bytes": 8757
+      "sha256": "70BA3140585FC46B63820080241DD84172ECCB49F59B7FFD93227B1C24D4A294",
+      "bytes": 18173
     },
     {
       "path": "skills/novel-to-screenplay/references/execution-contract.md",
-      "sha256": "0F4D282A4752DB86F3DCF66FF681B6003BBE7385789702C5AB3C2F667A2674D4",
-      "bytes": 1708
+      "sha256": "742534F2175013A57E85A9B8D9FB05A38A88C033CDBF5E49D6080171AE569B3C",
+      "bytes": 4478
     },
     {
       "path": "skills/novel-to-screenplay/agents/openai.yaml",
@@ -585,8 +585,8 @@
     },
     {
       "path": "skills/novel-to-screenplay/SKILL.md",
-      "sha256": "EDEBA73C3C9BEA66ECEA03F922299EF9498FA2BEEEB0E3BBEF29091BA205700C",
-      "bytes": 1706
+      "sha256": "3ACAAB68F7D30C99FB18CE781AB294E2C2A92ECF5C99E32C54A3A2BD8AC04EAB",
+      "bytes": 2832
     },
     {
       "path": "skills/doubao-video-production/scripts/video_progress.ps1",
@@ -612,6 +612,11 @@
       "path": "tools/doubao-playwright-mcp/scripts/persistent-profile-smoke.cjs",
       "sha256": "8C0ACF62A12866405751B96AE70C2EADEDE16F389116088C221CC8C553D9F639",
       "bytes": 935
+    },
+    {
+      "path": "docs/novel-to-screenplay-v2.1-changes.md",
+      "sha256": "680F808D98DBA54762EB3102009DC0D14C2BB6BFB5960365A7C34FA7AA181746",
+      "bytes": 3052
     }
   ]
 }

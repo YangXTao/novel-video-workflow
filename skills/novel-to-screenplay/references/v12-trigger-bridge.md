@@ -31,16 +31,21 @@
 
 ## 独立审计（不粘贴进模型生成输入）
 文件名 screenplay_trigger_audit.json，结构：
-- schema_version: screenplay-trigger-audit-v1
+- schema_version: screenplay-trigger-audit-v2
 - rule_version: 12.4.0
 - rule_sha256: 经validate_rule_bundle.ps1验证的source_sha256（原母版重组哈希，不是control.md或JSON文件自身哈希）
 - scenes: 数组，每项 scene_id 为SC01等，events为数组；无匹配写空数组。
 - events每项：source_quote（原文可定位短原句），content_type，event（实际表项名或内容分支），rule_locator（规则组编号+小节/表项），screenplay_phrase（正文实际采用的完整动作短句），reason（说明语义如何相符）。
+- downstream_gate：独立的下游门禁对象。
+  - status：只能为 ready 或 needs-resolution。
+  - blocking_ambiguities：数组。每项包含 id、source_evidence（原文可定位短证据，可为数组）、issue、downstream_impact、resolution_required。仅记录会影响资产、实体编号/状态、参考图映射、镜头衔接、对白归属或结果正确性的未决问题。
+  - nonblocking_notes：数组。记录不影响继续制作、但值得保留的文字或设定备注；无内容写空数组。
+  - blocking_ambiguities 为空时 status 必须为 ready；非空时必须为 needs-resolution。不能用 needs-resolution 代替可由原文和既有资料直接核对解决的问题。
 审计只作可追踪依据，不增加正文模块。原文证据不得编造；对白提及、否定与假设不可登记成当前已发生动作。若需核对位置可附 source_location。
 运行结构校验时可加 -SourcePath <纯文本原文> -RulePath <video-prompts-v12/references/rule-bundle.json> 核对证据子串与母版哈希；语义仍须复核。
 
 ## 下游映射
 SC表示故事场次，与S视频镜头分开。资产提示词先写适用场次；视频拆镜后另存 scene_shot_map.json：
 schema_version=scene-shot-map-v1；shots数组每项含 shot_id(S01等)、scene_ids(SC01等)、asset_ids(实际本镜资产ID)、event_refs(如SC01/events/0)。
-不得把整场所有资产机械分给每镜；按实际出镜及状态选择。反向核对所有场次已被覆盖、所有关键剧情与必要声音均保留。
+不得把整场所有资产机械分给每镜；按实际出镜及状态选择。反向核对所有场次已被覆盖、所有关键剧情与必要声音均保留。进入资产或逐镜拆分前读取 downstream_gate：ready 可继续；needs-resolution 必须先解决阻断项，不能由下游自行猜测或无中生有映射资产。
 未有S镜头时不造S编号；图片可先制作，资产登记的applicable_shots可暂空，场次关联保存在资产清单/交接文件。最终asset_manifest的镜头绑定与尾帧依赖必须在视频提示词拆镜后、视频提交前全部完成。

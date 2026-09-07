@@ -19,7 +19,7 @@
 - `chapter_audit`
 - `editing`
 
-普通阶段状态为 `pending`、`in_progress`、`completed` 或 `blocked`。新章 execution_policy.editing 默认 enabled、stages.editing.status 默认 pending；初始化传 -DisableEditing 则两者为 not_enabled。已有状态保持不变，明确启用旧章剪辑时使用 -Action EnableEditing，将政策设为 enabled 并仅把 not_enabled 阶段变为 pending；重复调用不重置已有进度。每个完成阶段至少登记一个能够证明完成的正式产物及其SHA-256。
+普通阶段状态为 `pending`、`in_progress`、`completed` 或 `blocked`。新章 execution_policy.editing 默认 enabled、stages.editing.status 默认 pending；初始化传 -DisableEditing 则两者为 not_enabled。已有状态保持不变，明确启用旧章剪辑时使用 -Action EnableEditing，将政策设为 enabled 并仅把 not_enabled 阶段变为 pending；重复调用不重置已有进度。每个完成阶段至少登记一个能够证明完成的正式产物及其SHA-256。新版 screenplay 完成还要求登记 `screenplay-trigger-audit-v2` 审计且 `downstream_gate.status=ready`；有阻断歧义时使用 blocked，不由总控或下游自行补设定。
 
 editing 的 in_progress/completed 要求 video_production 和 chapter_audit 已完成。completed 还必须登记哈希匹配的 jianying-editing-review-v1 报告，草稿名称/章节身份明确、检查全部实际通过、证据非空且无未解决问题；详见 sibling jianying-editing/references/state-contract.md。脚本验证记录，不能代替实际剪映和听音验收。
 
