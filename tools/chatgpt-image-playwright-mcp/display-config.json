@@ -1,0 +1,6 @@
+{
+  "browser": {
+    "contextOptions": { "viewport": null },
+    "launchOptions": { "headless": false }
+  }
+}

@@ -105,7 +105,9 @@ async function resetContext() {
 }
 async function pageFor(url) {
   const ctx = await ensureContext();
-  const page = ctx.pages().find(item => !item.isClosed()) || await ctx.newPage();
+  const existing = ctx.pages().find(item => !item.isClosed() && canonicalConversationUrl(item.url()) === canonicalConversationUrl(url) && isStableConversationUrl(url));
+  if (existing) return existing;
+  const page = await ctx.newPage();
   if (url) await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
   return page;
 }
@@ -164,6 +166,7 @@ async function submitNew(job) {
   // can replace that DOM node once.  Wait for the replacement before filling,
   // then retry the local fill only; this never submits twice.
   await page.waitForTimeout(1500);
+  if (await page.locator('[data-message-author-role="user"]').count()) throw new Error('Image input is not a blank isolated conversation; submission stopped.');
   // ChatGPT persists an unsent Images draft across tabs.  Replace it instead
   // of appending; every durable job retains its exact original prompt and hash.
   if (normalizeText(await imageComposerText(composer)).trim()) await composer.fill('');
@@ -239,13 +242,24 @@ async function findConversationForPrompt(job) {
   return null;
 }
 async function generationFinished(page, job) {
+  // The Images landing page contains old gallery canvases and uploaded inputs.
+  // A send click can take longer than the URL wait to create its conversation.
+  // Only a conversation containing this exact user prompt may produce a result.
+  if (!/^https:\/\/chatgpt\.com\/c\//i.test(page.url())) return { state: 'pending' };
+  const userMessages = await page.locator('[data-message-author-role="user"]').allTextContents();
+  const expectedPrompt = normalizeForSearch(job.prompt);
+  if (!userMessages.some(value => normalizeForSearch(value).includes(expectedPrompt))) return { state: 'pending' };
+  // Generated-result semantics take precedence over stale/hidden image nodes.
+  // Scanning every historical image bounding box can stall on a replaced node.
+  const published = await page.locator('img[alt*="已生成图片"], img[alt*="Generated image" i]').evaluateAll(nodes => nodes.filter(node => node.complete && node.naturalWidth > 0).length).catch(() => 0);
+  if (published > 0) return { state: 'complete', images: published };
   const body = await page.locator('body').innerText({ timeout: 10000 }).catch(() => '');
   if (/生成失败|generation failed|出错|发生错误/i.test(body)) return { state: 'failed', message: body.slice(-500) };
   const locator = page.locator('img');
   const count = await locator.count().catch(() => 0);
   let largeImages = 0;
   for (let index = 0; index < count; index += 1) {
-    const box = await locator.nth(index).boundingBox().catch(() => null);
+    const box = await locator.nth(index).boundingBox({ timeout: 1000 }).catch(() => null);
     if (box && box.width * box.height >= 40000) largeImages += 1;
   }
   const generatedImages = await page.locator('img[alt*="已生成图片"], img[alt*="Generated image" i]').count().catch(() => 0);
@@ -263,29 +277,48 @@ async function generationFinished(page, job) {
   // A generated-image alt node is only attached after ChatGPT has published
   // the result asset; it is stronger evidence than stale composer controls.
   if (generatedImages > 0) return { state: 'complete', images: Math.max(generatedImages, largeImages) };
-  if (hasNewCanvas && !visibleStopButton) return { state: 'complete', images: Math.max(generatedImages, largeImages) };
-  const assistantMessages = await page.locator('[data-message-author-role="assistant"]').count().catch(() => 0);
-  if (assistantMessages > 0 && !visibleStopButton && !/正在生成|Generating/i.test(body)) {
-    return { state: 'failed', message: 'ChatGPT returned a completed text response without creating an image.' };
-  }
+  // A reference or a gallery preview is never sufficient completion evidence.
+  // An empty assistant shell can appear before the image renderer and its
+  // stop button mount. It is not proof of a completed text-only response.
+  // With no positively identified result, retain unknown/pending semantics;
+  // the deadline requires inspection of this conversation, never resubmission.
   return { state: 'pending' };
 }
 async function waitForGeneration(page, job, timeoutMs = 12 * 60 * 1000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    const state = await generationFinished(page, job);
+    if (page.isClosed()) return { state: 'unknown', message: 'Original page closed; recover the original conversation, never resubmit.' };
+    if (isStableConversationUrl(page.url()) && page.url() !== job.conversation_url) {
+      const ledger = await readLedger();
+      assertConversationIsolation(ledger, job, page.url());
+      job.conversation_url = page.url();
+      ledger.jobs[job.job_id] = job;
+      await event(ledger, job, 'conversation_stabilized', `Stable conversation URL recorded during wait: ${job.conversation_url}`);
+    }
+    let inspectionTimer;
+    const state = await Promise.race([
+      generationFinished(page, job),
+      new Promise(resolve => {
+        inspectionTimer = setTimeout(() => resolve({ state: 'unknown', message: 'Read-only result inspection stalled; recover this conversation without resubmission.' }), 20000);
+      }),
+    ]).finally(() => clearTimeout(inspectionTimer));
     if (state.state !== 'pending') return state;
     await sleep(5000);
   }
   return { state: 'unknown', message: 'Generation wait timed out; recover from the same conversation URL.' };
 }
 async function clickDownload(page, openedImage = false) {
+  // Native <dialog> elements need not carry an explicit role attribute.
+  const nativeSave = page.getByRole('dialog').getByRole('button', { name: /^(保存|下载|Save|Download)$/i }).filter({ visible: true });
+  if (await nativeSave.count() === 1) {
+    const pending = page.waitForEvent('download', { timeout: 120000 });
+    await nativeSave.click({ timeout: 10000 });
+    return await pending;
+  }
   const selectors = [
     '[role="dialog"] button[aria-label*="下载"]', '[role="dialog"] button[aria-label*="保存"]',
     '[role="dialog"] a[aria-label*="下载"]', '[role="dialog"] a[aria-label*="保存"]',
     '[role="dialog"] [data-testid*="download"]', '[role="dialog"] [data-testid*="save"]',
-    'button[aria-label="下载"]', 'button[aria-label="保存"]',
-    'a[aria-label="下载"]', 'a[aria-label="保存"]',
   ];
   for (const selector of selectors) {
     const locator = page.locator(selector);
@@ -304,22 +337,6 @@ async function clickDownload(page, openedImage = false) {
   const generatedCount = await generated.count().catch(() => 0);
   if (generatedCount && !openedImage) {
     await generated.last().click({ timeout: 10000 });
-    await page.waitForTimeout(2500);
-    return clickDownload(page, true);
-  }
-  const images = page.locator('img');
-  const imageCount = await images.count().catch(() => 0);
-  if (imageCount && !openedImage) {
-    // The largest visible image is the result canvas, not a profile avatar.
-    let candidate;
-    let candidateArea = 0;
-    for (let index = 0; index < imageCount; index += 1) {
-      const box = await images.nth(index).boundingBox().catch(() => null);
-      const area = box ? box.width * box.height : 0;
-      if (area > candidateArea) { candidate = images.nth(index); candidateArea = area; }
-    }
-    if (!candidate || candidateArea < 40000) throw new Error('No verifiable generated image canvas is visible for download.');
-    await candidate.click({ timeout: 10000 });
     await page.waitForTimeout(2500);
     return clickDownload(page, true);
   }

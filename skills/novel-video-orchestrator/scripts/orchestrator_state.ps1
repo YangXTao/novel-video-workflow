@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('Init', 'SetStage', 'RegisterArtifact', 'SetShot', 'Validate', 'Summary')]
+    [ValidateSet('Init', 'EnableEditing', 'SetStage', 'RegisterArtifact', 'SetShot', 'Validate', 'Summary')]
     [string]$Action,
 
     [Parameter(Mandatory = $true)]
@@ -9,7 +9,9 @@ param(
     [string]$ProjectName,
     [int]$ChapterNumber,
 
-    [ValidateSet('screenplay', 'character_prompts', 'scene_prompts', 'prop_prompts', 'image_production', 'asset_manifest', 'v10_prompts', 'video_production', 'chapter_audit', 'editing')]
+    [switch]$DisableEditing,
+
+    [ValidateSet('screenplay', 'character_prompts', 'scene_prompts', 'prop_prompts', 'image_production', 'asset_manifest', 'v10_prompts', 'v12_prompts', 'video_production', 'chapter_audit', 'editing')]
     [string]$Stage,
 
     [ValidateSet('pending', 'in_progress', 'completed', 'blocked', 'not_enabled')]
@@ -90,6 +92,44 @@ function Add-Event($State, [string]$Kind, [string]$Target, [string]$EventMessage
     $State.events = @($State.events) + @($event)
 }
 
+function Assert-EditingReady($State, [switch]$Completed) {
+    if ($State.execution_policy.editing -ne 'enabled') {
+        throw 'Editing is disabled. Use EnableEditing for this chapter when requested.'
+    }
+    foreach ($upstream in @('video_production', 'chapter_audit')) {
+        if ($State.stages.$upstream.status -ne 'completed') {
+            throw "Editing requires completed upstream stage: $upstream"
+        }
+    }
+    if (-not $Completed) { return }
+    $validReport = $false
+    foreach ($artifact in @($State.stages.editing.artifacts)) {
+        if (-not (Test-Path -LiteralPath $artifact.path -PathType Leaf)) { continue }
+        if ((Get-FileHash -LiteralPath $artifact.path -Algorithm SHA256).Hash -ne $artifact.sha256) { continue }
+        try { $report = Get-Content -LiteralPath $artifact.path -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100 }
+        catch { continue }
+        if ($report.schema_version -ne 'jianying-editing-review-v1') { continue }
+        if ([string]::IsNullOrWhiteSpace($report.chapter_directory) -or
+            [System.IO.Path]::GetFullPath($report.chapter_directory) -ne $resolvedChapter) { continue }
+        if ([string]::IsNullOrWhiteSpace($report.draft.name) -or
+            [string]::IsNullOrWhiteSpace($report.subtitle_preset) -or
+            [string]::IsNullOrWhiteSpace($report.verified_at) -or
+            ($report.shot_count -isnot [long] -and $report.shot_count -isnot [int])) { continue }
+        if ($report.shot_count -lt 1 -or
+            ($report.subtitle_count -isnot [long] -and $report.subtitle_count -isnot [int]) -or
+            $report.subtitle_count -lt 0) { continue }
+        if ($null -eq $report.unresolved_issues -or @($report.unresolved_issues).Count -ne 0 -or
+            $null -eq $report.evidence -or @($report.evidence).Count -eq 0 -or
+            @($report.evidence | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }).Count -eq 0) { continue }
+        $allPassed = $true
+        foreach ($check in @('shot_order', 'original_audio', 'subtitle_text', 'subtitle_timing', 'preset_all', 'saved_reopened', 'editable')) {
+            if ($report.checks.$check -isnot [bool] -or $report.checks.$check -ne $true) { $allPassed = $false }
+        }
+        if ($allPassed) { $validReport = $true }
+    }
+    if (-not $validReport) { throw 'Editing completion requires a registered, unchanged, fully passed editing review with evidence and no unresolved issues.' }
+}
+
 if ($Action -eq 'Init') {
     if (Test-Path -LiteralPath $statePath -PathType Leaf) {
         Write-Output "EXISTS=$statePath"
@@ -111,7 +151,7 @@ if ($Action -eq 'Init') {
             max_attempts_per_shot = 2
             full_qa_batch_size = 3
             minor_issues = 'accept_and_record'
-            editing = 'not_enabled'
+            editing = $(if ($DisableEditing) { 'not_enabled' } else { 'enabled' })
         }
         stages = [pscustomobject][ordered]@{
             screenplay = (New-StageState)
@@ -123,7 +163,7 @@ if ($Action -eq 'Init') {
             v10_prompts = (New-StageState)
             video_production = (New-StageState)
             chapter_audit = (New-StageState)
-            editing = (New-StageState 'not_enabled')
+            editing = (New-StageState $(if ($DisableEditing) { 'not_enabled' } else { 'pending' }))
         }
         shots = [pscustomobject]@{}
         events = @()
@@ -136,12 +176,35 @@ if ($Action -eq 'Init') {
 
 $state = Read-State
 
+if ($Action -eq 'EnableEditing') {
+    if ($state.execution_policy.editing -eq 'enabled' -and $state.stages.editing.status -ne 'not_enabled') {
+        Write-Output "EDITING_ALREADY_ENABLED=$statePath"
+        return
+    }
+    $state.execution_policy.editing = 'enabled'
+    if ($state.stages.editing.status -eq 'not_enabled') { $state.stages.editing.status = 'pending' }
+    $state.stages.editing.updated_at = Get-Now
+    Add-Event $state 'enable_editing' 'editing' '启用本章剪映排片与原声字幕制作。'
+    Write-State $state
+    Write-Output "EDITING_ENABLED=$statePath"
+    return
+}
+
 if ($Action -eq 'SetStage') {
     if ([string]::IsNullOrWhiteSpace($Stage) -or [string]::IsNullOrWhiteSpace($Status)) {
         throw 'Stage and Status are required for SetStage.'
     }
-    if ($Stage -eq 'editing' -and $Status -ne 'not_enabled') {
-        throw 'Editing is not enabled in the current workflow.'
+    if ($Status -eq 'not_enabled' -and $Stage -ne 'editing') { throw 'not_enabled is only valid for editing.' }
+    if ($Stage -eq 'editing') {
+        if ($state.execution_policy.editing -ne 'enabled' -and $Status -ne 'not_enabled') {
+            throw 'Editing is disabled. Use EnableEditing for this chapter when requested.'
+        }
+        if ($state.execution_policy.editing -eq 'enabled' -and $Status -eq 'not_enabled') {
+            throw 'Do not disable an enabled chapter using SetStage.'
+        }
+        if ($Status -in @('in_progress', 'completed')) {
+            Assert-EditingReady $state -Completed:($Status -eq 'completed')
+        }
     }
     $stageState = $state.stages.$Stage
     $stageState.status = $Status
@@ -197,6 +260,22 @@ if ($Action -eq 'SetShot') {
     }
     else {
         $shot = $property.Value
+        $defaults = [ordered]@{
+            attempt = 0
+            depends_on = $null
+            technical_qa = 'pending'
+            risk_qa = 'pending'
+            tail_gate = 'pending'
+            batch_qa = 'pending'
+            dependency_signature = $null
+            message = $null
+            updated_at = $null
+        }
+        foreach ($entry in $defaults.GetEnumerator()) {
+            if ($null -eq $shot.PSObject.Properties[$entry.Key]) {
+                $shot | Add-Member -NotePropertyName $entry.Key -NotePropertyValue $entry.Value
+            }
+        }
     }
 
     if ($PSBoundParameters.ContainsKey('ShotStatus')) { $shot.status = $ShotStatus }
@@ -222,8 +301,17 @@ if ($Action -eq 'Validate') {
     foreach ($stageProperty in $state.stages.PSObject.Properties) {
         $stageName = $stageProperty.Name
         $stageState = $stageProperty.Value
-        if ($stageName -eq 'editing' -and $stageState.status -ne 'not_enabled') {
-            $errors.Add('editing must remain not_enabled.')
+        if ($stageName -eq 'editing') {
+            if ($state.execution_policy.editing -eq 'enabled') {
+                if ($stageState.status -notin @('pending', 'in_progress', 'completed', 'blocked')) {
+                    $errors.Add('Enabled editing has an invalid status.')
+                }
+                if ($stageState.status -in @('in_progress', 'completed')) {
+                    try { Assert-EditingReady $state -Completed:($stageState.status -eq 'completed') }
+                    catch { $errors.Add($_.Exception.Message) }
+                }
+            }
+            elseif ($stageState.status -ne 'not_enabled') { $errors.Add('Disabled editing must remain not_enabled.') }
         }
         if ($stageState.status -eq 'completed' -and @($stageState.artifacts).Count -eq 0) {
             $errors.Add("$stageName is completed but has no registered artifact.")

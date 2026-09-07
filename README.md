@@ -6,7 +6,7 @@ Skill 来自当前已安装目录，正文及其 references 原样保存；此�
 
 ## 流程与目录
 
-小说 → 基准剧本 → 人物/场景/道具提示词 → ChatGPT 网页生图 → 资产登记 → V10.1 工业句法版视频提示词 → 豆包逐镜生成 → 下载、检查、尾帧、进度记录。
+小说 → 基准剧本 → 人物/场景/道具提示词 → ChatGPT 网页生图 → 资产登记 → 小家 v12.6 视频提示词 → 豆包逐镜生成 → 下载、检查、尾帧、进度记录。
 
 | 路径 | 用途 |
 | --- | --- |
@@ -16,7 +16,7 @@ Skill 来自当前已安装目录，正文及其 references 原样保存；此�
 | `skills/scene-image-prompts` | 场景图片提示词 |
 | `skills/prop-image-prompts` | 道具图片提示词 |
 | `skills/chatgpt-image-production` | ChatGPT 网页图片生产、下载、命名、登记 |
-| `skills/video-prompts-v10` | 当前 V10.1 工业句法版完整规则及校验脚本 |
+| `skills/video-prompts-v12` | 当前小家 v12.6 完整多文件规则及校验脚本 |
 | `skills/doubao-video-production` | 豆包参考图映射、提交、下载、检查与尾帧登记 |
 | `tools/doubao-playwright-mcp` | 豆包 MCP 启动脚本、连接测试、依赖及锁文件 |
 | `tools/chatgpt-image-playwright-mcp` | ChatGPT MCP、可恢复图片执行器、下载恢复及页面诊断工具 |

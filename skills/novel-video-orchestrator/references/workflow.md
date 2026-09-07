@@ -4,7 +4,7 @@
 
 1. 确认用户点名的章节目录、小说原文和全局图片目录。
 2. 项目根目录存在 `novel_video_production_config.json` 时，读取 `v10_rule_policy` 的生效章节；生效章节之前已经存在的正式V10产物继续使用，不得因当前唯一规则已经更新而追溯重做。
-3. 运行 `orchestrator_state.ps1 -Action Init`。已有状态文件时只读取，不重建。
+3. 运行 `orchestrator_state.ps1 -Action Init`。新章默认启用剪辑；项目配置 editing.enabled=false 时传 -DisableEditing。已有状态文件时只读取，不重建、不自动迁移剪辑状态；用户明确要求旧章剪辑时才对该章运行 -Action EnableEditing。
 4. 核对章节目录中的正式产物、`image_jobs.json`、`image_progress.json`、`asset_manifest.json`、V10文件和 `video_progress.json`。
 5. 对已经登记的产物重新验证路径和SHA-256。网页对话状态只能作为辅助证据，不能替代本地文件。
 6. 把已存在但尚未登记的合格产物登记后，从最早未完成阶段继续。
@@ -13,17 +13,21 @@
 
 阶段顺序为：
 
-`screenplay → character_prompts + scene_prompts + prop_prompts → image_production → asset_manifest → v10_prompts → video_production → chapter_audit`
+`screenplay → character_prompts + scene_prompts + prop_prompts → image_production → 图片可用性预检 → v10_prompts + 场次镜头映射 → asset_manifest最终镜头绑定 → video_production → chapter_audit → editing（按章启用）`
 
-`editing` 固定为 `not_enabled`。
+SCREENPLAY-SCENE-v2 输入不预造 S 镜头。三类资产先关联 SC 场次；图片制作可使用现有注册工具（ApplicableShots 暂空），保留场次关联于资产交接文件。此时只预检图片真实路径、哈希、审核状态，asset_manifest 阶段不得提前标 completed。video-prompts-v12 拆镜并输出 scene_shot_map.json 后，按每镜实际出场、道具版本与尾帧关系补齐正式清单，通过原有清单验证再完成该阶段。历史阶段键 v10_prompts 保留以兼容状态脚本，不表示调用旧母版。
+
+`editing` 新章默认 pending；历史 not_enabled 保留到用户明确启用。由 jianying-editing 读取正式视频、镜头顺序和基准剧本，使用 Computer Use 的 node_repl/@oai/sky 操作剪映；预设默认“字幕-居中”，可由项目配置 editing.subtitle_preset 或用户指令指定。
 
 - `screenplay`：基准剧本完整并通过小说转剧本 Skill 的检查。
 - 三类提示词：分别由对应 Skill 基于同一份正式剧本生成；不能用其中一类代替另一类。
 - `image_production`：新建项均为 `qa_approved`，复用项均为 `reuse_approved`，免建图项没有被误生成。
 - `asset_manifest`：真实文件、状态、哈希、适用镜头和尾帧依赖校验通过。
-- `v10_prompts`：基于正式剧本和已审核资产生成，验证器无错误；镜头正文不得自行精简。
+- `v10_prompts`：由当前 video-prompts-v12 基于正式剧本和已审核资产生成，按其母版70/99完成语义验收；不得运行退役的旧V10正则验证器。新分场稿必须另附 scene_shot_map.json，覆盖所有场次、关键剧情与对白；镜头正文不得自行精简。
+- 需要时长/模型分配时，先按 [duration-and-model-planning.md](duration-and-model-planning.md) 形成shot_production_plan.json并交下游；每镜秒数、模型策略、入口及连续性组与正文/资产绑定核对一致。锁定模型不可因额度而降级，改段长不能只改执行指令。
 - `video_production`：逐镜生成，使用本文件定义的分层质检策略。
 - `chapter_audit`：全部镜头和连续性链完成最终检查。
+- `editing`：依赖 video_production、chapter_audit 已完成。识别视频原声字幕并应用个人预设，校对文字与实际对白时间，确认草稿重开可编辑。用 editing_progress.json 断点续做，以 editing_review.json 登记验收证据；不导出、不添加背景音乐。缺少声音校验、预设或桌面能力时记录 pending/blocked，不伪报通过。首次执行按剪辑 Skill 做两镜小样，再扩展该章。
 
 任一门禁失败，只回退到产生错误的最早阶段；不得为了推进流程临时伪造资产、跳过哈希或现场删减V10正文。
 
@@ -41,7 +45,7 @@
 
 ## 4. 豆包账号、特殊恢复与侵权提示
 
-每个豆包账号每天最多使用3次视频生成额度。只有页面明确显示官方视频任务已创建后才把该账号当日计数加1；普通回复、侵权提示、未创建任务和结果未知都不计数。计数达到3后，下一镜自动切换下一个可用账号；任务状态未知时禁止切号。
+先读取视频制作Skill的generation-routes-and-quota.md。免费/标准套餐、10/15/30秒及对话/云电脑路线分别记录能力与额度证据；不再给所有账号套每日3次。项目doubao_account_usage.json跨章复用，只有实际视频任务创建才按标识去重计数；普通回复不计视频但可能消耗工作额度。页面实际共享池与重置时间优先，未知不推算。耗尽后仅在既有授权及本镜同模型/时长的allowed_routes内恢复，无路线则保留断点；任务状态未知时禁止切号或切入口。具体昵称和约5个标准套餐账号须实际确认，不写死于通用Skill。
 
 账号优先级和特殊账号行为读取项目根目录 `novel_video_production_config.json`。通用 Skill 不包含任何固定账号名。配置可以声明：部分账号排到普通账号之后、某个账号永远最后，以及仅这些账号适用的“未创建视频”恢复步骤。
 
@@ -91,4 +95,4 @@
 
 恢复时先运行 `-Action Validate` 和 `-Action Summary`，再读取相关子 Skill 的进度文件。优先处理最早的 `blocked`、`dependency_recheck` 或 `pending` 依赖。
 
-每阶段完成后登记正式产物，视频阶段同步记录每镜尝试次数、快检、尾帧门禁、批次审核和依赖签名。最终只在所有非剪辑阶段完成且验证通过时宣布整章完成。
+每阶段完成后登记正式产物，视频阶段同步记录每镜尝试次数、快检、尾帧门禁、批次审核和依赖签名。剪辑恢复同时核对 editing_progress.json、素材哈希和真实草稿，不重复导入或识别。所有必需上游阶段及已启用的剪辑阶段完成且验证通过后才能宣布整章完成；历史 not_enabled 章节仍按原完成条件。

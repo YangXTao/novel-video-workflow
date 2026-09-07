@@ -1,0 +1,138 @@
+{
+  "schema_version": "v12-rule-bundle-v1",
+  "version": "12.6.0",
+  "source_sha256": "3EE5DC869BAB4152287A1F927C84AB3D6D84C8892B42E9FAA251B48259C72F84",
+  "source_bytes": 781576,
+  "parts": [
+    {
+      "sha256": "004F4ED1AC8113F96B9260B32457831A15DB74C2D60D5C726421A8E9637603C2",
+      "file": "control.md",
+      "bytes": 34689
+    },
+    {
+      "sha256": "57CDCE232B2EF0119382CA129D2B873BB52C980725261F8D04E15ED14B384DA4",
+      "file": "00-最高优先级铁律.md",
+      "bytes": 104504
+    },
+    {
+      "sha256": "F8338B7666C9A8A1C9495A17D16C53542A90D1F160315A8B2DF2507BE7708A29",
+      "file": "01-全局节奏规划.md",
+      "bytes": 6891
+    },
+    {
+      "sha256": "7E2B419836BA704110608DFF05760FC5CBFC1ECACA38BD99A5395017B669A677",
+      "file": "02-武器招式匹配与调用.md",
+      "bytes": 12862
+    },
+    {
+      "sha256": "4D65DF051F9C2655494DB95B0DD7D7C4CAA47B30469717A3AFD319CAFD1C7C46",
+      "file": "03-焦段镜头语言.md",
+      "bytes": 12071
+    },
+    {
+      "sha256": "1017C86D562E2B5F5DF9BA50113896898E6B4531419EA0D7D76C181BEDF907ED",
+      "file": "10-打戏A-总格式与节奏.md",
+      "bytes": 66158
+    },
+    {
+      "sha256": "7A11A5883A5D64A4C12302A593AFA6D6BB7194BD8878EF71C9F92FE9E270C60E",
+      "file": "11-打戏B-特效位移拖尾.md",
+      "bytes": 54347
+    },
+    {
+      "sha256": "66D2F25B029E75F084994B76BF3002267191077ABBBBDA32EF505E3668F0244E",
+      "file": "12-打戏C-运镜校验冲击帧.md",
+      "bytes": 69341
+    },
+    {
+      "sha256": "CD5697D15E27D25857D9366BB85D776D740EB1C0381D74F546272EB4310499C7",
+      "file": "20-文戏规则组.md",
+      "bytes": 62894
+    },
+    {
+      "sha256": "F2F0EA4751A83C015F14640562481C1975B61A72278F2141E5F04FF302BB0E3E",
+      "file": "30-法术大场面.md",
+      "bytes": 65291
+    },
+    {
+      "sha256": "43966AAAE29E7BD10BD21603E73809262C79547E7A0989B359FB5984D1337A92",
+      "file": "35-场景环境锚定.md",
+      "bytes": 3484
+    },
+    {
+      "sha256": "1B7DE28B7AC307F75666E05DD2ED9B89A991D9C99BD12B40F20B72A57E76C506",
+      "file": "37-跨镜承接与空间锚定.md",
+      "bytes": 7807
+    },
+    {
+      "sha256": "B6C7E0F668974C8270F0ADA083C8D57E119B5F207D4EB2DA55F7E7B5DD258000",
+      "file": "40-角色资产与连续性.md",
+      "bytes": 8882
+    },
+    {
+      "sha256": "EB266F62C04A25F35C46DFBD796DEB05B48FB2D44E444B5E4AD06E7C95012481",
+      "file": "41-镜头语言库.md",
+      "bytes": 20556
+    },
+    {
+      "sha256": "D351EAF3416BE15CB43611D917627C634B0C9A89BA6E604E4AA1484F74449C86",
+      "file": "50-声音设计.md",
+      "bytes": 7445
+    },
+    {
+      "sha256": "15C64CF7B3A80BC599794C74987167884AE29225FFDF42023CE97E638FB0D192",
+      "file": "60-题材识别与模型适配.md",
+      "bytes": 16303
+    },
+    {
+      "sha256": "DEBA486B6E0EBCC7E589AD978637EDF022354C861E296F3EEEBDFBFB7C0F1F27",
+      "file": "61-萌系与修仙写实双轨.md",
+      "bytes": 14236
+    },
+    {
+      "sha256": "BDC7ED6BACF3A467A7A3A9CD7DE45C9B522283BC8DE094185F18CBA22849B58E",
+      "file": "70-质检合规与导演Agent.md",
+      "bytes": 36271
+    },
+    {
+      "sha256": "474EC413F1AC54D5B3CEEBD6A27FCBA9923D411EF6F76BFCE81B5C24256450B2",
+      "file": "80-输入区模板.md",
+      "bytes": 727
+    },
+    {
+      "sha256": "0039F575C6C47DAC79BB6EC55653E7E8F3530DC3F6B08686F91D2449529FED7C",
+      "file": "90-招式库.md",
+      "bytes": 78198
+    },
+    {
+      "sha256": "3F46FE357636E141E404878EC7D495F6412955495CC9056C8769511F2CE36796",
+      "file": "91-法阵库.md",
+      "bytes": 14858
+    },
+    {
+      "sha256": "E579DC5248C2D449B9285DF3FB6FFFD7ADDC42645B97FE50ED794445FF9F8770",
+      "file": "92-体修拳法视觉标准.md",
+      "bytes": 12940
+    },
+    {
+      "sha256": "6C7D5F08654064FABAFC2EA67B1192D3590211D72EDFD0B2FF49200AB8021F36",
+      "file": "93-三层复合元素库附录A.md",
+      "bytes": 29902
+    },
+    {
+      "sha256": "CC551AF421E0C083A2FB141A45FEBF5D9337B625B20B5FA549553FCA911E5853",
+      "file": "94-特效动态与环境反馈增强库.md",
+      "bytes": 26627
+    },
+    {
+      "sha256": "85970E4E979F8F0DDA65598C457DA1910D1F72AEB84F6F87711C68AF324DED18",
+      "file": "98-原版头部存档.md",
+      "bytes": 2125
+    },
+    {
+      "sha256": "F4974FE3DEB459200FDD01321A26FA193584376885C4BBB967F87257A298100E",
+      "file": "99-最终执行指令.md",
+      "bytes": 12167
+    }
+  ]
+}

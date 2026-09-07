@@ -19,7 +19,6 @@ if not exist "%TASK_CHROME%" (
   echo Google Chrome not found: %TASK_CHROME% 1>&2
   exit /b 4
 )
-
 if not exist "%TASK_PROFILE%" mkdir "%TASK_PROFILE%"
 if not exist "%TASK_OUTPUT%" mkdir "%TASK_OUTPUT%"
 
@@ -27,7 +26,7 @@ if not exist "%TASK_OUTPUT%" mkdir "%TASK_OUTPUT%"
   --executable-path "%TASK_CHROME%" ^
   --user-data-dir "%TASK_PROFILE%" ^
   --output-dir "%TASK_OUTPUT%" ^
-  --viewport-size "1440x650" ^
+  --config "D:\jimeng\novel-video-tools\doubao-playwright-mcp\display-config.json" ^
   --timeout-action 10000 ^
   --timeout-navigation 90000 ^
   --timeout-settle 1000

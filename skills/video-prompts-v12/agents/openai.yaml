@@ -1,0 +1,4 @@
+interface:
+  display_name: "视频提示词 · 小家 v12.6"
+  short_description: "按小家v12.6完整母版和真实参考资产生成文戏打戏法术逐镜视频提示词"
+  default_prompt: "使用 $video-prompts-v12 按小家 v12.6 母版生成完整视频提示词。"

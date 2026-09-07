@@ -19,7 +19,9 @@
 - `chapter_audit`
 - `editing`
 
-普通阶段状态为 `pending`、`in_progress`、`completed` 或 `blocked`；`editing` 当前固定为 `not_enabled`。每个完成阶段至少登记一个能够证明完成的正式产物及其SHA-256。
+普通阶段状态为 `pending`、`in_progress`、`completed` 或 `blocked`。新章 execution_policy.editing 默认 enabled、stages.editing.status 默认 pending；初始化传 -DisableEditing 则两者为 not_enabled。已有状态保持不变，明确启用旧章剪辑时使用 -Action EnableEditing，将政策设为 enabled 并仅把 not_enabled 阶段变为 pending；重复调用不重置已有进度。每个完成阶段至少登记一个能够证明完成的正式产物及其SHA-256。
+
+editing 的 in_progress/completed 要求 video_production 和 chapter_audit 已完成。completed 还必须登记哈希匹配的 jianying-editing-review-v1 报告，草稿名称/章节身份明确、检查全部实际通过、证据非空且无未解决问题；详见 sibling jianying-editing/references/state-contract.md。脚本验证记录，不能代替实际剪映和听音验收。
 
 ## 镜头状态
 
@@ -37,7 +39,9 @@
 
 状态文件不保存账号密码、Cookie、令牌、浏览器存储或网页私密信息。
 
-豆包账号每日已确认创建次数记录在 `video_progress.json` 的账号用量节点和事件中。只有官方确认任务创建才递增；达到项目配置的每日上限后标记为当日已用完。特殊账号列表只保存在项目级配置，不进入通用 Skill。
+豆包实际视频创建事件保存在video_progress.json，同时以项目doubao_account_usage.json跨章汇总账号套餐、入口、请求/实际模型、时长、额度池、可见余额及重置证据。仅对实际创建任务去重计数，不把各模型/时长统计格视为相互独立额度池；未知数量/重置时间为null。不能统一套每日3次，也不能到午夜或等待几小时后盲目清零。特殊账号列表只保存在项目级配置，不进入通用Skill。字段与迁移规则以视频制作Skill的generation-routes-and-quota.md为准。
+
+存在shot_production_plan.json时保留其路径与哈希，并在各镜或视频事件中记录target_duration_seconds、entry_mode、requested_model、actual_model、model_evidence、model_policy和continuity_group；不修改既有阶段键。actual_model无证据为null，不因云电脑接受指令而虚构实际模型。满足视频制作Skill中用户报告的30秒独占能力推定条件时，可记录2.5并明确证据为inferred，不与页面直接显示混淆。
 
 ## 脚本使用
 

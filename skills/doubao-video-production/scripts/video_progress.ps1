@@ -71,8 +71,21 @@ if ($null -eq $shotProperty) { throw "Shot not found in progress: $ShotId" }
 $now = [DateTimeOffset]::Now.ToString('o')
 $shotProperty.Value.status = $Status
 $shotProperty.Value.updated_at = $now
-if (-not [string]::IsNullOrWhiteSpace($VideoPath)) { $shotProperty.Value.video_path = [System.IO.Path]::GetFullPath($VideoPath) }
-if (-not [string]::IsNullOrWhiteSpace($Message)) { $shotProperty.Value.message = $Message }
+if (-not [string]::IsNullOrWhiteSpace($VideoPath)) {
+    $resolvedVideoPath = [System.IO.Path]::GetFullPath($VideoPath)
+    if ($null -eq $shotProperty.Value.PSObject.Properties['video_path']) {
+        $shotProperty.Value | Add-Member -NotePropertyName video_path -NotePropertyValue $resolvedVideoPath
+    } else {
+        $shotProperty.Value.video_path = $resolvedVideoPath
+    }
+}
+if (-not [string]::IsNullOrWhiteSpace($Message)) {
+    if ($null -eq $shotProperty.Value.PSObject.Properties['message']) {
+        $shotProperty.Value | Add-Member -NotePropertyName message -NotePropertyValue $Message
+    } else {
+        $shotProperty.Value.message = $Message
+    }
+}
 $progress.updated_at = $now
 $event = [pscustomobject][ordered]@{ at = $now; shot = $ShotId; status = $Status; account = $Account; message = $Message }
 $progress.events = @($progress.events) + $event

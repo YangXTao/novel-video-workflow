@@ -4,8 +4,8 @@
 
 ## Codex或MCP连接断开
 
-- 图片执行器必须使用独立Chrome进程加本地CDP连接，不能让浏览器生命周期绑定Codex或STDIO传输。
-- 重启或替换执行器只断开控制连接，不关闭专用Chrome。
+- 沿用已配置的 `chatgpt_image_playwright` MCP及原持久化目录，不因断线迁移为worker、另一套CDP服务或后台浏览器。
+- 先检查现有MCP、Chrome进程用户和可见窗口；不关闭仍运行的专用Chrome，不让另一Windows用户启动同一目录。恢复细节以browser-mcp.md为准。
 - 从持久账本读取原对话地址并恢复等待或下载；已经提交的任务不得重提。
 
 ## 临时对话地址

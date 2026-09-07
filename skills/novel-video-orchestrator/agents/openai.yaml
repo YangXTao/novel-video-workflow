@@ -1,4 +1,4 @@
 interface:
   display_name: "小说视频总控"
-  short_description: "串联剧本、资产、图片、V10和视频生产并支持断点续做"
+  short_description: "串联剧本、资产、图片、视频生产和剪映排片字幕，支持断点续做"
   default_prompt: "使用 $novel-video-orchestrator 从章节当前状态继续小说视频制作。"

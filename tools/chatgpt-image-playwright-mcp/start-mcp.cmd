@@ -27,8 +27,7 @@ if not exist "%TASK_OUTPUT%" mkdir "%TASK_OUTPUT%"
   --executable-path "%TASK_CHROME%" ^
   --user-data-dir "%TASK_PROFILE%" ^
   --output-dir "%TASK_OUTPUT%" ^
-  --viewport-size "1440x800" ^
+  --config "D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\display-config.json" ^
   --timeout-action 10000 ^
   --timeout-navigation 90000 ^
   --timeout-settle 1000
-
