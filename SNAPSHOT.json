@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Exact installed skill and local tool snapshot, excluding runtime data",
-  "captured_at": "2026-09-08T01:48:50.513736+08:00",
+  "captured_at": "2026-09-08T15:36:10.2090063+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -315,8 +315,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/error-recovery-log.md",
-      "sha256": "BC514562D6743689926F09F95E2CFF8F8BF02FB69D3D86E75558D62ED53986BF",
-      "bytes": 16955
+      "sha256": "CC078ACC3183C62C9AEF3902A5449E83F670D45E5DB37870929148D210BEE21E",
+      "bytes": 18098
     },
     {
       "path": "skills/doubao-video-production/references/browser-mcp.md",
@@ -330,8 +330,8 @@
     },
     {
       "path": "skills/doubao-video-production/SKILL.md",
-      "sha256": "CFA8734E4412BA79EF1A3CB31CE7A0972A3A6E0BA19F35C15D1545EDD8C6BB24",
-      "bytes": 9882
+      "sha256": "20B0715754B3061C0127B0DBD8052145F67AAFD1E425C74B4BF236784A95F61E",
+      "bytes": 12105
     },
     {
       "path": "skills/chatgpt-image-production/scripts/register_image_asset.ps1",
@@ -435,8 +435,8 @@
     },
     {
       "path": "docs/video-prompts-v12.6-changes.md",
-      "sha256": "88B6C65C6DE27C40F09D1AE9F89551473F065E981E235C5E2B2C39A01F68251A",
-      "bytes": 3818
+      "sha256": "D66967C6E2810B01FDCC2FAAC7F6376D18DC0FD31741F5DD32B643F22CBFBADE",
+      "bytes": 5564
     },
     {
       "path": "config/codex-mcp.example.toml",
@@ -450,8 +450,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/generation-routes-and-quota.md",
-      "sha256": "BD6228D28C3DA2C9104FECA63DDD147FF1D93F7BA42C925BEE16A487977EF5F6",
-      "bytes": 14037
+      "sha256": "1E82386D5256F1C80A0D4355916F22A18775AA60F2C44D1C171D5EEA14736FFC",
+      "bytes": 14126
     },
     {
       "path": "tools/doubao-playwright-mcp/scripts/cdp_status.cjs",
@@ -460,8 +460,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/workflow.md",
-      "sha256": "DF4506E3A27EDB0C6A282D02BE9186C10EC6C0BA47F7341BD2872FD1726B009F",
-      "bytes": 21872
+      "sha256": "E03BCB044BDD4C22D9F4C0BD0231363C8A19752F8892F99302F1C010F487676F",
+      "bytes": 27000
     },
     {
       "path": "skills/doubao-video-production/scripts/register_tail_frame.ps1",
@@ -470,8 +470,8 @@
     },
     {
       "path": "skills/video-prompts-v12/SKILL.md",
-      "sha256": "3066BE72043CAC4EE978CD83D7D6F1E264DD729B66F604E575B2EE40EA37C60F",
-      "bytes": 5422
+      "sha256": "649985260D4A17E0F3A1FB3718492D6A3A9B325EC4F919F02806B593E18B2BCC",
+      "bytes": 7110
     },
     {
       "path": "skills/scene-image-prompts/references/original-prompt.md",
@@ -525,8 +525,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/scripts/orchestrator_state.ps1",
-      "sha256": "7AE803C41BD6F124F778216754F36FDCABD3CEAD3F9C2BF7AED5460E641C6590",
-      "bytes": 16219
+      "sha256": "C7AEAC0130635084662ED043126792376595B4E1E4358B30DF4A02D46090F86C",
+      "bytes": 19832
     },
     {
       "path": "skills/novel-video-orchestrator/references/workflow.md",
@@ -550,8 +550,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/SKILL.md",
-      "sha256": "ABE9F0577971D858C6295DB8BCF9D1F3201DE6F82B1433D8E680F8FC466279D2",
-      "bytes": 6538
+      "sha256": "EA3F078EDCE9458B1252F5C7A34420D876EAA4899498B859A88921586FDFBBF9",
+      "bytes": 7343
     },
     {
       "path": "skills/novel-to-screenplay/scripts/validate_screenplay_output.ps1",
@@ -617,6 +617,16 @@
       "path": "docs/novel-to-screenplay-v2.1-changes.md",
       "sha256": "680F808D98DBA54762EB3102009DC0D14C2BB6BFB5960365A7C34FA7AA181746",
       "bytes": 3052
+    },
+    {
+      "path": "skills/video-prompts-v12/references/compliance-audit-schema.md",
+      "sha256": "A4D4DD034378901EE513A6AE21ECADE4356BB42396FA680C234C4E098FFAF577",
+      "bytes": 2759
+    },
+    {
+      "path": "skills/video-prompts-v12/scripts/validate_video_prompts_v12.ps1",
+      "sha256": "C87E7C39D133C0C4E6C9134663C73B6CFD9C4B839EC1ABEC494BB88B15CCC133",
+      "bytes": 10452
     }
   ]
 }
