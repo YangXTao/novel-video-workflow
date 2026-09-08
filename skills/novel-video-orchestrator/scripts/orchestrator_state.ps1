@@ -141,6 +141,24 @@ function Assert-VideoPromptReady($State) {
         -not (Test-Path -LiteralPath $report.prompt_directory -PathType Container)) {
         throw 'Video prompt validation report points to a missing prompt directory.'
     }
+    if ([string]::IsNullOrWhiteSpace([string]$report.chapter_prompt_path) -or
+        -not (Test-Path -LiteralPath $report.chapter_prompt_path -PathType Leaf) -or
+        [System.IO.Path]::GetExtension([string]$report.chapter_prompt_path) -ne '.md') {
+        throw 'Video prompt validation report points to a missing complete chapter Markdown file.'
+    }
+    $chapterPromptArtifact = $null
+    foreach ($artifact in @($State.stages.v10_prompts.artifacts)) {
+        if ([System.IO.Path]::GetFullPath([string]$artifact.path) -eq [System.IO.Path]::GetFullPath([string]$report.chapter_prompt_path)) {
+            $chapterPromptArtifact = $artifact
+            break
+        }
+    }
+    if ($null -eq $chapterPromptArtifact) { throw 'Complete chapter video-prompt Markdown must be registered as a stage artifact.' }
+    $chapterPromptHash = (Get-FileHash -LiteralPath $report.chapter_prompt_path -Algorithm SHA256).Hash
+    if ($chapterPromptHash -ne [string]$chapterPromptArtifact.sha256 -or
+        $chapterPromptHash -ne [string]$report.chapter_prompt_sha256) {
+        throw 'Complete chapter video-prompt Markdown changed after validation or registration.'
+    }
     if ([System.IO.Path]::GetFullPath([string]$report.audit_path) -ne [System.IO.Path]::GetFullPath([string]$auditArtifact.path)) {
         throw 'Video prompt validation report does not reference the registered compliance audit.'
     }

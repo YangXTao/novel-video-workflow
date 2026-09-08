@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Exact installed skill and local tool snapshot, excluding runtime data",
-  "captured_at": "2026-09-08T15:36:10.2090063+08:00",
+  "captured_at": "2026-09-08T19:56:39.8809690+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -315,8 +315,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/error-recovery-log.md",
-      "sha256": "CC078ACC3183C62C9AEF3902A5449E83F670D45E5DB37870929148D210BEE21E",
-      "bytes": 18098
+      "sha256": "FE415119F50F012A1FE3DC058E1D6D3AF6C33559E4DE03EFEE8E4CCFAA615AE3",
+      "bytes": 18727
     },
     {
       "path": "skills/doubao-video-production/references/browser-mcp.md",
@@ -330,8 +330,8 @@
     },
     {
       "path": "skills/doubao-video-production/SKILL.md",
-      "sha256": "20B0715754B3061C0127B0DBD8052145F67AAFD1E425C74B4BF236784A95F61E",
-      "bytes": 12105
+      "sha256": "FE765E6CEFFBAE0FB105F6CA36B06D6EC665CB1A70AF1ED577348B569C23172C",
+      "bytes": 12644
     },
     {
       "path": "skills/chatgpt-image-production/scripts/register_image_asset.ps1",
@@ -435,8 +435,8 @@
     },
     {
       "path": "docs/video-prompts-v12.6-changes.md",
-      "sha256": "D66967C6E2810B01FDCC2FAAC7F6376D18DC0FD31741F5DD32B643F22CBFBADE",
-      "bytes": 5564
+      "sha256": "605906A626CF904AB6857AE52F19127DBDD979F57B06C923FFBF4F197BA83D48",
+      "bytes": 6415
     },
     {
       "path": "config/codex-mcp.example.toml",
@@ -460,8 +460,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/workflow.md",
-      "sha256": "E03BCB044BDD4C22D9F4C0BD0231363C8A19752F8892F99302F1C010F487676F",
-      "bytes": 27000
+      "sha256": "495A9636DC7F2E5019B80E9A2A71020D5F6BC4377EF0BB578CA9A6A39FE2F29E",
+      "bytes": 31423
     },
     {
       "path": "skills/doubao-video-production/scripts/register_tail_frame.ps1",
@@ -470,8 +470,8 @@
     },
     {
       "path": "skills/video-prompts-v12/SKILL.md",
-      "sha256": "649985260D4A17E0F3A1FB3718492D6A3A9B325EC4F919F02806B593E18B2BCC",
-      "bytes": 7110
+      "sha256": "007914BE81171ED9130582966279E49A87C73B8D421F270EE5FCCF63CFAFDA44",
+      "bytes": 7803
     },
     {
       "path": "skills/scene-image-prompts/references/original-prompt.md",
@@ -525,8 +525,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/scripts/orchestrator_state.ps1",
-      "sha256": "C7AEAC0130635084662ED043126792376595B4E1E4358B30DF4A02D46090F86C",
-      "bytes": 19832
+      "sha256": "0C1D5FBFDB515BB228152C989C2C64B1C93DD74458B24D458B90D6C7645668DF",
+      "bytes": 20998
     },
     {
       "path": "skills/novel-video-orchestrator/references/workflow.md",
@@ -550,8 +550,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/SKILL.md",
-      "sha256": "EA3F078EDCE9458B1252F5C7A34420D876EAA4899498B859A88921586FDFBBF9",
-      "bytes": 7343
+      "sha256": "37EB7BC847E59A20495033749FD033BEABA17B9A16C90651E33A1C3613A2502D",
+      "bytes": 7454
     },
     {
       "path": "skills/novel-to-screenplay/scripts/validate_screenplay_output.ps1",
@@ -620,13 +620,13 @@
     },
     {
       "path": "skills/video-prompts-v12/references/compliance-audit-schema.md",
-      "sha256": "A4D4DD034378901EE513A6AE21ECADE4356BB42396FA680C234C4E098FFAF577",
-      "bytes": 2759
+      "sha256": "092FEAEBC5D16F12E6C9EFC7C598F478885B9D7F65D38F07BC2251764150CB4A",
+      "bytes": 3020
     },
     {
       "path": "skills/video-prompts-v12/scripts/validate_video_prompts_v12.ps1",
-      "sha256": "C87E7C39D133C0C4E6C9134663C73B6CFD9C4B839EC1ABEC494BB88B15CCC133",
-      "bytes": 10452
+      "sha256": "FF0FABBD662A17FB6655D27E4D21EBD804E008FB079D67CE0D5D1C6A8C01ACF1",
+      "bytes": 11883
     }
   ]
 }

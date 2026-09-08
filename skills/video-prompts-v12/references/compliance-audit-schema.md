@@ -2,6 +2,8 @@
 
 正式提示词目录必须同时包含独立的 `video_prompt_compliance_audit.json`。这不是给用户看的提示词正文，而是总控门禁证据。每个镜头必须逐项填写，不能用全章一句话代替逐镜证据。
 
+同目录还必须包含一个本章完整视频提示词 Markdown 文件，推荐命名为 `<章节名>_完整视频提示词_v12.6.md`。它按S编号顺序逐字收录全部单镜工作切片，是正式交付正文；单独的 `Sxx.txt` 不能替代它。
+
 ```json
 {
   "schema_version": "video-prompt-compliance-audit-v1",

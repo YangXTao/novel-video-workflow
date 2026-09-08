@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory = $true)][string]$PromptDirectory,
     [Parameter(Mandatory = $true)][string]$AuditPath,
+    [Parameter(Mandatory = $true)][string]$ChapterPromptPath,
     [string]$PlanPath,
     [string]$ReportPath,
     [switch]$RequireNoBgm
@@ -24,14 +25,19 @@ function Add-Issue($List, [string]$ShotId, [string]$Code, [string]$Message) {
 
 $promptRoot = [System.IO.Path]::GetFullPath($PromptDirectory)
 $auditFile = [System.IO.Path]::GetFullPath($AuditPath)
+$chapterPromptFile = [System.IO.Path]::GetFullPath($ChapterPromptPath)
 if (-not (Test-Path -LiteralPath $promptRoot -PathType Container)) { throw "Prompt directory not found: $promptRoot" }
 if (-not (Test-Path -LiteralPath $auditFile -PathType Leaf)) { throw "Compliance audit not found: $auditFile" }
+if (-not (Test-Path -LiteralPath $chapterPromptFile -PathType Leaf)) { throw "Complete chapter prompt Markdown not found: $chapterPromptFile" }
+if ([System.IO.Path]::GetExtension($chapterPromptFile) -ne '.md') { throw 'Complete chapter prompt must be a Markdown (.md) file.' }
 
 $errors = [System.Collections.Generic.List[object]]::new()
 $warnings = [System.Collections.Generic.List[object]]::new()
 $results = [System.Collections.Generic.List[object]]::new()
 $files = @(Get-ChildItem -LiteralPath $promptRoot -File | Where-Object { $_.Name -match '^S\d+\.txt$' } | Sort-Object Name)
 if ($files.Count -eq 0) { throw "No Sxx.txt prompt files found: $promptRoot" }
+$chapterText = Get-Content -LiteralPath $chapterPromptFile -Raw
+$chapterCursor = -1
 
 $audit = Get-Content -LiteralPath $auditFile -Raw | ConvertFrom-Json
 if ($audit.schema_version -ne 'video-prompt-compliance-audit-v1') { Add-Issue $errors 'GLOBAL' 'AUDIT_SCHEMA' 'Unsupported or missing compliance-audit schema.' }
@@ -61,6 +67,18 @@ $requiredChecks = @(
 foreach ($file in $files) {
     $shotId = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
     $text = Get-Content -LiteralPath $file.FullName -Raw
+    $chapterIndex = $chapterText.IndexOf($text, [System.StringComparison]::Ordinal)
+    if ($chapterIndex -lt 0) {
+        Add-Issue $errors $shotId 'CHAPTER_PROMPT_MISSING_SHOT' 'The complete chapter Markdown does not contain this full shot text verbatim.'
+    }
+    elseif ($chapterIndex -le $chapterCursor) {
+        Add-Issue $errors $shotId 'CHAPTER_PROMPT_ORDER' 'Shot text is not ordered monotonically in the complete chapter Markdown.'
+    }
+    else {
+        $chapterCursor = $chapterIndex
+        $secondIndex = $chapterText.IndexOf($text, $chapterIndex + $text.Length, [System.StringComparison]::Ordinal)
+        if ($secondIndex -ge 0) { Add-Issue $errors $shotId 'CHAPTER_PROMPT_DUPLICATE_SHOT' 'The complete chapter Markdown contains this full shot text more than once.' }
+    }
     $headers = @('①画质基准', '②角色、场景与核心设定', '③时间轴', '④负面提示词')
     $headerPatterns = @(
         '①\s*[、·．.：:]?\s*画质基准',
@@ -171,6 +189,8 @@ $report = [pscustomobject][ordered]@{
     generated_at = (Get-Date).ToString('o')
     status = if ($errors.Count -eq 0) { 'passed' } else { 'failed' }
     prompt_directory = $promptRoot
+    chapter_prompt_path = $chapterPromptFile
+    chapter_prompt_sha256 = (Get-FileHash -LiteralPath $chapterPromptFile -Algorithm SHA256).Hash
     audit_path = $auditFile
     plan_path = if ([string]::IsNullOrWhiteSpace($PlanPath)) { $null } else { [System.IO.Path]::GetFullPath($PlanPath) }
     require_no_bgm = [bool]$RequireNoBgm
