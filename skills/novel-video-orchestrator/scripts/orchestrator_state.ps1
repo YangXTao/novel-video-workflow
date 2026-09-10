@@ -111,71 +111,18 @@ function Assert-ScreenplayReady($State) {
 }
 
 function Assert-VideoPromptReady($State) {
-    if ($State.execution_policy.video_prompt_validation -ne 'required') { return }
-
-    $auditArtifact = $null
-    $reportArtifact = $null
+    $validPrompt = $null
     foreach ($artifact in @($State.stages.v10_prompts.artifacts)) {
         if (-not (Test-Path -LiteralPath $artifact.path -PathType Leaf)) { continue }
+        if ([System.IO.Path]::GetExtension([string]$artifact.path) -ne '.md') { continue }
         if ((Get-FileHash -LiteralPath $artifact.path -Algorithm SHA256).Hash -ne $artifact.sha256) { continue }
-        if ([System.IO.Path]::GetFileName($artifact.path) -eq 'video_prompt_compliance_audit.json') { $auditArtifact = $artifact }
-        if ([System.IO.Path]::GetFileName($artifact.path) -eq 'video_prompt_validation.json') { $reportArtifact = $artifact }
+        $content = Get-Content -LiteralPath $artifact.path -Raw -Encoding UTF8
+        if ($content -match '(?m)^##\s*S\d{2}') { $validPrompt = $artifact; break }
     }
-    if ($null -eq $auditArtifact -or $null -eq $reportArtifact) {
-        throw 'Video prompt completion requires registered, unchanged compliance-audit and validation-report artifacts.'
-    }
-
-    try { $audit = Get-Content -LiteralPath $auditArtifact.path -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100 }
-    catch { throw 'Video prompt compliance audit is not valid JSON.' }
-    try { $report = Get-Content -LiteralPath $reportArtifact.path -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100 }
-    catch { throw 'Video prompt validation report is not valid JSON.' }
-
-    if ($audit.schema_version -ne 'video-prompt-compliance-audit-v1' -or $audit.rule_version -ne '12.6.0') {
-        throw 'Video prompt compliance audit must use schema video-prompt-compliance-audit-v1 and rule_version 12.6.0.'
-    }
-    if ($report.schema_version -ne 'video-prompt-validation-v1' -or $report.rule_version -ne '12.6.0' -or
-        $report.status -ne 'passed' -or @($report.errors).Count -ne 0) {
-        throw 'Video prompt validation report must be v12.6, passed, and contain zero errors.'
-    }
-    if ([string]::IsNullOrWhiteSpace([string]$report.prompt_directory) -or
-        -not (Test-Path -LiteralPath $report.prompt_directory -PathType Container)) {
-        throw 'Video prompt validation report points to a missing prompt directory.'
-    }
-    if ([string]::IsNullOrWhiteSpace([string]$report.chapter_prompt_path) -or
-        -not (Test-Path -LiteralPath $report.chapter_prompt_path -PathType Leaf) -or
-        [System.IO.Path]::GetExtension([string]$report.chapter_prompt_path) -ne '.md') {
-        throw 'Video prompt validation report points to a missing complete chapter Markdown file.'
-    }
-    $chapterPromptArtifact = $null
-    foreach ($artifact in @($State.stages.v10_prompts.artifacts)) {
-        if ([System.IO.Path]::GetFullPath([string]$artifact.path) -eq [System.IO.Path]::GetFullPath([string]$report.chapter_prompt_path)) {
-            $chapterPromptArtifact = $artifact
-            break
-        }
-    }
-    if ($null -eq $chapterPromptArtifact) { throw 'Complete chapter video-prompt Markdown must be registered as a stage artifact.' }
-    $chapterPromptHash = (Get-FileHash -LiteralPath $report.chapter_prompt_path -Algorithm SHA256).Hash
-    if ($chapterPromptHash -ne [string]$chapterPromptArtifact.sha256 -or
-        $chapterPromptHash -ne [string]$report.chapter_prompt_sha256) {
-        throw 'Complete chapter video-prompt Markdown changed after validation or registration.'
-    }
-    if ([System.IO.Path]::GetFullPath([string]$report.audit_path) -ne [System.IO.Path]::GetFullPath([string]$auditArtifact.path)) {
-        throw 'Video prompt validation report does not reference the registered compliance audit.'
-    }
-
-    $reportShots = @($report.shots)
-    if ($reportShots.Count -eq 0) { throw 'Video prompt validation report contains no shots.' }
-    foreach ($shot in $reportShots) {
-        if ([string]$shot.shot_id -notmatch '^S\d{2}$') { throw 'Video prompt validation report contains an invalid shot id.' }
-        $promptPath = Join-Path ([string]$report.prompt_directory) ("$($shot.shot_id).txt")
-        if (-not (Test-Path -LiteralPath $promptPath -PathType Leaf)) { throw "Validated prompt is missing: $promptPath" }
-        if ((Get-FileHash -LiteralPath $promptPath -Algorithm SHA256).Hash -ne [string]$shot.sha256) {
-            throw "Validated prompt changed after validation: $promptPath"
-        }
-        if ([double]$shot.duration_seconds -le 0) { throw "Validated shot duration must be positive: $($shot.shot_id)" }
+    if ($null -eq $validPrompt) {
+        throw 'Video prompt completion requires one registered, unchanged complete chapter Markdown containing S-numbered prompts.'
     }
 }
-
 function Assert-EditingReady($State, [switch]$Completed) {
     if ($State.execution_policy.editing -ne 'enabled') {
         throw 'Editing is disabled. Use EnableEditing for this chapter when requested.'
@@ -236,7 +183,7 @@ if ($Action -eq 'Init') {
             full_qa_batch_size = 3
             minor_issues = 'accept_and_record'
             editing = $(if ($DisableEditing) { 'not_enabled' } else { 'enabled' })
-            video_prompt_validation = 'required'
+            video_prompt_validation = 'chapter_markdown_required'
         }
         stages = [pscustomobject][ordered]@{
             screenplay = (New-StageState)

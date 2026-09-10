@@ -1,12 +1,11 @@
-# v12.4 语义桥接
+# v12.6 语义桥接
 ## 读取与版本
-从同级 video-prompts-v12/references/control.md 完整读取主控，再按编号读取对应独立规则文件。通过该 Skill 的 scripts/read_rule_section.ps1 列目录或读取 control/指定编号。首次使用或版本变化时运行其 scripts/validate_rule_bundle.ps1；采用验证结果 sha256 作为审计 rule_sha256。
-仅依据当前已验证规则包执行，不复制整套母版到剧本Skill。每次记录验证后的规则包重组SHA-256；升级后重新读相关表，不沿用缓存配方。母版缺失时可完成普通分场剧本，但标记桥接未核验，不能宣称已完成v12触发验收。
+完整读取同级 video-prompts-v12/SKILL.md。该文件是唯一运行母版，不依赖拆分规则、control.md、rule-bundle.json或规则读取脚本。审计中的 rule_sha256 直接记录这份完整母版文件的 SHA-256；升级或替换母版后重新读取并重新计算，不沿用缓存配方。母版缺失时可完成普通分场剧本，但标记桥接未核验，不能宣称已完成v12触发验收。
 
 本Skill处于上游语义标注任务，不执行视频导演：只读取适用事件定义、匹配条件与边界；不在上游展开整套画质/运镜/特效参数。
-索引（均经当前v12.4核对）：
+索引（在当前完整母版内按标题或关键词定位，并完整读取命中条目及上下文）：
 - 主控§2、§3、§4：输入、内容类型、优先级。先类型后事件，不按题材把全章变打戏。
-- 10：搜索“事件运镜速查表（语义触发·非关键词死扣）”，完整读取表及解释。实际文件名以主控路由与rule-bundle.json为准。
+- 搜索“事件运镜速查表（语义触发·非关键词死扣）”，完整读取表及解释。
 - 20：§3.4.3“文戏叙事事件链速查表”；文戏Beat与事件是不同概念，真相揭示不是擅增的Beat类别。
 - 30：法术类型与实际施法事件；确有法阵才查91相关条目，原文未展开的阵法不得为选卡启动。
 - 12：追逐/位移相关条目；02与90：只在需核对真实武器动作对应招式时查具体条目，不增加招式。
@@ -32,8 +31,8 @@
 ## 独立审计（不粘贴进模型生成输入）
 文件名 screenplay_trigger_audit.json，结构：
 - schema_version: screenplay-trigger-audit-v2
-- rule_version: 12.4.0
-- rule_sha256: 经validate_rule_bundle.ps1验证的source_sha256（原母版重组哈希，不是control.md或JSON文件自身哈希）
+- rule_version: 从活动SKILL.md的metadata.version读取，不硬编码旧版本
+- rule_sha256: 活动video-prompts-v12/SKILL.md文件的SHA-256，与本次读取来源一致，不调用旧规则包校验脚本
 - scenes: 数组，每项 scene_id 为SC01等，events为数组；无匹配写空数组。
 - events每项：source_quote（原文可定位短原句），content_type，event（实际表项名或内容分支），rule_locator（规则组编号+小节/表项），screenplay_phrase（正文实际采用的完整动作短句），reason（说明语义如何相符）。
 - downstream_gate：独立的下游门禁对象。
@@ -42,10 +41,9 @@
   - nonblocking_notes：数组。记录不影响继续制作、但值得保留的文字或设定备注；无内容写空数组。
   - blocking_ambiguities 为空时 status 必须为 ready；非空时必须为 needs-resolution。不能用 needs-resolution 代替可由原文和既有资料直接核对解决的问题。
 审计只作可追踪依据，不增加正文模块。原文证据不得编造；对白提及、否定与假设不可登记成当前已发生动作。若需核对位置可附 source_location。
-运行结构校验时可加 -SourcePath <纯文本原文> -RulePath <video-prompts-v12/references/rule-bundle.json> 核对证据子串与母版哈希；语义仍须复核。
+运行结构校验时可加 -SourcePath <纯文本原文> -RulePath <video-prompts-v12/SKILL.md> 核对证据子串与完整母版哈希；语义仍须复核。
 
 ## 下游映射
-SC表示故事场次，与S视频镜头分开。资产提示词先写适用场次；视频拆镜后另存 scene_shot_map.json：
-schema_version=scene-shot-map-v1；shots数组每项含 shot_id(S01等)、scene_ids(SC01等)、asset_ids(实际本镜资产ID)、event_refs(如SC01/events/0)。
-不得把整场所有资产机械分给每镜；按实际出镜及状态选择。反向核对所有场次已被覆盖、所有关键剧情与必要声音均保留。进入资产或逐镜拆分前读取 downstream_gate：ready 可继续；needs-resolution 必须先解决阻断项，不能由下游自行猜测或无中生有映射资产。
-未有S镜头时不造S编号；图片可先制作，资产登记的applicable_shots可暂空，场次关联保存在资产清单/交接文件。最终asset_manifest的镜头绑定与尾帧依赖必须在视频提示词拆镜后、视频提交前全部完成。
+SC表示故事场次，与S视频镜头分开。资产提示词阶段按SC场次识别和登记资产；video-prompts-v12随后依据完整剧本、真实资产清单和用户时长要求，在一份完整章节视频提示词Markdown内独立规划S编号与每镜资产需求。
+不再要求scene_shot_map.json。豆包视频制作阶段从最终完整Markdown逐个读取S镜正文，并结合asset_manifest.json核对实际存在且本镜确实需要的图片；不得把整场所有资产机械分给每镜，也不得凭空映射资产。进入资产或视频提示词阶段前读取 downstream_gate：ready可继续；needs-resolution必须先解决阻断项。
+未有S镜头时不造S编号；图片可先制作，资产登记的applicable_shots可暂空，场次关联保存在资产清单或交接文件。最终参考图选择、状态版本和尾帧依赖在视频提交前按真实文件与最终S镜正文核实。

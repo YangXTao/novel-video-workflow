@@ -20,8 +20,7 @@ const { chromium } = localRequire('playwright');
     href: node.getAttribute('href'),
     visible: Boolean(node.offsetWidth || node.offsetHeight || node.getClientRects().length),
   })).filter(item => item.visible && (item.text || item.aria || item.title || item.testid)));
-  process.stdout.write(JSON.stringify({ url: page.url(), controls: controls.slice(-120) }, null, 2));
-  await browser.close();
+  process.stdout.write(JSON.stringify({ url: page.url(), controls: controls.slice(-120) }, null, 2), () => process.exit(0));
 })().catch(error => {
   process.stderr.write(String(error.stack || error));
   process.exitCode = 1;

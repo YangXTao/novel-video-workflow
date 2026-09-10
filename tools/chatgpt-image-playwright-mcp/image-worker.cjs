@@ -431,10 +431,9 @@ async function execute(jobId, mode = 'full') {
     job.output_file = job.target_file_path;
     job.output_sha256 = fileSha256;
     await event(ledger, job, 'downloaded', `Saved to stable path: ${job.target_file_path}`);
-    // A completed asset no longer needs a live tab.  Keep only failed or
-    // unknown-result conversations open for recovery so serial production
-    // never floods the user's Chrome with tabs.
-    await page.close().catch(() => {});
+    // Keep the authenticated result conversation and the dedicated Chrome
+    // open. Tab cleanup is a separate explicit maintenance action and must
+    // never be coupled to a successful download.
     return job;
   } catch (error) {
     const ledger = await readLedger();

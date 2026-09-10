@@ -27,8 +27,7 @@ const { chromium } = localRequire('playwright');
       }))).catch(() => []),
     });
   }
-  process.stdout.write(JSON.stringify(rows, null, 2));
-  await browser.close();
+  process.stdout.write(JSON.stringify(rows, null, 2), () => process.exit(0));
 })().catch(error => {
   process.stderr.write(String(error.stack || error));
   process.exitCode = 1;

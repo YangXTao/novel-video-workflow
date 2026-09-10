@@ -51,7 +51,7 @@ const { chromium } = localRequire('playwright');
   const ledgerTemp = `${ledgerPath}.${process.pid}.tmp`;
   await fsp.writeFile(ledgerTemp, JSON.stringify(ledger, null, 2), 'utf8');
   await fsp.rename(ledgerTemp, ledgerPath);
-  await page.close();
-  process.stdout.write(JSON.stringify({ job_id: jobId, output_file: job.target_file_path, sha256, bytes: bytes.length, width: rendered.width, height: rendered.height }));
-  await browser.close();
+  // This process only attaches over CDP. Never close the result page or the
+  // dedicated Chrome; exit this helper and let the OS detach its CDP socket.
+  process.stdout.write(JSON.stringify({ job_id: jobId, output_file: job.target_file_path, sha256, bytes: bytes.length, width: rendered.width, height: rendered.height }), () => process.exit(0));
 })().catch(error => { process.stderr.write(String(error.stack || error)); process.exitCode = 1; });

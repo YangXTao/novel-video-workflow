@@ -6,7 +6,10 @@ param(
     [ValidatePattern('^S\d{2}$')]
     [string]$ShotId,
 
-    [string]$OutputPath
+    [string]$OutputPath,
+
+    # The exact shot body. Supplying it enables immutable-body binding checks.
+    [string]$PromptText
 )
 
 $ErrorActionPreference = 'Stop'
@@ -19,6 +22,7 @@ if ($null -eq $shotProperty) { throw "Shot not found in manifest: $ShotId" }
 $shot = $shotProperty.Value
 $eligibleStatuses = @($manifest.reference_policy.eligible_statuses)
 $maxImages = [int]$manifest.reference_policy.max_images_per_shot
+if ($maxImages -lt 1 -or $maxImages -gt 10) { throw 'Image limit must be between 1 and 10.' }
 $bindings = [System.Collections.Generic.List[object]]::new()
 
 if ($shot.tail_frame.eligible -eq $true) {
@@ -73,12 +77,44 @@ foreach ($assetId in @($shot.static_reference_assets)) {
 }
 
 if ($bindings.Count -gt $maxImages) { throw "$ShotId requires $($bindings.Count) images, exceeds limit $maxImages." }
+$assetIds = @($bindings | ForEach-Object { $_.asset_id })
+if (@($assetIds | Select-Object -Unique).Count -ne $bindings.Count) { throw 'Duplicate upload asset IDs.' }
+$bodyTokens = @()
+if ($PSBoundParameters.ContainsKey('PromptText')) {
+    if ([string]::IsNullOrWhiteSpace($PromptText)) { throw 'PromptText cannot be empty.' }
+    $bodyTokens = @([regex]::Matches($PromptText, '@image\d+\b') | ForEach-Object { $_.Value } | Select-Object -Unique)
+    $map = $shot.body_reference_bindings
+    $mapKeys = @()
+    if ($null -ne $map) { $mapKeys = @($map.PSObject.Properties | ForEach-Object { $_.Name }) }
+    if (@($bodyTokens | Where-Object { $_ -notin $mapKeys }).Count -or @($mapKeys | Where-Object { $_ -notin $bodyTokens }).Count) {
+        throw 'body_reference_bindings must resolve exactly the image tokens present in this shot body.'
+    }
+    $ordered = [object[]]::new($bindings.Count)
+    $assigned = @{}
+    foreach ($token in $bodyTokens) {
+        $index = [int]$token.Substring(6) - 1
+        if ($index -lt 0 -or $index -ge $bindings.Count -or $token -ne "@image$($index + 1)") { throw "Unfillable body image index: $token. Do not add filler assets or rewrite the body." }
+        $assetId = [string]$map.PSObject.Properties[$token].Value
+        if ($assetId -notin $assetIds -or $assigned.ContainsKey($assetId)) { throw "Invalid or duplicated body binding: $token -> $assetId" }
+        $ordered[$index] = @($bindings | Where-Object { $_.asset_id -eq $assetId })[0]
+        $assigned[$assetId] = $true
+    }
+    $remaining = @($bindings | Where-Object { !$assigned.ContainsKey($_.asset_id) })
+    $next = 0
+    for ($i=0; $i -lt $ordered.Count; $i++) {
+        if ($null -eq $ordered[$i]) { $ordered[$i] = $remaining[$next]; $next++ }
+    }
+    $bindings.Clear()
+    foreach ($item in $ordered) { $bindings.Add($item) }
+}
 
 $legend = [System.Collections.Generic.List[string]]::new()
+$supplementalLegend = [System.Collections.Generic.List[string]]::new()
 for ($i = 0; $i -lt $bindings.Count; $i++) {
     $token = "@image$($i + 1)"
     $bindings[$i] | Add-Member -NotePropertyName token -NotePropertyValue $token
     $legend.Add("$token = $($bindings[$i].name)")
+    if ($token -notin $bodyTokens) { $supplementalLegend.Add("$token = $($bindings[$i].name)") }
 }
 
 $result = [ordered]@{
@@ -88,6 +124,8 @@ $result = [ordered]@{
     max_images = $maxImages
     bindings = @($bindings)
     legend = @($legend)
+    supplemental_legend = @($supplementalLegend)
+    body_checked = $PSBoundParameters.ContainsKey('PromptText')
 }
 
 if (-not [string]::IsNullOrWhiteSpace($OutputPath)) {
@@ -96,5 +134,10 @@ if (-not [string]::IsNullOrWhiteSpace($OutputPath)) {
     [System.IO.File]::WriteAllText([System.IO.Path]::GetFullPath($OutputPath), ($result | ConvertTo-Json -Depth 20), [System.Text.UTF8Encoding]::new($false))
 }
 
-$legend | ForEach-Object { Write-Output $_ }
-Write-Output "SHOT=$ShotId IMAGES=$($bindings.Count) LIMIT=$maxImages"
+if ($PSBoundParameters.ContainsKey('PromptText')) {
+    $supplementalLegend | ForEach-Object { Write-Output $_ }
+} else {
+    # Legacy callers retain the old output, but this is not a production binding.
+    $legend | ForEach-Object { Write-Output $_ }
+    Write-Output "SHOT=$ShotId IMAGES=$($bindings.Count) LIMIT=$maxImages"
+}

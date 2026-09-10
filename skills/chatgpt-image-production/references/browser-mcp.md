@@ -2,22 +2,22 @@
 
 ## 固定实现
 
-- MCP名称：`chatgpt_image_playwright`，使用项目级STDIO MCP。
+- MCP名称：`chatgpt_image_playwright`，使用项目级STDIO MCP；启动脚本仅启动工具服务，通过 `--cdp-endpoint http://127.0.0.1:34192` 附着。工具加载、重连和普通状态检查不得自动启动Chrome。
 - 启动脚本：`D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\start-mcp.cmd`。
 - Chrome程序：`C:\Program Files\Google\Chrome\Application\chrome.exe`。
 - 独立用户目录：`D:\jimeng\novel-video-browser\chatgpt-image-profile`。
 - 浏览器产物目录：`D:\jimeng\novel-video-browser\chatgpt-image-artifacts`。
 - 生图网站：`https://chatgpt.com/`。
 
-该用户目录只供ChatGPT图片专用MCP使用，不与日常Chrome或豆包专用Chrome共用。由MCP启动有界面的Chrome并使用原持久化目录；不得同时启动两个使用同一目录的浏览器实例，不读取Cookie、密码、localStorage或其他浏览器存储。
+该用户目录只供ChatGPT图片专用MCP使用，不与日常Chrome或豆包专用Chrome共用。由独立启动器启动有界面的Chrome并使用原持久化目录，MCP只附着、不拥有浏览器生命周期；不得同时启动两个使用同一目录的浏览器实例，不读取Cookie、密码、localStorage或其他浏览器存储。
 
-本项目沿用原MCP链路，不自动改成worker、独立CDP服务、后台或无头浏览器。启动前核对Chrome进程所属Windows用户、交互会话和user-data-dir；专用Chrome应在持有该目录的原桌面用户下可见运行，不能用沙箱服务账号打开同一登录目录。不要因超时清空、复制替换或新建登录目录。配置目录存在不等于网站仍已登录，登录状态以可见页面为准。
+本项目沿用可见专用Chrome与Playwright MCP链路，但浏览器进程独立于MCP传输。启动前核对Chrome进程所属Windows用户、交互会话和user-data-dir；专用Chrome应在持有该目录的原桌面用户下可见运行，不能用沙箱服务账号打开同一登录目录。不要因超时清空、复制替换或新建登录目录。配置目录存在不等于网站仍已登录，登录状态以可见页面为准。
 
 页面应随实际窗口显示：启动配置使用 `browser.contextOptions.viewport: null` 和 `headless: false`，不固定小视口。已有窗口最小化时先恢复normal再最大化；只调整显示，不为修正灰边重启浏览器。配置文件更新只影响后续启动，当前窗口仍须核验。
 
 ## 首次连接
 
-1. 确认 `chatgpt_image_playwright` MCP工具可用；已有页面时先列出标签页，不覆盖未完成任务。
+1. 确认 `chatgpt_image_playwright` MCP工具可用。只有实际开始/恢复已授权图片任务或用户明确要求打开专用Chrome时，才用本地Node运行 `D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\ensure-dedicated-chrome.cjs`；它复用原端口和原持久化目录。普通状态检查发现浏览器未运行时只报告状态，不运行启动器。已有页面时先列出标签页，不覆盖未完成任务。
 2. 打开 `https://chatgpt.com/`；第一次会出现独立Chrome窗口。
 3. 如果未登录、出现验证码或安全校验，停止自动操作，让用户亲自完成。
 4. 登录成功后只读取可见页面，确认账号和图片生成入口；不得读取、导出或保存密码、Cookie、localStorage、令牌或其他敏感浏览器存储。
@@ -37,6 +37,8 @@
 - 当前资产没有状态未知的重复任务。
 
 生成完成后只在已打开的结果查看器内确认原图下载控件；不得点击页面中不具备明确下载语义的泛用“保存”按钮。下载事件出现后立即保存到稳定资产目录。
+
+专用Chrome是独立持久进程。通过 `connectOverCDP` 附着它的短时脚本不得调用 `browser.close()`；图片保存成功后也不得关闭原结果 `page`。辅助脚本应在写完文件和账本后直接结束自身进程，让CDP连接随进程退出而断开，但浏览器窗口、登录态和原对话页保持可见。若需清理标签页，必须使用独立且明确的维护动作，不能由下载流程顺带执行。
 
 ## 断线恢复
 

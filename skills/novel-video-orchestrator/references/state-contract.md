@@ -41,7 +41,9 @@ editing 的 in_progress/completed 要求 video_production 和 chapter_audit 已�
 
 豆包实际视频创建事件保存在video_progress.json，同时以项目doubao_account_usage.json跨章汇总账号套餐、入口、请求/实际模型、时长、额度池、可见余额及重置证据。仅对实际创建任务去重计数，不把各模型/时长统计格视为相互独立额度池；未知数量/重置时间为null。不能统一套每日3次，也不能到午夜或等待几小时后盲目清零。特殊账号列表只保存在项目级配置，不进入通用Skill。字段与迁移规则以视频制作Skill的generation-routes-and-quota.md为准。
 
-存在shot_production_plan.json时保留其路径与哈希，并在各镜或视频事件中记录target_duration_seconds、entry_mode、requested_model、actual_model、model_evidence、model_policy和continuity_group；不修改既有阶段键。actual_model无证据为null，不因云电脑接受指令而虚构实际模型。满足视频制作Skill中用户报告的30秒独占能力推定条件时，可记录2.5并明确证据为inferred，不与页面直接显示混淆。
+`v10_prompts`完成时只要求登记一个存在、未变化且包含连续S编号的完整章节视频提示词Markdown。默认文件名为`<章节名>_完整视频提示词_v12.6.md`；用户要求候选版本或对比测试时可追加时间戳。历史`shot_production_plan.json`、`scene_shot_map.json`、逐镜文件和`video_prompt_validation.json`可以保留，但不再是阶段完成条件。
+
+每镜的target_duration_seconds由视频制作阶段从完整Markdown标题和时间轴读取，并在镜头或视频事件中记录entry_mode、requested_model、actual_model、model_evidence、model_policy和continuity_group。actual_model无证据为null，不因云电脑接受指令而虚构实际模型。满足视频制作Skill中用户报告的30秒独占能力推定条件时，可记录2.5并明确证据为inferred，不与页面直接显示混淆。
 
 ## 脚本使用
 

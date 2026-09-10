@@ -45,7 +45,17 @@ else {
             $verified=& (Join-Path $ruleRoot 'scripts/validate_rule_bundle.ps1') -SkillDirectory $ruleRoot
             $actualRuleHash=$verified.sha256
             if($audit.rule_version -ne $verified.version) {$issues.Add('母版版本不匹配')}
-        } else { $actualRuleHash=(Get-FileHash -LiteralPath $RulePath -Algorithm SHA256).Hash }
+        } else {
+            $actualRuleHash=(Get-FileHash -LiteralPath $RulePath -Algorithm SHA256).Hash
+            $ruleText = Get-Content -LiteralPath $RulePath -Raw -Encoding utf8
+            $versionMatch = [regex]::Match($ruleText, '(?m)^\s*version:\s*["\x27]?(\d+\.\d+\.\d+)')
+            if ($versionMatch.Success) {
+                if ($audit.rule_version -ne $versionMatch.Groups[1].Value) { $issues.Add('母版版本不匹配') }
+            } elseif ((Split-Path -Leaf $RulePath) -match 'v(?<major>\d+)\.(?<minor>\d+)') {
+                $expectedRuleVersion="$($Matches.major).$($Matches.minor).0"
+                if($audit.rule_version -ne $expectedRuleVersion) {$issues.Add('母版版本不匹配')}
+            }
+        }
         if($audit.rule_sha256 -ne $actualRuleHash) {$issues.Add('母版哈希不匹配')}
     }
     $source=if($SourcePath){Get-Content -LiteralPath $SourcePath -Raw -Encoding utf8}else{$null}

@@ -33,7 +33,7 @@
 
 ## 登记规则
 
-已有 `asset_manifest.json` 时直接更新其中同名资产节点，不改写无关资产和镜头。没有完整资产清单时登记到章节 `image_asset_registry.json`；后续V10或总控环节再把已审核条目合并进完整清单。
+已有 `asset_manifest.json` 时直接更新其中同名资产节点，不改写无关资产和镜头。没有完整资产清单时登记到章节 `image_asset_registry.json`；总控在资产阶段把已审核条目合并为只有资产也可成立的asset_manifest.json，不交给视频提示词Skill合并。此时applicable_shots可为空，SC关联另行保留；视频制作阶段收到最终章节Markdown后才建立shots、body_reference_bindings和尾帧依赖。
 
 只有 `qa_approved` 的生成结果才能登记为 `approved`。仅下载但未视觉检查的结果为 `generated_unreviewed`。复用资产必须验证文件存在且哈希一致后登记为 `reuse_approved`。
 

@@ -43,6 +43,5 @@ const normalize = value => String(value || '').replace(/\r\n/g, '\n').replace(/\
   const temp = `${ledgerPath}.${process.pid}.tmp`;
   await fsp.writeFile(temp, JSON.stringify(ledger, null, 2), 'utf8');
   await fsp.rename(temp, ledgerPath);
-  process.stdout.write(JSON.stringify({ job_id: jobId, submitted: true, conversation_url: stableUrl }));
-  await browser.close();
+  process.stdout.write(JSON.stringify({ job_id: jobId, submitted: true, conversation_url: stableUrl }), () => process.exit(0));
 })().catch(error => { process.stderr.write(String(error.stack || error)); process.exitCode = 1; });

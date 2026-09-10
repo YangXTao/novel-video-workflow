@@ -16,6 +16,13 @@ param(
     [string]$Status,
 
     [string]$VideoPath,
+    [ValidateSet('extension_unwatermarked', 'user_authorized_alternative')]
+    [string]$DownloadSource,
+    [string]$DownloadEvidence,
+    [ValidateSet('passed', 'watermark_present_user_authorized')]
+    [string]$WatermarkCheck,
+    [string]$WatermarkEvidence,
+    [string]$UserAuthorization,
     [string]$Account,
     [string]$Message
 )
@@ -37,7 +44,17 @@ if ($Action -eq 'init') {
     }
     $shots = [ordered]@{}
     foreach ($property in $manifest.shots.PSObject.Properties) {
-        $shots[$property.Name] = [ordered]@{ status = 'pending'; video_path = $null; updated_at = $null; message = $null }
+        $shots[$property.Name] = [ordered]@{
+            status = 'pending'
+            video_path = $null
+            download_source = $null
+            download_evidence = $null
+            watermark_check = $null
+            watermark_evidence = $null
+            user_authorization = $null
+            updated_at = $null
+            message = $null
+        }
     }
     $progress = [ordered]@{
         schema_version = 'doubao-video-progress-v1'
@@ -69,6 +86,33 @@ $shotProperty = $progress.shots.PSObject.Properties[$ShotId]
 if ($null -eq $shotProperty) { throw "Shot not found in progress: $ShotId" }
 
 $now = [DateTimeOffset]::Now.ToString('o')
+$currentDownloadSource = if ($PSBoundParameters.ContainsKey('DownloadSource')) { $DownloadSource } else { [string]$shotProperty.Value.download_source }
+$currentDownloadEvidence = if ($PSBoundParameters.ContainsKey('DownloadEvidence')) { $DownloadEvidence } else { [string]$shotProperty.Value.download_evidence }
+$currentWatermarkCheck = if ($PSBoundParameters.ContainsKey('WatermarkCheck')) { $WatermarkCheck } else { [string]$shotProperty.Value.watermark_check }
+$currentWatermarkEvidence = if ($PSBoundParameters.ContainsKey('WatermarkEvidence')) { $WatermarkEvidence } else { [string]$shotProperty.Value.watermark_evidence }
+$currentUserAuthorization = if ($PSBoundParameters.ContainsKey('UserAuthorization')) { $UserAuthorization } else { [string]$shotProperty.Value.user_authorization }
+
+if ($Status -eq 'qa_approved') {
+    if ($currentDownloadSource -eq 'extension_unwatermarked') {
+        if ([string]::IsNullOrWhiteSpace($currentDownloadEvidence) -or
+            $currentWatermarkCheck -ne 'passed' -or
+            [string]::IsNullOrWhiteSpace($currentWatermarkEvidence)) {
+            throw 'qa_approved requires both bottom-right resource evidence and a passed multi-frame visual watermark check.'
+        }
+    }
+    elseif ($currentDownloadSource -eq 'user_authorized_alternative') {
+        if ([string]::IsNullOrWhiteSpace($currentDownloadEvidence) -or
+            [string]::IsNullOrWhiteSpace($currentUserAuthorization) -or
+            [string]::IsNullOrWhiteSpace($currentWatermarkCheck) -or
+            [string]::IsNullOrWhiteSpace($currentWatermarkEvidence)) {
+            throw 'Alternative download requires explicit user authorization, source evidence, and an honest visual watermark result.'
+        }
+    }
+    else {
+        throw 'qa_approved requires DownloadSource=extension_unwatermarked unless the user explicitly authorizes an alternative.'
+    }
+}
+
 $shotProperty.Value.status = $Status
 $shotProperty.Value.updated_at = $now
 if (-not [string]::IsNullOrWhiteSpace($VideoPath)) {
@@ -77,6 +121,20 @@ if (-not [string]::IsNullOrWhiteSpace($VideoPath)) {
         $shotProperty.Value | Add-Member -NotePropertyName video_path -NotePropertyValue $resolvedVideoPath
     } else {
         $shotProperty.Value.video_path = $resolvedVideoPath
+    }
+}
+foreach ($field in @(
+    @{ Name = 'download_source'; Value = $currentDownloadSource; Supplied = $PSBoundParameters.ContainsKey('DownloadSource') },
+    @{ Name = 'download_evidence'; Value = $currentDownloadEvidence; Supplied = $PSBoundParameters.ContainsKey('DownloadEvidence') },
+    @{ Name = 'watermark_check'; Value = $currentWatermarkCheck; Supplied = $PSBoundParameters.ContainsKey('WatermarkCheck') },
+    @{ Name = 'watermark_evidence'; Value = $currentWatermarkEvidence; Supplied = $PSBoundParameters.ContainsKey('WatermarkEvidence') },
+    @{ Name = 'user_authorization'; Value = $currentUserAuthorization; Supplied = $PSBoundParameters.ContainsKey('UserAuthorization') }
+)) {
+    if (-not $field.Supplied) { continue }
+    if ($null -eq $shotProperty.Value.PSObject.Properties[$field.Name]) {
+        $shotProperty.Value | Add-Member -NotePropertyName $field.Name -NotePropertyValue $field.Value
+    } else {
+        $shotProperty.Value.($field.Name) = $field.Value
     }
 }
 if (-not [string]::IsNullOrWhiteSpace($Message)) {

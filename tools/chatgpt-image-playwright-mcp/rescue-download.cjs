@@ -27,8 +27,9 @@ const { chromium } = localRequire('playwright');
   await fsp.mkdir(path.dirname(targetPath), { recursive: true });
   await download.saveAs(targetPath);
   const sha256 = crypto.createHash('sha256').update(await fsp.readFile(targetPath)).digest('hex');
-  process.stdout.write(JSON.stringify({ targetPath, sha256, suggestedFilename: download.suggestedFilename() }));
-  await browser.close();
+  // Detach by ending this helper. browser.close() would terminate the
+  // independently launched dedicated Chrome when connected over CDP.
+  process.stdout.write(JSON.stringify({ targetPath, sha256, suggestedFilename: download.suggestedFilename() }), () => process.exit(0));
 })().catch(error => {
   process.stderr.write(String(error.stack || error));
   process.exitCode = 1;

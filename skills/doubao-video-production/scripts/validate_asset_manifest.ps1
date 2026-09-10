@@ -1,6 +1,8 @@
 param(
     [Parameter(Mandatory = $true)]
-    [string]$ManifestPath
+    [string]$ManifestPath,
+    [ValidateSet('AssetsOnly', 'Production')]
+    [string]$Stage = 'Production'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -26,6 +28,7 @@ if ($manifest.schema_version -ne 'novel-video-asset-manifest-v1') {
 
 $eligibleStatuses = @($manifest.reference_policy.eligible_statuses)
 $maxImages = [int]$manifest.reference_policy.max_images_per_shot
+if ($maxImages -lt 1 -or $maxImages -gt 10) { $errors.Add('Image limit must be between 1 and 10.') }
 $assetProperties = @($manifest.assets.PSObject.Properties)
 $assetMap = @{}
 
@@ -53,9 +56,12 @@ foreach ($property in $assetProperties) {
     }
 }
 
-$shotProperties = @($manifest.shots.PSObject.Properties)
-$expectedShotNumbers = 1..$shotProperties.Count | ForEach-Object { 'S{0:D2}' -f $_ }
-$actualShotNumbers = @($shotProperties.Name)
+$shotProperties = @()
+if ($Stage -eq 'Production' -and $null -ne $manifest.shots) { $shotProperties = @($manifest.shots.PSObject.Properties) }
+if ($Stage -eq 'Production' -and $shotProperties.Count -eq 0) { $errors.Add('Production requires shot bindings; assets-only input must use -Stage AssetsOnly.') }
+$expectedShotNumbers = @()
+if ($shotProperties.Count -gt 0) { $expectedShotNumbers = @(1..$shotProperties.Count | ForEach-Object { 'S{0:D2}' -f $_ }) }
+$actualShotNumbers = @($shotProperties.Name | Sort-Object)
 if (($expectedShotNumbers -join ',') -ne ($actualShotNumbers -join ',')) {
     $errors.Add("Shot IDs are not consecutive: $($actualShotNumbers -join ', ')")
 }

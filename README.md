@@ -6,6 +6,8 @@ Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新�
 
 ## v12.6 更新说明
 
+当前稳定发布分支为 `v12.6-stable`。本次采用完整母版直接作为 `video-prompts-v12/SKILL.md`，并修复完整输入交接、真实图片绑定、恢复规则和资产阶段检查。最新改动与验证边界见 [v12.6-stable 更新说明](docs/v12.6-stable-changes.md)；下面的早期变更文档作为历史记录保留。
+
 本分支已将视频提示词生成器更新为 `video-prompts-v12` 12.6.0，并同步了与它配合的剧本、图片、豆包制作、总控 Skill 及 Playwright MCP 工具。详细变更、与旧版的差异及验证结果见 [v12.6 变更说明](docs/video-prompts-v12.6-changes.md)。
 
 ## 小说转剧本流水线门禁更新
@@ -24,13 +26,13 @@ Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新�
 | `skills/scene-image-prompts` | 场景图片提示词 |
 | `skills/prop-image-prompts` | 道具图片提示词 |
 | `skills/chatgpt-image-production` | ChatGPT 网页图片生产、下载、命名、登记 |
-| `skills/video-prompts-v12` | 当前小家 v12.6 完整多文件规则及校验脚本 |
+| `skills/video-prompts-v12` | 当前小家 v12.6 完整母版直接作为 SKILL.md；不再使用旧拆分规则与外部创作审计脚本 |
 | `skills/doubao-video-production` | 豆包参考图映射、提交、下载、检查与尾帧登记 |
 | `tools/doubao-playwright-mcp` | 豆包 MCP 启动脚本、连接测试、依赖及锁文件 |
 | `tools/chatgpt-image-playwright-mcp` | ChatGPT MCP、可恢复图片执行器、下载恢复及页面诊断工具 |
 | `config/codex-mcp.example.toml` | 当前两套 MCP 的项目配置样例 |
 | `scripts/` | 独立尾帧提取、指定时间抽帧与联系表脚本 |
-| `shared/scripts/` | 共享资产清单校验 |
+| `shared/scripts/` | 历史共享资产校验；当前流程使用豆包 Skill 内支持 AssetsOnly/Production 的校验脚本 |
 
 ## 环境和恢复部署
 

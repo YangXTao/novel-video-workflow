@@ -13,7 +13,5 @@ const { chromium } = localRequire('playwright');
   const context = browser.contexts()[0];
   const matches = context.pages().filter(page => page.url().includes(fragment));
   for (const page of matches) await page.close();
-  process.stdout.write(JSON.stringify({ closed: matches.length, fragment }));
-  await browser.close();
+  process.stdout.write(JSON.stringify({ closed: matches.length, fragment }), () => process.exit(0));
 })().catch(error => { process.stderr.write(String(error.stack || error)); process.exitCode = 1; });
-

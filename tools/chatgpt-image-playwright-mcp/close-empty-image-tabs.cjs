@@ -16,8 +16,7 @@ const { chromium } = localRequire('playwright');
       await page.close();
     }
   }
-  process.stdout.write(JSON.stringify({ closed: closed.length, remaining: context.pages().map(page => page.url()) }));
-  await browser.close();
+  process.stdout.write(JSON.stringify({ closed: closed.length, remaining: context.pages().map(page => page.url()) }), () => process.exit(0));
 })().catch(error => {
   process.stderr.write(String(error.stack || error));
   process.exitCode = 1;
