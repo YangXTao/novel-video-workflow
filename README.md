@@ -1,5 +1,11 @@
 # 小说转视频工作流
 
+## 当前分支：v12.9-alpha
+
+视频提示词生成器已替换为小家 V12.9 多文件版；调用名保持 `video-prompts-v12`，入口版本为 `12.9.0`。安装副本除 `name` 适配外，与用户提供且已澄清单镜字数的解压文件一致；原秒数规则未修改。总控只交完整输入与用户参数，由生成器按自身 references 完成创作和内部验收。默认新稿文件名为 `<章节名>_完整视频提示词_v12.9.md`，已确认历史产物不追溯改写。
+
+旧 V12.6 活动母版已移出，备份留在仓库外，下方 V12.6 发布说明为历史记录。本分支接入 V12.9 并修正工作流交接及尾帧审核记录，详见 [V12.9 Alpha 更新说明](docs/v12.9-alpha-changes.md)。现有浏览器/MCP工具继续随仓库保留，不包含登录数据。V12.9 的许可信息随原文件保留，使用与再分发须遵守原许可。
+
 当前实际使用的 8 个 Skill、专用 Chrome 启动配置、Playwright MCP 执行工具及图片/视频文件处理脚本的完整快照。图片通过 ChatGPT 网页生成，视频通过豆包网页生成，暂不包含剪辑流程。
 
 Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新及小说转剧本流水线门禁优化。`SNAPSHOT.json` 记录归档文件的 SHA-256，可检查快照完整性。
@@ -26,7 +32,7 @@ Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新�
 | `skills/scene-image-prompts` | 场景图片提示词 |
 | `skills/prop-image-prompts` | 道具图片提示词 |
 | `skills/chatgpt-image-production` | ChatGPT 网页图片生产、下载、命名、登记 |
-| `skills/video-prompts-v12` | 当前小家 v12.6 完整母版直接作为 SKILL.md；不再使用旧拆分规则与外部创作审计脚本 |
+| `skills/video-prompts-v12` | 当前小家 V12.9：SKILL.md 入口及原有 references 多文件规则；不加载旧 V12.6 母版 |
 | `skills/doubao-video-production` | 豆包参考图映射、提交、下载、检查与尾帧登记 |
 | `tools/doubao-playwright-mcp` | 豆包 MCP 启动脚本、连接测试、依赖及锁文件 |
 | `tools/chatgpt-image-playwright-mcp` | ChatGPT MCP、可恢复图片执行器、下载恢复及页面诊断工具 |

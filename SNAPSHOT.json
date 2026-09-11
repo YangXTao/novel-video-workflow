@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "description": "v12.6-stable source snapshot; excludes runtime state and this manifest itself",
-  "captured_at": "2026-09-10T13:09:21.0036065+08:00",
+  "description": "v12.9-alpha snapshot; excludes runtime state and this manifest itself",
+  "captured_at": "2026-09-11T10:14:34.9545418+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -29,14 +29,19 @@
       "bytes": 6741
     },
     {
+      "path": "docs/v12.9-alpha-changes.md",
+      "sha256": "1F50D0D57A86AAC4F11AAFD2A21502DEAF566D660FAD1B7C45B6267F24F2BEA8",
+      "bytes": 1583
+    },
+    {
       "path": "docs/video-prompts-v12.6-changes.md",
       "sha256": "605906A626CF904AB6857AE52F19127DBDD979F57B06C923FFBF4F197BA83D48",
       "bytes": 6415
     },
     {
       "path": "README.md",
-      "sha256": "9BCE5A81B74A0BA5737F74FA0BE09F3B9AFDFB6766F863EB71716C4FD02091C0",
-      "bytes": 6862
+      "sha256": "094869ED5F46236706D3356160BF1F8CFB362261A6742FAF2765C3CECC72DAB0",
+      "bytes": 7748
     },
     {
       "path": "scripts/extract_last_video_frame.cjs",
@@ -150,8 +155,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/error-recovery-log.md",
-      "sha256": "33E76204DFD0C82F167F65D3331B746DDF92664859C5D630B01D5A0D80E10A42",
-      "bytes": 20166
+      "sha256": "D0084CDACAC0FB32C50EEA3A12886D0B48D15F1C7A2AB323CF583D28E7400695",
+      "bytes": 20176
     },
     {
       "path": "skills/doubao-video-production/references/generation-routes-and-quota.md",
@@ -160,8 +165,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/workflow.md",
-      "sha256": "45CC2171252168690881646EBCB13BDAF97F080E55F2485654DF1AFAB3DCA9E9",
-      "bytes": 34900
+      "sha256": "CB0908F436CF929AFD77B6A7ECFD56AB751CC40C9EB9B877FE5B912CDD9156B0",
+      "bytes": 35109
     },
     {
       "path": "skills/doubao-video-production/scripts/playwright_video_backend.cjs",
@@ -170,8 +175,8 @@
     },
     {
       "path": "skills/doubao-video-production/scripts/register_tail_frame.ps1",
-      "sha256": "DA0D594A626601627C8CC1AD41B0EAA24A055BE93A507AB7792B51DD942B64A8",
-      "bytes": 2307
+      "sha256": "D4B0287F9DCA2905F7623F32567FFB51267806A2D72E43B6DA40877C0664F854",
+      "bytes": 2546
     },
     {
       "path": "skills/doubao-video-production/scripts/resolve_shot_bindings.ps1",
@@ -195,8 +200,8 @@
     },
     {
       "path": "skills/doubao-video-production/SKILL.md",
-      "sha256": "571168B55814455B649793438552289B2EA0D183EB0AE322C10E1456AFF0DAF2",
-      "bytes": 15465
+      "sha256": "19D1EB0922DF470B38490868EA740F0324C6EB9BF6D211AAAEF8F061F937E515",
+      "bytes": 15811
     },
     {
       "path": "skills/novel-to-screenplay/agents/openai.yaml",
@@ -205,8 +210,8 @@
     },
     {
       "path": "skills/novel-to-screenplay/references/execution-contract.md",
-      "sha256": "742534F2175013A57E85A9B8D9FB05A38A88C033CDBF5E49D6080171AE569B3C",
-      "bytes": 4478
+      "sha256": "9A9CB64FCB6B9575617AAE1D276FB9A2ABA78600513FDC231405091E16177861",
+      "bytes": 4604
     },
     {
       "path": "skills/novel-to-screenplay/references/original-prompt.md",
@@ -215,8 +220,8 @@
     },
     {
       "path": "skills/novel-to-screenplay/references/v12-trigger-bridge.md",
-      "sha256": "725D75E69A5A8B5BBB088A41FA9D11CB6DDE7DAB6C3BED511437F533E861DB4C",
-      "bytes": 6323
+      "sha256": "AA0D0C540DA72A6692EDE52FDC3FAF401322B050B63AFC7354D195F09E3D5755",
+      "bytes": 6610
     },
     {
       "path": "skills/novel-to-screenplay/scripts/test_screenplay_validator.ps1",
@@ -230,8 +235,8 @@
     },
     {
       "path": "skills/novel-to-screenplay/SKILL.md",
-      "sha256": "3ACAAB68F7D30C99FB18CE781AB294E2C2A92ECF5C99E32C54A3A2BD8AC04EAB",
-      "bytes": 2832
+      "sha256": "D20FA8F173BB653095549D226FBC2A5FE9778836B3987DD094DC8DB9EDBF26A8",
+      "bytes": 2847
     },
     {
       "path": "skills/novel-video-orchestrator/agents/openai.yaml",
@@ -240,23 +245,23 @@
     },
     {
       "path": "skills/novel-video-orchestrator/references/duration-and-model-planning.md",
-      "sha256": "CDC4E9AA0FEB93841DF09CD1A9629077FE8F754DB138291CEF484F501B29C4A7",
-      "bytes": 1989
+      "sha256": "78F8790E5B4CA70F216A3401BC83A9962F2D70BF3A987B0682915D90D8083568",
+      "bytes": 2146
     },
     {
       "path": "skills/novel-video-orchestrator/references/isolated-creative-tasks.md",
-      "sha256": "DB898901E861F3FED4F310833A2DCE65553DA1ADD242C763EB05D0293CC2A801",
-      "bytes": 3838
+      "sha256": "6663F21CF61C0C7F6984793F3CEF49403BB30992088D35B99A2CF766F45577B3",
+      "bytes": 3811
     },
     {
       "path": "skills/novel-video-orchestrator/references/state-contract.md",
-      "sha256": "E908C3C4F5220F7B7C47C6C8EA7E1567268BFF131A4A82F552B61BB7E5401D28",
+      "sha256": "99B35BB07D4582AE224FBB1CEB337516B801702A76C6D09B0143C01CEF793D8A",
       "bytes": 4632
     },
     {
       "path": "skills/novel-video-orchestrator/references/workflow.md",
-      "sha256": "1DDD9DB423757E3822A7766A10F7595F2B27CEE35E88851C3A8E3843B8CAD295",
-      "bytes": 14962
+      "sha256": "C32C5DA7BD74AC374DD15015103A67EE25031211E844A079A2F96D5F6D0AD41C",
+      "bytes": 14885
     },
     {
       "path": "skills/novel-video-orchestrator/scripts/creative_task_io.ps1",
@@ -275,8 +280,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/SKILL.md",
-      "sha256": "90DA0EF564F94769F79A79D5EDD0AFE053B88F0CD5237BAAAE4FAF3AE405C502",
-      "bytes": 9680
+      "sha256": "FC6790BB91481910E047B41D8E25552578FFC0F1C11F41956B63B674961438C7",
+      "bytes": 9742
     },
     {
       "path": "skills/prop-image-prompts/agents/openai.yaml",
@@ -330,18 +335,163 @@
     },
     {
       "path": "skills/video-prompts-v12/agents/openai.yaml",
-      "sha256": "AF33C9BC74B5D7478B02BE37AB512BB8C6EC62FBAE2AA554B0AAF42A5DCFD10C",
-      "bytes": 276
+      "sha256": "BCD657C3ABB9C589860AA9C36782769F0FFCF89F1C3C4AE7F43FFB4313502CBB",
+      "bytes": 279
     },
     {
-      "path": "skills/video-prompts-v12/references/runtime-v12.6-full.md",
-      "sha256": "3EE5DC869BAB4152287A1F927C84AB3D6D84C8892B42E9FAA251B48259C72F84",
-      "bytes": 781576
+      "path": "skills/video-prompts-v12/CHANGELOG.md",
+      "sha256": "785BC9559D7EDA89662BD843BD9C2A33E7C419B91E4CD8AC78B2A3112C582E6C",
+      "bytes": 1325
+    },
+    {
+      "path": "skills/video-prompts-v12/references/00-最高优先级铁律.md",
+      "sha256": "43A4DEC9719908F3AB9C6AA70F408F40A7B08D1F2FEFB6F36EA7610886A10549",
+      "bytes": 120424
+    },
+    {
+      "path": "skills/video-prompts-v12/references/01-全局节奏规划.md",
+      "sha256": "E46D9A0358A18DA2FB0A69B3C5DCCB8F4440DA9B2183B19DDF12521D0688BB39",
+      "bytes": 6788
+    },
+    {
+      "path": "skills/video-prompts-v12/references/02-武器招式匹配与调用.md",
+      "sha256": "D1F28D663D4A1EA8D66DB7D2ED6668BDDC32962D5038A58AC4B48BB7007B52E0",
+      "bytes": 12739
+    },
+    {
+      "path": "skills/video-prompts-v12/references/03-焦段镜头语言.md",
+      "sha256": "7F07ED1B7345E0A4D436061566D51B702F28E91290921C520E39BE144E507034",
+      "bytes": 11852
+    },
+    {
+      "path": "skills/video-prompts-v12/references/10-打戏A-总格式与节奏.md",
+      "sha256": "FABB4DF536A121483EE29B18058EA4D5B0B5FAF73472F29777A5F23EFA0F17F7",
+      "bytes": 66769
+    },
+    {
+      "path": "skills/video-prompts-v12/references/100-现行口径总覆盖.md",
+      "sha256": "671AF5F4500F404F9E680A352CF4F88705ABEC6E3A13831A5DA06E3A6CB5EEE8",
+      "bytes": 10663
+    },
+    {
+      "path": "skills/video-prompts-v12/references/11-打戏B-特效位移拖尾.md",
+      "sha256": "0E2C5D09079239315F44FF16BF99295D07FAB3C29B8A67B4B1EFCCDBB0AA3CB0",
+      "bytes": 54631
+    },
+    {
+      "path": "skills/video-prompts-v12/references/12-打戏C-运镜校验冲击帧.md",
+      "sha256": "6D65E5D89F0CBB21F42FD47BB58BBF3142801378265124C57735B298E4CB7E57",
+      "bytes": 69817
+    },
+    {
+      "path": "skills/video-prompts-v12/references/13-武戏导演脑与攻防叙事.md",
+      "sha256": "D7B53DBABD8A0AA540BEAA414F019769CD92660B12105392DB1C4F5C0198D6C4",
+      "bytes": 6296
+    },
+    {
+      "path": "skills/video-prompts-v12/references/20-文戏规则组.md",
+      "sha256": "98A9BFD8F10BC2C342CDD4B82E441C5E697E2C2332FCF094FD09E5B927753A7C",
+      "bytes": 65666
+    },
+    {
+      "path": "skills/video-prompts-v12/references/30-法术大场面.md",
+      "sha256": "9ECB0F57A83360803C70C042B0AFA6FC5DE11677288909608B283BBBA5AD973F",
+      "bytes": 66347
+    },
+    {
+      "path": "skills/video-prompts-v12/references/35-场景环境锚定.md",
+      "sha256": "4638A014BF2F058A0777631124F86970B4889914567D566CECE2E628E6DA49B8",
+      "bytes": 3281
+    },
+    {
+      "path": "skills/video-prompts-v12/references/37-跨镜承接与空间锚定.md",
+      "sha256": "97CC74A51A74B05394CC1DA9EB60B8C14EEF6B1D07319919E051181F50A289DE",
+      "bytes": 7595
+    },
+    {
+      "path": "skills/video-prompts-v12/references/40-角色资产与连续性.md",
+      "sha256": "E62042C7AA4810694450026D5F22F78C8C55C63061801C3A7F239CFDC4B869B1",
+      "bytes": 8749
+    },
+    {
+      "path": "skills/video-prompts-v12/references/41-镜头语言库.md",
+      "sha256": "A05A5623B7199E3D967FAC806F2ACB522B7828C928BB5EB64BD6B9AAC6E64E99",
+      "bytes": 34588
+    },
+    {
+      "path": "skills/video-prompts-v12/references/50-声音设计.md",
+      "sha256": "54F85381085745CF3588A115FD0AF8D1F089F79EAF65F10CC56D0F1772846E42",
+      "bytes": 7226
+    },
+    {
+      "path": "skills/video-prompts-v12/references/60-题材识别与模型适配.md",
+      "sha256": "B06BEDC8C184B7DD53940F19D6358727C9795D77D0D76B014E80351954EFBE8B",
+      "bytes": 15988
+    },
+    {
+      "path": "skills/video-prompts-v12/references/61-萌系与修仙写实双轨.md",
+      "sha256": "C54ABC6FC4C3B173AE94979DB05F3720E92F7DBAAEBAE995C291A3C374B0761E",
+      "bytes": 14252
+    },
+    {
+      "path": "skills/video-prompts-v12/references/70-质检合规与导演Agent.md",
+      "sha256": "C6EF50E3C05023C2F141D2F82F2B42293AC1B4EAC4AFE4745A120A8A2A662A16",
+      "bytes": 40550
+    },
+    {
+      "path": "skills/video-prompts-v12/references/80-输入区模板.md",
+      "sha256": "1BC0C475D3B378146FC46D00EC3A82F2551CA0CE0C46F68742ECA6775376104C",
+      "bytes": 508
+    },
+    {
+      "path": "skills/video-prompts-v12/references/90-招式库.md",
+      "sha256": "5F342895D532382A063D6FE816E07BB551F4019DE00577961D50E41ED12C7EEA",
+      "bytes": 79300
+    },
+    {
+      "path": "skills/video-prompts-v12/references/91-法阵库.md",
+      "sha256": "1572EE55F1672EB9E599BE32C6AACAE2F38580398F3EB237F9D0FCCCD7FC1018",
+      "bytes": 16950
+    },
+    {
+      "path": "skills/video-prompts-v12/references/92-体修拳法视觉标准.md",
+      "sha256": "790666B33473AE6424CE847A4BB5901542FDBD4E1224413016BAE9571928534D",
+      "bytes": 12845
+    },
+    {
+      "path": "skills/video-prompts-v12/references/93-三层复合元素库附录A.md",
+      "sha256": "7FEA74E67C90DA3F5F255E30BAD1A2BDF060839CC263164EFD7E7693585D4675",
+      "bytes": 30156
+    },
+    {
+      "path": "skills/video-prompts-v12/references/94-特效动态与环境反馈增强库.md",
+      "sha256": "2C8BCC32BCBEF031DB97BFCAEE6B67E0D70DDB7014D4A4C573983204255A9049",
+      "bytes": 26882
+    },
+    {
+      "path": "skills/video-prompts-v12/references/95-技能接口与状态交接.md",
+      "sha256": "DD4FAA9B95D8165B7A9FD1F5091DC893B03290975B075870D33C5EA36587A28A",
+      "bytes": 10962
+    },
+    {
+      "path": "skills/video-prompts-v12/references/96-规则执行契约与证据回执.md",
+      "sha256": "1D85C4427F4F740E71A4D8F1D737D56ED344BA20A0220A324B72FF89DD544CEB",
+      "bytes": 18872
+    },
+    {
+      "path": "skills/video-prompts-v12/references/97-大型法术形态图谱.md",
+      "sha256": "DDCDA79FCE9C97146479A2C030CABF5D01E3D6C4D7711BAD3A79BB628B53E532",
+      "bytes": 8952
+    },
+    {
+      "path": "skills/video-prompts-v12/references/99-最终执行指令.md",
+      "sha256": "C53A2C30F0CCF3A7FBA6B514159F4E43136F2C7C16052C4A67F2E044E6C29669",
+      "bytes": 11525
     },
     {
       "path": "skills/video-prompts-v12/SKILL.md",
-      "sha256": "CC7A59D73187BC2B301EE38E2C02C52C294881DFD644854BB80F75CA0C262C3B",
-      "bytes": 781569
+      "sha256": "1C46228612573445E59AD0C9ECB9D659A3200498BCC5938E0680C771F24F75ED",
+      "bytes": 16322
     },
     {
       "path": "tools/chatgpt-image-playwright-mcp/close-empty-image-tabs.cjs",

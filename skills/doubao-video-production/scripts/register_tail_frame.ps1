@@ -7,10 +7,17 @@ param(
     [string]$SourceShotId,
 
     [Parameter(Mandatory = $true)]
-    [string]$TailFilePath
+    [string]$TailFilePath,
+
+    [string]$QaReviewer,
+
+    [string]$QaBasis
 )
 
 $ErrorActionPreference = 'Stop'
+if ([string]::IsNullOrWhiteSpace($QaReviewer) -or [string]::IsNullOrWhiteSpace($QaBasis)) {
+    throw 'Tail-frame approval requires actual QaReviewer and QaBasis after visual review; no manifest was changed.'
+}
 if (-not (Test-Path -LiteralPath $ManifestPath -PathType Leaf)) { throw "Manifest not found: $ManifestPath" }
 if (-not (Test-Path -LiteralPath $TailFilePath -PathType Leaf)) { throw "Tail frame not found: $TailFilePath" }
 
@@ -37,7 +44,8 @@ $tailAsset = [pscustomobject][ordered]@{
     sha256 = $hash
     source_shot = $SourceShotId
     applicable_shots = @($targets.Name)
-    qa_basis = '已生成视频的尾帧，经人工确认可用于直续'
+    qa_reviewer = $QaReviewer
+    qa_basis = $QaBasis
 }
 
 if ($null -eq $existing) {
