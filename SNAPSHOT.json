@@ -25,8 +25,8 @@
     },
     {
       "path": "docs/v12.6-stable-changes.md",
-      "sha256": "95B3BE89E3769F238E369A6059DD3209DAF4196ACD10FD06F4B132DF47DF841E",
-      "bytes": 5231
+      "sha256": "57506856CA22126445DDD270AE44A5DEF0D075E858E024F9F4D8C5889BBC11A3",
+      "bytes": 6741
     },
     {
       "path": "docs/video-prompts-v12.6-changes.md",
@@ -150,8 +150,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/error-recovery-log.md",
-      "sha256": "A6DBADB916BB8A84ED27C3B835C75AD62835890479B9F617CBD55AB5D3BDDA47",
-      "bytes": 18836
+      "sha256": "33E76204DFD0C82F167F65D3331B746DDF92664859C5D630B01D5A0D80E10A42",
+      "bytes": 20166
     },
     {
       "path": "skills/doubao-video-production/references/generation-routes-and-quota.md",
@@ -160,8 +160,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/workflow.md",
-      "sha256": "63B1FC3960583D72E6B5FF164CAE98506EE3077FA4C46ECA89B361565BF0EE8D",
-      "bytes": 33921
+      "sha256": "45CC2171252168690881646EBCB13BDAF97F080E55F2485654DF1AFAB3DCA9E9",
+      "bytes": 34900
     },
     {
       "path": "skills/doubao-video-production/scripts/playwright_video_backend.cjs",
@@ -195,8 +195,8 @@
     },
     {
       "path": "skills/doubao-video-production/SKILL.md",
-      "sha256": "CEDCDE4C222D9E98F186FC861E42C2B961D32FB445761F7F03A8368B974B5EBA",
-      "bytes": 14129
+      "sha256": "571168B55814455B649793438552289B2EA0D183EB0AE322C10E1456AFF0DAF2",
+      "bytes": 15465
     },
     {
       "path": "skills/novel-to-screenplay/agents/openai.yaml",
