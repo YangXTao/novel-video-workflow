@@ -22,7 +22,7 @@ description: 串联中文小说单章的剧本改编、人物/场景/道具提�
 
 开始任何整章任务前，完整读取 [references/workflow.md](references/workflow.md) 和 [references/state-contract.md](references/state-contract.md)。使用 `scripts/orchestrator_state.ps1` 初始化、更新、验证和汇总章节状态。
 
-如果项目根目录存在 `novel_video_production_config.json`，读取其中的V10规则生效章节、账号顺序和项目特殊恢复方式。账号名称、生效章节和特殊操作不得写死在通用 Skill 中。
+如果项目根目录存在 `novel_video_production_config.json`，读取其中的V10规则生效章节、账号顺序、项目特殊恢复方式，以及可选的 `video_prompt_generation.additional_directive`。该附加创作要求只作为项目级用户要求原样传给 `video-prompts-v12`，总控不得改写、概括或扩展；当前任务中用户更新的明确要求优先。账号名称、生效章节、创作偏好和特殊操作不得写死在通用 Skill 中。
 
 将完整剧本、上游已有资产清单、用户期望总时长、允许的单镜时长集合及数量限制、模型与画幅要求交给 `video-prompts-v12`，由它规划分镜与每镜秒数并生成唯一的完整章节提示词Markdown。总控不提前划分S镜头或锁定秒数，不要求逐镜计划；提示词完成后才由视频制作阶段匹配账号和入口。用户明确锁定的历史产物继续沿用。
 
