@@ -45,6 +45,8 @@ editing 的 in_progress/completed 要求 video_production 和 chapter_audit 已�
 
 每镜的target_duration_seconds由视频制作阶段从完整Markdown标题和时间轴读取，并在镜头或视频事件中记录entry_mode、requested_model、actual_model、model_evidence、model_policy和continuity_group。actual_model无证据为null，不因云电脑接受指令而虚构实际模型。满足视频制作Skill中用户报告的30秒独占能力推定条件时，可记录2.5并明确证据为inferred，不与页面直接显示混淆。
 
+相邻镜头还需登记 `continuity_mode`：`hard_continuation`、`soft_continuity` 或 `no_continuity`。只有 `hard_continuation` 允许并要求引用上一镜已审核尾帧；另外两类的 `tail_frame.eligible` 必须为false。历史未完成清单中的 `tail_continuation` 作为 `hard_continuation` 兼容读取，不追溯改动已完成镜头。生产绑定超过参考图软上限时登记 `reference_budget_exception_reason`，没有例外理由则返回视频提示词阶段重规划；不得由总控删改正文或静态资产绑定。
+
 ## 脚本使用
 
 初始化：

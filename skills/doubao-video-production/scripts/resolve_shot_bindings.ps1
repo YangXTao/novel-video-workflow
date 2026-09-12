@@ -23,6 +23,23 @@ $shot = $shotProperty.Value
 $eligibleStatuses = @($manifest.reference_policy.eligible_statuses)
 $maxImages = [int]$manifest.reference_policy.max_images_per_shot
 if ($maxImages -lt 1 -or $maxImages -gt 10) { throw 'Image limit must be between 1 and 10.' }
+$softMaxImages = 5
+if ($null -ne $manifest.reference_policy.PSObject.Properties['soft_max_images_per_shot']) {
+    $softMaxImages = [int]$manifest.reference_policy.soft_max_images_per_shot
+}
+if ($softMaxImages -lt 1 -or $softMaxImages -gt $maxImages) { throw 'Soft image limit must be between 1 and max_images_per_shot.' }
+$continuityMode = ''
+if ($null -ne $shot.PSObject.Properties['continuity_mode']) { $continuityMode = [string]$shot.continuity_mode }
+$isHardContinuation = $continuityMode -in @('hard_continuation', 'tail_continuation')
+if ($continuityMode -and $continuityMode -notin @('hard_continuation', 'soft_continuity', 'no_continuity', 'tail_continuation')) {
+    throw "$ShotId has unsupported continuity_mode: $continuityMode"
+}
+if ($isHardContinuation -and $shot.tail_frame.eligible -ne $true) {
+    throw "$ShotId is a hard continuation but has no eligible tail frame."
+}
+if ($continuityMode -in @('soft_continuity', 'no_continuity') -and $shot.tail_frame.eligible -eq $true) {
+    throw "$ShotId continuity_mode=$continuityMode must not upload a tail frame."
+}
 $bindings = [System.Collections.Generic.List[object]]::new()
 
 if ($shot.tail_frame.eligible -eq $true) {
@@ -77,6 +94,9 @@ foreach ($assetId in @($shot.static_reference_assets)) {
 }
 
 if ($bindings.Count -gt $maxImages) { throw "$ShotId requires $($bindings.Count) images, exceeds limit $maxImages." }
+if ($bindings.Count -gt $softMaxImages -and [string]::IsNullOrWhiteSpace([string]$shot.reference_budget_exception_reason)) {
+    throw "$ShotId requires $($bindings.Count) images, exceeds soft limit $softMaxImages without reference_budget_exception_reason. Replan the shot instead of dropping bindings."
+}
 $assetIds = @($bindings | ForEach-Object { $_.asset_id })
 if (@($assetIds | Select-Object -Unique).Count -ne $bindings.Count) { throw 'Duplicate upload asset IDs.' }
 $bodyTokens = @()
@@ -107,6 +127,9 @@ if ($PSBoundParameters.ContainsKey('PromptText')) {
     $bindings.Clear()
     foreach ($item in $ordered) { $bindings.Add($item) }
 }
+if ($isHardContinuation -and ($bindings.Count -eq 0 -or $bindings[0].role -ne 'continuity_frame')) {
+    throw "$ShotId hard-continuation tail frame must be @image1. Return to video-prompts-v12; do not renumber the body in production."
+}
 
 $legend = [System.Collections.Generic.List[string]]::new()
 $supplementalLegend = [System.Collections.Generic.List[string]]::new()
@@ -120,8 +143,11 @@ for ($i = 0; $i -lt $bindings.Count; $i++) {
 $result = [ordered]@{
     schema_version = 'doubao-shot-bindings-v1'
     shot_id = $ShotId
+    continuity_mode = $continuityMode
     image_count = $bindings.Count
     max_images = $maxImages
+    soft_max_images = $softMaxImages
+    reference_budget_status = $(if ($bindings.Count -le $softMaxImages) { 'within_soft_limit' } else { 'approved_exception' })
     bindings = @($bindings)
     legend = @($legend)
     supplemental_legend = @($supplementalLegend)

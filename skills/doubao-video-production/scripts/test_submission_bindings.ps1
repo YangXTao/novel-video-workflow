@@ -14,7 +14,7 @@ foreach ($id in @('A','B','SCENE','TAIL')) {
     [IO.File]::WriteAllText($path, "fixture-$id")
     $assets[$id] = @{name=$id;type='prop';status='approved';file_path=$path;sha256=(Get-FileHash $path).Hash}
 }
-$manifest = [ordered]@{schema_version='novel-video-asset-manifest-v1';reference_policy=@{eligible_statuses=@('approved','reuse_approved');max_images_per_shot=10};assets=$assets}
+$manifest = [ordered]@{schema_version='novel-video-asset-manifest-v1';reference_policy=@{eligible_statuses=@('approved','reuse_approved');preferred_images_per_shot_min=2;preferred_images_per_shot_max=4;soft_max_images_per_shot=5;max_images_per_shot=10};assets=$assets}
 SaveManifest
 & $shell -NoProfile -File $validator -ManifestPath $manifestPath -Stage AssetsOnly | Out-Null
 Assert ($LASTEXITCODE -eq 0) 'Asset-only stage incorrectly requires shots.'
@@ -30,6 +30,7 @@ Assert (($console -join '|') -eq '@image3 = S00尾帧|@image4 = SCENE') 'Product
 $result = Get-Content -Raw $resultPath | ConvertFrom-Json
 Assert (($result.bindings.asset_id -join ',') -eq 'A,B,TAIL,SCENE') 'Body numbering was displaced by tail.'
 Assert (($result.supplemental_legend -join '|') -eq '@image3 = S00尾帧|@image4 = SCENE') 'Supplement includes existing body mappings.'
+Assert ($result.soft_max_images -eq 5 -and $result.reference_budget_status -eq 'within_soft_limit') 'Reference budget metadata missing.'
 $submission = "严格执行下方第48章S01提示词，不能改写或摘要！！！直接生成视频；完成后返回原始视频卡片及结果链接。`n禁止背景音乐！！！`n【补充参考图映射】`n" + ($result.supplemental_legend -join "`n") + "`n" + $body
 Assert ($submission.EndsWith($originalBody, [StringComparison]::Ordinal)) 'Body was rewritten.'
 Assert ($body -ceq $originalBody) 'Input body mutated.'
@@ -52,6 +53,20 @@ $assets.B.status='approved'
 $manifest.reference_policy.max_images_per_shot=3
 ExpectBlocked 'upload limit' $body
 $manifest.reference_policy.max_images_per_shot=10
+$manifest.reference_policy.soft_max_images_per_shot=3
+ExpectBlocked 'soft upload limit without exception' $body
+$shot.reference_budget_exception_reason='All four references are indispensable for this fixture.'
+SaveManifest
+& $resolver -ManifestPath $manifestPath -ShotId S01 -PromptText $body -OutputPath $resultPath | Out-Null
+$result=Get-Content -Raw $resultPath | ConvertFrom-Json
+Assert ($result.reference_budget_status -eq 'approved_exception') 'Soft-limit exception was not recorded.'
+$shot.Remove('reference_budget_exception_reason')
+$manifest.reference_policy.soft_max_images_per_shot=5
+$shot.continuity_mode='hard_continuation'
+ExpectBlocked 'hard continuation without tail at image1' $body
+$shot.continuity_mode='soft_continuity'
+ExpectBlocked 'soft continuity with tail' $body
+$shot.Remove('continuity_mode')
 $shot.tail_frame.eligible=$false
 $shot.static_reference_assets=@('B','A')
 SaveManifest

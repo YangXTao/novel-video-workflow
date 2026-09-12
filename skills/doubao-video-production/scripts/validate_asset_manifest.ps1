@@ -29,6 +29,11 @@ if ($manifest.schema_version -ne 'novel-video-asset-manifest-v1') {
 $eligibleStatuses = @($manifest.reference_policy.eligible_statuses)
 $maxImages = [int]$manifest.reference_policy.max_images_per_shot
 if ($maxImages -lt 1 -or $maxImages -gt 10) { $errors.Add('Image limit must be between 1 and 10.') }
+$softMaxImages = 5
+if ($null -ne $manifest.reference_policy.PSObject.Properties['soft_max_images_per_shot']) {
+    $softMaxImages = [int]$manifest.reference_policy.soft_max_images_per_shot
+}
+if ($softMaxImages -lt 1 -or $softMaxImages -gt $maxImages) { $errors.Add('Soft image limit must be between 1 and max_images_per_shot.') }
 $assetProperties = @($manifest.assets.PSObject.Properties)
 $assetMap = @{}
 
@@ -69,6 +74,12 @@ if (($expectedShotNumbers -join ',') -ne ($actualShotNumbers -join ',')) {
 foreach ($property in $shotProperties) {
     $shotId = $property.Name
     $shot = $property.Value
+    $continuityMode = ''
+    if ($null -ne $shot.PSObject.Properties['continuity_mode']) { $continuityMode = [string]$shot.continuity_mode }
+    if ($continuityMode -and $continuityMode -notin @('hard_continuation', 'soft_continuity', 'no_continuity', 'tail_continuation')) {
+        $errors.Add("${shotId}: unsupported continuity_mode '$continuityMode'")
+    }
+    $isHardContinuation = $continuityMode -in @('hard_continuation', 'tail_continuation')
     $seen = @{}
     foreach ($assetId in @($shot.static_reference_assets)) {
         if ($seen.ContainsKey($assetId)) {
@@ -103,9 +114,18 @@ foreach ($property in $shotProperties) {
             $errors.Add("${shotId}: eligible tail frame has no source_shot")
         }
     }
+    if ($isHardContinuation -and $shot.tail_frame.eligible -ne $true) {
+        $errors.Add("${shotId}: hard continuation requires an eligible tail frame")
+    }
+    if ($continuityMode -in @('soft_continuity', 'no_continuity') -and $shot.tail_frame.eligible -eq $true) {
+        $errors.Add("${shotId}: continuity_mode=$continuityMode must not use a tail frame")
+    }
     $totalSlots = @($shot.static_reference_assets).Count + $tailSlots
     if ($totalSlots -gt $maxImages) {
         $errors.Add("${shotId}: requires $totalSlots images, exceeds limit $maxImages")
+    }
+    elseif ($totalSlots -gt $softMaxImages -and [string]::IsNullOrWhiteSpace([string]$shot.reference_budget_exception_reason)) {
+        $errors.Add("${shotId}: requires $totalSlots images, exceeds soft limit $softMaxImages without reference_budget_exception_reason")
     }
 }
 

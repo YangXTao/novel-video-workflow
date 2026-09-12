@@ -160,8 +160,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/workflow.md",
-      "sha256": "45CC2171252168690881646EBCB13BDAF97F080E55F2485654DF1AFAB3DCA9E9",
-      "bytes": 34900
+      "sha256": "B933D330CF53A338D2EF473D25AFE70A9769CF2505EF1F19970DC01A5C99A768",
+      "bytes": 36296
     },
     {
       "path": "skills/doubao-video-production/scripts/playwright_video_backend.cjs",
@@ -175,18 +175,18 @@
     },
     {
       "path": "skills/doubao-video-production/scripts/resolve_shot_bindings.ps1",
-      "sha256": "5574744ABB61DE44143F9F212D56D203D8E41BDB076BC6846E555A15179A439D",
-      "bytes": 6933
+      "sha256": "D622D03037C27FC3E8A218658DB3DEDA3A0C150C31A72BEFC841ED94891CFCF3",
+      "bytes": 8758
     },
     {
       "path": "skills/doubao-video-production/scripts/test_submission_bindings.ps1",
-      "sha256": "54480E645010CB5EE87B8DC4B247526E988E7DD3659A993524FE17E1A7A2D619",
-      "bytes": 4977
+      "sha256": "5770882811FCAFC67EC7A2E0C443BCEBB0BF7422D7443A90CE7C0FC50785E131",
+      "bytes": 6025
     },
     {
       "path": "skills/doubao-video-production/scripts/validate_asset_manifest.ps1",
-      "sha256": "8E85BEAFDDC051786A130F81F9438081181100C6FC037AFBF20F9FC0C72A6838",
-      "bytes": 4717
+      "sha256": "0C6271E8D72C4D504C8ECB2893DCF2BE6F93B1147CD3309B1C02A45D0004139A",
+      "bytes": 6143
     },
     {
       "path": "skills/doubao-video-production/scripts/video_progress.ps1",
@@ -195,8 +195,8 @@
     },
     {
       "path": "skills/doubao-video-production/SKILL.md",
-      "sha256": "571168B55814455B649793438552289B2EA0D183EB0AE322C10E1456AFF0DAF2",
-      "bytes": 15465
+      "sha256": "9A2237535B07653A6CC25465EBA93A658AAE60FC1FFADC79C39986BA1EA7FF7F",
+      "bytes": 16649
     },
     {
       "path": "skills/novel-to-screenplay/agents/openai.yaml",
@@ -250,13 +250,13 @@
     },
     {
       "path": "skills/novel-video-orchestrator/references/state-contract.md",
-      "sha256": "E908C3C4F5220F7B7C47C6C8EA7E1567268BFF131A4A82F552B61BB7E5401D28",
-      "bytes": 4632
+      "sha256": "3483DDB613E10DF81D54DADFA092089D4C9E1FFA809794D3925194EEC4E798EC",
+      "bytes": 5189
     },
     {
       "path": "skills/novel-video-orchestrator/references/workflow.md",
-      "sha256": "1DDD9DB423757E3822A7766A10F7595F2B27CEE35E88851C3A8E3843B8CAD295",
-      "bytes": 14962
+      "sha256": "1C616EB965069C8781513486E466C4161A03A782DF285BDE3DA8758AAEBD3C27",
+      "bytes": 17506
     },
     {
       "path": "skills/novel-video-orchestrator/scripts/creative_task_io.ps1",
@@ -275,8 +275,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/SKILL.md",
-      "sha256": "90DA0EF564F94769F79A79D5EDD0AFE053B88F0CD5237BAAAE4FAF3AE405C502",
-      "bytes": 9680
+      "sha256": "CAD35E34308DD64A0D90A5AB8AE899F215C847D64BD913AF8A53772BF99CAD03",
+      "bytes": 10395
     },
     {
       "path": "skills/prop-image-prompts/agents/openai.yaml",
