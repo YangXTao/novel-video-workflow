@@ -1,14 +1,16 @@
 # 小说转视频工作流
 
-当前实际使用的 8 个 Skill、专用 Chrome 启动配置、Playwright MCP 执行工具及图片/视频文件处理脚本的完整快照。图片通过 ChatGPT 网页生成，视频通过豆包网页生成，暂不包含剪辑流程。
+当前实际使用的 9 个 Skill、专用 Chrome 启动配置、Playwright MCP 执行工具及图片/视频文件处理脚本的完整快照。图片通过 ChatGPT 网页生成，视频通过豆包网页生成，暂不包含剪辑流程。
 
 Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新及小说转剧本流水线门禁优化。`SNAPSHOT.json` 记录归档文件的 SHA-256，可检查快照完整性。
 
-## v12.6 更新说明
+## v13.0 规则源接线（当前分支 `v13.0-rules-wiring`）
 
-当前稳定发布分支为 `v12.6-stable`。本次采用完整母版直接作为 `video-prompts-v12/SKILL.md`，并修复完整输入交接、真实图片绑定、恢复规则和资产阶段检查。最新改动与验证边界见 [v12.6-stable 更新说明](docs/v12.6-stable-changes.md)；下面的早期变更文档作为历史记录保留。
+视频提示词阶段不再使用 v12.6 单文件母版，改为 `video-prompts-v13` 入口：本仓库**不含任何规则副本**，入口只负责定位并校验**已安装的小家 v13.0 skill**（默认 `~/.workbuddy/skills/xiaojia-prompt-generator`），把工作流输入原样交给它、把唯一完整章节 Markdown 原样接回。规则源只读，仍由作者维护，升级后工作流自动跟随。
 
-本分支已将视频提示词生成器更新为 `video-prompts-v12` 12.6.0，并同步了与它配合的剧本、图片、豆包制作、总控 Skill 及 Playwright MCP 工具。详细变更、与旧版的差异及验证结果见 [v12.6 变更说明](docs/video-prompts-v12.6-changes.md)。
+要点：输出改名 `<章节名>_完整视频提示词_v13.0.md`；入口禁止精简、禁止自创、禁止用摘要替代剧本；规则源缺失或版本不符时停机，不回落 v12.6。总控、剧本桥接、图片提示词、豆包制作的引用已同步指向 v13 入口。
+
+详见 [v13.0 规则源接线说明](docs/video-prompts-v13-rules-wiring.md)。v12.6 相关说明文档作为历史记录保留，`skills/video-prompts-v12` 仅用于历史锁定章节溯源。
 
 ## 小说转剧本流水线门禁更新
 
@@ -16,7 +18,7 @@ Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新�
 
 ## 流程与目录
 
-小说 → 基准剧本 → 人物/场景/道具提示词 → ChatGPT 网页生图 → 资产登记 → 小家 v12.6 视频提示词 → 豆包逐镜生成 → 下载、检查、尾帧、进度记录。
+小说 → 基准剧本 → 人物/场景/道具提示词 → ChatGPT 网页生图 → 资产登记 → 小家 v13.0 视频提示词（`video-prompts-v13` 委派已安装规则源）→ 豆包逐镜生成 → 下载、检查、尾帧、进度记录。
 
 | 路径 | 用途 |
 | --- | --- |
@@ -26,7 +28,8 @@ Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新�
 | `skills/scene-image-prompts` | 场景图片提示词 |
 | `skills/prop-image-prompts` | 道具图片提示词 |
 | `skills/chatgpt-image-production` | ChatGPT 网页图片生产、下载、命名、登记 |
-| `skills/video-prompts-v12` | 当前小家 v12.6 完整母版直接作为 SKILL.md；不再使用旧拆分规则与外部创作审计脚本 |
+| `skills/video-prompts-v13` | **当前视频提示词入口**：定位并校验已安装的小家 v13.0 skill，委派执行；本仓库不含规则副本 |
+| `skills/video-prompts-v12` | 已弃用（历史锁定章节溯源/回退用）；781 KB 单文件母版，存在加载截断风险，不再作为活动规则源 |
 | `skills/doubao-video-production` | 豆包参考图映射、提交、下载、检查与尾帧登记 |
 | `tools/doubao-playwright-mcp` | 豆包 MCP 启动脚本、连接测试、依赖及锁文件 |
 | `tools/chatgpt-image-playwright-mcp` | ChatGPT MCP、可恢复图片执行器、下载恢复及页面诊断工具 |

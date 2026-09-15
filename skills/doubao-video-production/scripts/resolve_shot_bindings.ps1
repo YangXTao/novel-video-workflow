@@ -177,7 +177,7 @@ if ($PSBoundParameters.ContainsKey('PromptText')) {
     foreach ($item in $ordered) { $bindings.Add($item) }
 }
 if ($isHardContinuation -and ($bindings.Count -eq 0 -or $bindings[0].role -ne 'continuity_frame')) {
-    throw "$ShotId hard-continuation tail frame must be @image1. Return to video-prompts-v12; do not renumber the body in production."
+    throw "$ShotId hard-continuation tail frame must be @image1. Return to video-prompts-v13; do not renumber the body in production."
 }
 
 $legend = [System.Collections.Generic.List[string]]::new()

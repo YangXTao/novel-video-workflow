@@ -2,9 +2,12 @@ $ErrorActionPreference='Stop'
 $dir=Join-Path ([System.IO.Path]::GetTempPath()) ('screenplay-test-'+[guid]::NewGuid())
 New-Item -ItemType Directory -Path $dir | Out-Null
 $validator=Join-Path $PSScriptRoot 'validate_screenplay_output.ps1'
-$rule=Join-Path $PSScriptRoot '../../video-prompts-v12/SKILL.md'
-$hash=(Get-FileHash -LiteralPath $rule -Algorithm SHA256).Hash
-$ruleVersion='12.6.0'
+$resolver=Join-Path $PSScriptRoot '../../video-prompts-v13/scripts/verify_rule_source.ps1'
+$info=(& (Get-Process -Id $PID).Path -NoProfile -File $resolver -Json | ConvertFrom-Json)
+if(-not $info.ok){throw "规则源校验失败：$($info.problems -join '; ')"}
+$rule=Join-Path $info.rule_source 'SKILL.md'
+$hash=$info.skill_md_sha256
+$ruleVersion=$info.version
 $source='林舟从半空摔下，落在桥面。他爬起身，说：“我没事。”'
 $phrase='林舟从半空坠落，落在桥面，随后爬起身。'
 $body=@"

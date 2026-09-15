@@ -1,6 +1,6 @@
 # v12.6 语义桥接
 ## 读取与版本
-完整读取同级 video-prompts-v12/SKILL.md。该文件是唯一运行母版，不依赖拆分规则、control.md、rule-bundle.json或规则读取脚本。审计中的 rule_sha256 直接记录这份完整母版文件的 SHA-256；升级或替换母版后重新读取并重新计算，不沿用缓存配方。母版缺失时可完成普通分场剧本，但标记桥接未核验，不能宣称已完成v12触发验收。
+完整读取同级 video-prompts-v13/SKILL.md 入口，并按 video-prompts-v13/references/installed-rule-source.md 定位**已安装的小家 v13.0 规则源**（默认 `~/.workbuddy/skills/xiaojia-prompt-generator`）。规则正文只存在于安装版 skill；本仓库不保存规则副本、control.md、rule-bundle.json 或规则读取脚本。审计中的 rule_sha256 记录**规则源 SKILL.md** 的 SHA-256（由 video-prompts-v13/scripts/verify_rule_source.ps1 -Json 输出）；规则源升级后重新读取并重新计算，不沿用缓存配方。规则源缺失时可完成普通分场剧本，但标记桥接未核验，不能宣称已完成触发验收。
 
 本Skill处于上游语义标注任务，不执行视频导演：只读取适用事件定义、匹配条件与边界；不在上游展开整套画质/运镜/特效参数。
 索引（在当前完整母版内按标题或关键词定位，并完整读取命中条目及上下文）：
@@ -32,7 +32,7 @@
 文件名 screenplay_trigger_audit.json，结构：
 - schema_version: screenplay-trigger-audit-v2
 - rule_version: 从活动SKILL.md的metadata.version读取，不硬编码旧版本
-- rule_sha256: 活动video-prompts-v12/SKILL.md文件的SHA-256，与本次读取来源一致，不调用旧规则包校验脚本
+- rule_sha256: 活动规则源（已安装的小家 v13.0 skill）SKILL.md 的 SHA-256，与本次读取来源一致，取自 verify_rule_source.ps1 输出，不调用旧规则包校验脚本
 - scenes: 数组，每项 scene_id 为SC01等，events为数组；无匹配写空数组。
 - events每项：source_quote（原文可定位短原句），content_type，event（实际表项名或内容分支），rule_locator（规则组编号+小节/表项），screenplay_phrase（正文实际采用的完整动作短句），reason（说明语义如何相符）。
 - downstream_gate：独立的下游门禁对象。
@@ -41,9 +41,9 @@
   - nonblocking_notes：数组。记录不影响继续制作、但值得保留的文字或设定备注；无内容写空数组。
   - blocking_ambiguities 为空时 status 必须为 ready；非空时必须为 needs-resolution。不能用 needs-resolution 代替可由原文和既有资料直接核对解决的问题。
 审计只作可追踪依据，不增加正文模块。原文证据不得编造；对白提及、否定与假设不可登记成当前已发生动作。若需核对位置可附 source_location。
-运行结构校验时可加 -SourcePath <纯文本原文> -RulePath <video-prompts-v12/SKILL.md> 核对证据子串与完整母版哈希；语义仍须复核。
+运行结构校验时可加 -SourcePath <纯文本原文> -RulePath <规则源 SKILL.md 的绝对路径> 核对证据子串与完整母版哈希；语义仍须复核。
 
 ## 下游映射
-SC表示故事场次，与S视频镜头分开。资产提示词阶段按SC场次识别和登记资产；video-prompts-v12随后依据完整剧本、真实资产清单和用户时长要求，在一份完整章节视频提示词Markdown内独立规划S编号与每镜资产需求。
+SC表示故事场次，与S视频镜头分开。资产提示词阶段按SC场次识别和登记资产；video-prompts-v13随后依据完整剧本、真实资产清单和用户时长要求，在一份完整章节视频提示词Markdown内独立规划S编号与每镜资产需求。
 不再要求scene_shot_map.json。豆包视频制作阶段从最终完整Markdown逐个读取S镜正文，并结合asset_manifest.json核对实际存在且本镜确实需要的图片；不得把整场所有资产机械分给每镜，也不得凭空映射资产。进入资产或视频提示词阶段前读取 downstream_gate：ready可继续；needs-resolution必须先解决阻断项。
 未有S镜头时不造S编号；图片可先制作，资产登记的applicable_shots可暂空，场次关联保存在资产清单或交接文件。最终参考图选择、状态版本和尾帧依赖在视频提交前按真实文件与最终S镜正文核实。
