@@ -31,7 +31,7 @@ pwsh -NoProfile -File scripts/verify_rule_source.ps1 -RuleSource "D:\path\to\xia
 pwsh -NoProfile -File scripts/verify_rule_source.ps1 -Json      # 机器可读，供上游写入审计
 ```
 
-校验失败时：**停机报告实际路径、版本、缺失项；不得回落到 `video-prompts-v12`，不得凭记忆复述规则**。
+校验失败时：**停机报告实际路径、版本、缺失项；不得回落到其他版本的规则源（v12 入口已从本分支移除），不得凭记忆复述规则**。
 
 ## 3. 只读纪律
 
@@ -43,11 +43,11 @@ pwsh -NoProfile -File scripts/verify_rule_source.ps1 -Json      # 机器可读�
 
 ## 4. 与 v12.6 的差异（为什么必须换）
 
-| 项 | video-prompts-v12（v12.6 母版） | video-prompts-v13（v13.0 规则源） |
+| 项 | v12.6 旧入口（已从本分支移除） | video-prompts-v13（v13.0 规则源） |
 |---|---|---|
 | 形态 | 781 KB 单文件母版直接作为 SKILL.md，全量内联 | 总控 19 KB + `references/` 29 个文件，按 96 号契约按需读取 |
 | 截断风险 | 高：单文件过长会被压缩/截断，导致规则丢失、输出精简 | 低：渐进式披露，逐子节读取并留证据 |
 | 打戏句法 | 12.9.2 之前口径 | v13.0 打戏句法对齐九处（曲线制呼吸点、张力铺垫三选一、四类功能母版、阶梯拉远计一次 EWS 等） |
 | 依赖与验收 | 无独立执行契约文件 | 96 号执行契约 + 事实账本 + 缺口账本 + 规则卡 + 证据回执 + 100 号最终覆盖 |
 
-保留 `video-prompts-v12` 目录仅为历史锁定章节溯源与回退；新章节默认走 v13 入口。
+旧入口目录已从本分支移除（历史留存在 git 的 `v12.6-reference-budget` 分支）；新章节一律走 v13 入口，需要旧规则时从该分支取回，不在工作副本里并存两套。

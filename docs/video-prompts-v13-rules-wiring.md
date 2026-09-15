@@ -26,9 +26,9 @@ skills/video-prompts-v13/                 ← 新增入口（薄适配层，不�
 ├── references/output-and-handoff-contract.md  交付物命名、逐镜自包含、图号与参考图预算、连续性三分类
 ├── scripts/verify_rule_source.ps1        校验规则源并输出路径/版本/哈希（JSON 可用）
 └── agents/openai.yaml                    入口默认提示词
-
-skills/video-prompts-v12/                 ← 已弃用（横幅 + 描述前缀），仅历史锁定章节溯源/回退
 ```
+
+> 旧入口 `skills/video-prompts-v12/`（781 KB 单文件母版）已从本分支移除；历史完整留存在 git 的 `v12.6-reference-budget` 分支，需要回退时从该分支取回。
 
 ## 4. 规则源定位顺序
 
@@ -61,7 +61,7 @@ pwsh -NoProfile -File skills/video-prompts-v13/scripts/verify_rule_source.ps1 -J
 - 总控**不预写分镜、不锁秒数、不扫描资产目录**；分镜与秒数仍由视频提示词规则源独立规划。
 - 完整正式剧本、已有设定、真实资产清单、时长/模型要求、项目级 `additional_directive` 仍是"完整输入直交"。
 - 图片阶段仍不等 `scene_shot_map.json`；资产绑定仍由豆包阶段按真实上传顺序完成。
-- 历史锁定章节沿用其既有产物，不自动追溯重写；需要回退时用户显式指定 v12 入口。
+- 历史锁定章节沿用其既有产物，不自动追溯重写；需要按 v12.6 规则补做时，从 `v12.6-reference-budget` 分支取回旧入口，不在本分支并存两套规则。
 
 ## 7. 使用方式
 

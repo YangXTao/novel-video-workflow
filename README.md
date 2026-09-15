@@ -1,6 +1,6 @@
 # 小说转视频工作流
 
-当前实际使用的 9 个 Skill、专用 Chrome 启动配置、Playwright MCP 执行工具及图片/视频文件处理脚本的完整快照。图片通过 ChatGPT 网页生成，视频通过豆包网页生成，暂不包含剪辑流程。
+当前实际使用的 8 个 Skill、专用 Chrome 启动配置、Playwright MCP 执行工具及图片/视频文件处理脚本的完整快照。图片通过 ChatGPT 网页生成，视频通过豆包网页生成，暂不包含剪辑流程。
 
 Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新及小说转剧本流水线门禁优化。`SNAPSHOT.json` 记录归档文件的 SHA-256，可检查快照完整性。
 
@@ -10,7 +10,7 @@ Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新�
 
 要点：输出改名 `<章节名>_完整视频提示词_v13.0.md`；入口禁止精简、禁止自创、禁止用摘要替代剧本；规则源缺失或版本不符时停机，不回落 v12.6。总控、剧本桥接、图片提示词、豆包制作的引用已同步指向 v13 入口。
 
-详见 [v13.0 规则源接线说明](docs/video-prompts-v13-rules-wiring.md)。v12.6 相关说明文档作为历史记录保留，`skills/video-prompts-v12` 仅用于历史锁定章节溯源。
+详见 [v13.0 规则源接线说明](docs/video-prompts-v13-rules-wiring.md)。v12.6 相关说明文档作为历史记录保留；旧入口目录已从本分支移除，需要时从 `v12.6-reference-budget` 分支取回。
 
 ## 小说转剧本流水线门禁更新
 
@@ -29,7 +29,6 @@ Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新�
 | `skills/prop-image-prompts` | 道具图片提示词 |
 | `skills/chatgpt-image-production` | ChatGPT 网页图片生产、下载、命名、登记 |
 | `skills/video-prompts-v13` | **当前视频提示词入口**：定位并校验已安装的小家 v13.0 skill，委派执行；本仓库不含规则副本 |
-| `skills/video-prompts-v12` | 已弃用（历史锁定章节溯源/回退用）；781 KB 单文件母版，存在加载截断风险，不再作为活动规则源 |
 | `skills/doubao-video-production` | 豆包参考图映射、提交、下载、检查与尾帧登记 |
 | `tools/doubao-playwright-mcp` | 豆包 MCP 启动脚本、连接测试、依赖及锁文件 |
 | `tools/chatgpt-image-playwright-mcp` | ChatGPT MCP、可恢复图片执行器、下载恢复及页面诊断工具 |

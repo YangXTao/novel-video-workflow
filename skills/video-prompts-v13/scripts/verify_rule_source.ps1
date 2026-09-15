@@ -7,7 +7,7 @@
     SKILL.md 存在、metadata.version 达标、references/ 含 29 个现行规则文件、
     references/96-规则执行契约与证据回执.md 存在。
   输出规则源路径、版本、references 数量与 SKILL.md 的 SHA-256（供 screenplay_trigger_audit.json 使用）。
-  校验失败以退出码 1 结束；调用方不得回落到 video-prompts-v12。
+  校验失败以退出码 1 结束；调用方不得回落到其他版本规则源。
 
 .EXAMPLE
   pwsh -NoProfile -File scripts/verify_rule_source.ps1
