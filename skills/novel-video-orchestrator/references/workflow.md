@@ -23,6 +23,7 @@ SCREENPLAY-SCENE-v2 输入不预造 S 镜头。图片阶段负责形成可直接
 - 三类提示词：分别由对应 Skill 基于同一份正式剧本生成；不能用其中一类代替另一类。
 - `image_production`：新建项均为 `qa_approved`，复用项均为 `reuse_approved`，免建图项没有被误生成。
 - `asset_manifest`：生图后只校验真实资产身份、版本、状态、路径、哈希及SC场次关联；使用validate_asset_manifest.ps1 -Stage AssetsOnly，不要求尚未产生的S镜头或尾帧。完整视频提示词产生后，由总控登记镜间连续性类型，再由视频制作阶段建立shots、精选参考资产与尾帧依赖，最后用-Stage Production校验。`static_reference_assets`只列本镜实际准备上传的图片，不等于把所有出场实体全部上传。
+- 从视频提示词进入视频制作时，不能以空的shots清单直接生产。视频制作阶段须先逐镜识别关键身份节点并登记 `required_identity_assets`：画面内开口、近景/特写、首次出场/换装、身份辨认、关键剧情动作及连续性落点角色为核心身份资产；纯画外音、不可辨认远景或静止背景角色可显式登记豁免。再据此生成 `static_reference_assets`、正文图号绑定和上传顺序。绑定解析脚本未通过时，该镜保持阻塞，不能由总控临时挑图绕过。
 - `v10_prompts`：由当前 video-prompts-v12 基于完整正式剧本、已有资产清单和用户规格生成唯一的完整章节提示词Markdown；镜头正文不得自行精简。
 - 将期望总时长、允许的单镜时长集合、数量限制及模型要求交给video-prompts-v12，由它规划分镜与秒数并直接写入完整提示词。总控不提前指定每镜秒数，不要求shot_production_plan、scene_shot_map或验证报告。需改变段长时交回该Skill重规划，不能只改执行指令。
 - `video_production`：逐镜生成，使用本文件定义的分层质检策略。

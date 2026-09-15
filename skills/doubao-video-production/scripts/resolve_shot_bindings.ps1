@@ -20,6 +20,20 @@ $shotProperty = $manifest.shots.PSObject.Properties[$ShotId]
 if ($null -eq $shotProperty) { throw "Shot not found in manifest: $ShotId" }
 
 $shot = $shotProperty.Value
+$requiredIdentityProperty = $shot.PSObject.Properties['required_identity_assets']
+if ($null -eq $requiredIdentityProperty) {
+    throw "$ShotId missing required_identity_assets. Build the core identity list before submission."
+}
+$requiredIdentityAssets = @($shot.required_identity_assets)
+$identityReasons = $shot.identity_requirement_reasons
+$identityWaivers = $shot.identity_waivers
+$tailCoveredIdentityAssets = @()
+if ($null -ne $shot.tail_frame -and $null -ne $shot.tail_frame.PSObject.Properties['covered_identity_assets']) {
+    $tailCoveredIdentityAssets = @($shot.tail_frame.covered_identity_assets)
+}
+if ($requiredIdentityAssets.Count -gt 0 -and $null -eq $identityReasons) {
+    throw "$ShotId missing identity_requirement_reasons."
+}
 $eligibleStatuses = @($manifest.reference_policy.eligible_statuses)
 $maxImages = [int]$manifest.reference_policy.max_images_per_shot
 if ($maxImages -lt 1 -or $maxImages -gt 10) { throw 'Image limit must be between 1 and 10.' }
@@ -99,6 +113,20 @@ if ($bindings.Count -gt $softMaxImages -and [string]::IsNullOrWhiteSpace([string
 }
 $assetIds = @($bindings | ForEach-Object { $_.asset_id })
 if (@($assetIds | Select-Object -Unique).Count -ne $bindings.Count) { throw 'Duplicate upload asset IDs.' }
+foreach ($assetId in $requiredIdentityAssets) {
+    if ([string]::IsNullOrWhiteSpace([string]$assetId)) { throw "$ShotId has an empty required identity asset." }
+    $assetProperty = $manifest.assets.PSObject.Properties[[string]$assetId]
+    if ($null -eq $assetProperty) { throw "$ShotId required identity asset is unknown: $assetId" }
+    if ([string]$assetProperty.Value.type -notmatch 'character|creature') {
+        throw "$ShotId required identity asset is not a character/creature: $assetId"
+    }
+    if ($null -eq $identityReasons.PSObject.Properties[[string]$assetId] -or [string]::IsNullOrWhiteSpace([string]$identityReasons.PSObject.Properties[[string]$assetId].Value)) {
+        throw "$ShotId required identity asset has no reason: $assetId"
+    }
+    if ([string]$assetId -notin $assetIds -and [string]$assetId -notin $tailCoveredIdentityAssets) {
+        throw "$ShotId omits required identity asset from upload bindings: $assetId"
+    }
+}
 $bodyTokens = @()
 if ($PSBoundParameters.ContainsKey('PromptText')) {
     if ([string]::IsNullOrWhiteSpace($PromptText)) { throw 'PromptText cannot be empty.' }
@@ -108,6 +136,27 @@ if ($PSBoundParameters.ContainsKey('PromptText')) {
     if ($null -ne $map) { $mapKeys = @($map.PSObject.Properties | ForEach-Object { $_.Name }) }
     if (@($bodyTokens | Where-Object { $_ -notin $mapKeys }).Count -or @($mapKeys | Where-Object { $_ -notin $bodyTokens }).Count) {
         throw 'body_reference_bindings must resolve exactly the image tokens present in this shot body.'
+    }
+    $speakerNames = @([regex]::Matches($PromptText, '【([^｜\]\r\n]+)｜') | ForEach-Object { $_.Groups[1].Value.Trim() } | Select-Object -Unique)
+    foreach ($speakerName in $speakerNames) {
+        $speakerWaived = $false
+        if ($null -ne $identityWaivers -and $null -ne $identityWaivers.PSObject.Properties[$speakerName]) {
+            $waiverReason = [string]$identityWaivers.PSObject.Properties[$speakerName].Value
+            if ($waiverReason -notin @('offscreen_voice', 'unidentifiable_distance', 'background_only')) {
+                throw "$ShotId speaking role '$speakerName' has unsupported identity waiver: $waiverReason"
+            }
+            $speakerWaived = $true
+        }
+        $matchingIdentityIds = @($manifest.assets.PSObject.Properties | Where-Object {
+            $_.Value.type -match 'character|creature' -and (
+                [string]$_.Value.name -eq $speakerName -or
+                [string]$_.Value.name -like "$speakerName·*" -or
+                [string]$_.Value.name -like "$speakerName-*"
+            )
+        } | ForEach-Object { $_.Name })
+        if (-not $speakerWaived -and $matchingIdentityIds.Count -gt 0 -and @($matchingIdentityIds | Where-Object { $_ -in $assetIds -or $_ -in $tailCoveredIdentityAssets }).Count -eq 0) {
+            throw "$ShotId speaking role '$speakerName' has an approved identity asset but none is included in upload bindings."
+        }
     }
     $ordered = [object[]]::new($bindings.Count)
     $assigned = @{}
