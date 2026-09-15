@@ -7,8 +7,11 @@
 1. **项目配置**：项目根目录 `novel_video_production_config.json` 中的
    `video_prompt_generation.rule_source`（绝对路径或 `~` 开头）与可选 `rule_source_version`。
 2. **环境变量**：`XIAOJIA_SKILL_DIR`。
-3. **默认安装位置**：`~/.workbuddy/skills/xiaojia-prompt-generator`
-   （Windows 展开为 `C:\Users\<用户>\.workbuddy\skills\xiaojia-prompt-generator`）。
+3. **默认安装位置（按运行环境依次尝试）**：
+   - WorkBuddy：`~/.workbuddy/skills/xiaojia-prompt-generator`
+   - Codex：`~/.codex/skills/xiaojia-prompt-generator`（推荐做成指向 WorkBuddy 安装目录的目录联接，见 §3.1，保证两边是同一份规则源）
+
+   命中任一即可；两者都存在但内容不一致时，停机报告，不擅自选一个。
 
 命中目录后，必须同时存在 `SKILL.md` 与 `references/` 目录，才算定位成功。
 若运行环境支持按名加载 skill（如 WorkBuddy 会话内），可直接加载 `xiaojia-prompt-generator`，但仍须完成第 2 步校验并记录同一份 SHA-256。
@@ -32,6 +35,30 @@ pwsh -NoProfile -File scripts/verify_rule_source.ps1 -Json      # 机器可读�
 ```
 
 校验失败时：**停机报告实际路径、版本、缺失项；不得回落到其他版本的规则源（v12 入口已从本分支移除），不得凭记忆复述规则**。
+
+### 3.1 Codex 侧接入方式（推荐目录联接，不复制规则）
+
+Codex 只从 `~/.codex/skills/` 加载 Skill。为了让它复用同一份安装版规则源，推荐建立目录联接（无需管理员）：
+
+```bat
+mklink /J "%USERPROFILE%\.codex\skills\xiaojia-prompt-generator" "%USERPROFILE%\.workbuddy\skills\xiaojia-prompt-generator"
+```
+
+- 联接不是复制：内容仍只有一份，由作者在安装目录维护，两边同步生效。
+- 若联接不可用（权限/文件系统限制），本入口仍能按绝对路径直接读取规则源文件，功能不受影响；只是 Codex 的 Skill 列表里看不到它。
+- 禁止把规则源整体复制进 `~/.codex/skills/` 当“第二份”用，否则升级后必然漂移。
+
+### 3.1 Codex 侧接入方式（推荐目录联接，不复制规则）
+
+Codex 只从 `~/.codex/skills/` 加载 Skill。为了让它复用同一份安装版规则源，推荐建立目录联接（无需管理员）：
+
+```bat
+mklink /J "%USERPROFILE%\.codex\skills\xiaojia-prompt-generator" "%USERPROFILE%\.workbuddy\skills\xiaojia-prompt-generator"
+```
+
+- 联接不是复制：内容仍只有一份，由作者在安装目录维护，两边同步生效。
+- 若联接不可用（权限/文件系统限制），本入口仍能按绝对路径直接读取规则源文件，功能不受影响；只是 Codex 的 Skill 列表里看不到它。
+- 禁止把规则源整体复制进 `~/.codex/skills/` 当“第二份”用，否则升级后必然漂移。
 
 ## 3. 只读纪律
 

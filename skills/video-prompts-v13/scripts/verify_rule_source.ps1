@@ -38,6 +38,10 @@ function Resolve-RuleSourceDir {
   }
   if ($env:XIAOJIA_SKILL_DIR) { return (Resolve-Path -LiteralPath $env:XIAOJIA_SKILL_DIR).Path }
   $h = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
+  foreach ($cand in @('.workbuddy/skills/xiaojia-prompt-generator', '.codex/skills/xiaojia-prompt-generator')) {
+    $p2 = Join-Path $h $cand
+    if (Test-Path -LiteralPath $p2) { return (Resolve-Path -LiteralPath $p2).Path }
+  }
   return (Join-Path $h '.workbuddy/skills/xiaojia-prompt-generator')
 }
 
