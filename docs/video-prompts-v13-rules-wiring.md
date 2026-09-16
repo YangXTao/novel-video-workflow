@@ -81,8 +81,12 @@ pwsh -NoProfile -File skills/video-prompts-v13/scripts/verify_rule_source.ps1 -J
 |---|---|
 | 合同 | `skills/video-prompts-v13/references/quota-selfcheck.md` |
 | 脚本 | `storyboard-quota-check/scripts/quota_check.py`（已装为独立用户级 Skill，**不在本仓库内**） |
-| 定位顺序 | 项目配置 `video_prompt_generation.quota_checker` → 环境变量 `XIAOJIA_QUOTA_CHECK` → 默认 `~/.workbuddy/skills/...`（WorkBuddy）/ `~/.codex/skills/...`（Codex） |
+| 定位顺序 | 项目配置 `video_prompt_generation.quota_checker` → 环境变量 `XIAOJIA_QUOTA_CHECK` → 默认 `~/.workbuddy/skills/storyboard-quota-check/scripts/quota_check.py`（**当前只接 WorkBuddy，Codex 暂不接入**） |
 | 触发器 | 视频提示词阶段**出稿后必跑**；硬项非空不得交付，改完须重跑 |
+| 自检段 | A 章节级 / B 逐镜配额 / C 证据项密度 / D 硬软项分档 / E 运镜标签越界 / **F 锁死画质原文覆盖率**（F 为信息项，不做通过否决） |
+| 交付说明必带 | ①规则源路径+版本+SHA256 ②实际读取的 `references/` 文件与子节清单 ③A–F 六段结果原样。三项只进交付说明，不进正文、不落盘 |
+
+其中 **F 段**专治"没读就编"：把锁死画质原文（打戏 10 号 2.1 / 文戏 20 号 3.1）切成特征表述，统计①段字面命中率。第56章 v13.0 稿实测章节平均 **87%**（27–28/31）；未命中的 4 项是调色板后半句那几项自检要求，正文按规则压成了散文——**字面未命中 ≠ 违规**，未命中清单的用途是**指出该人工核语义的位置**。
 
 已接入的耦合点（共 7 个文件）：
 
