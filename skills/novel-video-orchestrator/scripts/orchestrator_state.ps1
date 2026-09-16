@@ -79,7 +79,8 @@ function Read-State {
     if (-not (Test-Path -LiteralPath $statePath -PathType Leaf)) {
         throw "State file not found. Run Init first: $statePath"
     }
-    return Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100
+    # ConvertFrom-Json -Depth 仅 PS6+ 支持；PS5.1 下省略（5.1 无深度参数），PS6+ 默认深度 1024 足够
+    return Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
 }
 
 function Add-Event($State, [string]$Kind, [string]$Target, [string]$EventMessage) {
@@ -97,7 +98,7 @@ function Assert-ScreenplayReady($State) {
     foreach ($artifact in @($State.stages.screenplay.artifacts)) {
         if (-not (Test-Path -LiteralPath $artifact.path -PathType Leaf)) { continue }
         if ((Get-FileHash -LiteralPath $artifact.path -Algorithm SHA256).Hash -ne $artifact.sha256) { continue }
-        try { $candidate = Get-Content -LiteralPath $artifact.path -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100 }
+        try { $candidate = Get-Content -LiteralPath $artifact.path -Raw -Encoding UTF8 | ConvertFrom-Json }
         catch { continue }
         if ($candidate.schema_version -eq 'screenplay-trigger-audit-v2') { $audit = $candidate; break }
     }
@@ -137,7 +138,7 @@ function Assert-EditingReady($State, [switch]$Completed) {
     foreach ($artifact in @($State.stages.editing.artifacts)) {
         if (-not (Test-Path -LiteralPath $artifact.path -PathType Leaf)) { continue }
         if ((Get-FileHash -LiteralPath $artifact.path -Algorithm SHA256).Hash -ne $artifact.sha256) { continue }
-        try { $report = Get-Content -LiteralPath $artifact.path -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100 }
+        try { $report = Get-Content -LiteralPath $artifact.path -Raw -Encoding UTF8 | ConvertFrom-Json }
         catch { continue }
         if ($report.schema_version -ne 'jianying-editing-review-v1') { continue }
         if ([string]::IsNullOrWhiteSpace($report.chapter_directory) -or

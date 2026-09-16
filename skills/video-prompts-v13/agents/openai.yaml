@@ -1,4 +1,4 @@
 interface:
-  display_name: "视频提示词 v13.0（规则源委派）"
-  short_description: "用已安装的小家 v13.0 skill 生成整章视频提示词，规则源只读、不精简、不自创"
-  default_prompt: "使用 $video-prompts-v13 按已安装的小家 v13.0 skill 生成完整章节视频提示词。先读规则源 SKILL.md 与其 96 号执行契约，逐项读取依赖子节，再按其输出协议落稿；禁止精简、禁止自创、禁止用摘要替代完整剧本。"
+  display_name: "视频提示词 v13.1.1（规则源委派）"
+  short_description: "用已安装的小家 v13.1.1 skill 生成整章视频提示词，规则源只读、不精简、不自创"
+  default_prompt: "使用 $video-prompts-v13 按已安装的小家 v13.1.1 skill 生成完整章节视频提示词。先读规则源 SKILL.md 与其 96 号执行契约，逐项读取依赖子节，再按其输出协议落稿；禁止精简、禁止自创、禁止用摘要替代完整剧本。"

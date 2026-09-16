@@ -12,8 +12,11 @@
 $ErrorActionPreference = 'Stop'
 
 function Get-TextSha256([string]$Text) {
+    # PS5.1 兼容：.NET Framework 无 [SHA256]::HashData / [Convert]::ToHexString
     $bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
-    return [Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($bytes))
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try { $hash = $sha.ComputeHash($bytes) } finally { $sha.Dispose() }
+    return ($hash | ForEach-Object { $_.ToString('X2') }) -join ''
 }
 
 function Get-SafeFileName([string]$Value) {
@@ -34,7 +37,7 @@ function Normalize-Shots([string]$Value) {
 $manifest = $null
 if (-not [string]::IsNullOrWhiteSpace($ManifestPath)) {
     if (-not (Test-Path -LiteralPath $ManifestPath -PathType Leaf)) { throw "Manifest not found: $ManifestPath" }
-    $manifest = Get-Content -Raw -LiteralPath $ManifestPath -Encoding UTF8 | ConvertFrom-Json -Depth 100
+    $manifest = Get-Content -Raw -LiteralPath $ManifestPath -Encoding UTF8 | ConvertFrom-Json
     if ([string]::IsNullOrWhiteSpace($AssetRoot) -and -not [string]::IsNullOrWhiteSpace([string]$manifest.asset_library_root)) {
         $AssetRoot = [string]$manifest.asset_library_root
     }

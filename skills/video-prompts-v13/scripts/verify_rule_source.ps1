@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-  校验 video-prompts-v13 使用的规则源（已安装的小家 v13.0 skill）。
+  校验 video-prompts-v13 使用的规则源（已安装的小家 v13.1.1 skill）。
 
 .DESCRIPTION
   按 项目配置 → 环境变量 → 默认安装位置 的顺序解析规则源目录，校验：
@@ -16,7 +16,7 @@
 [CmdletBinding()]
 param(
   [string]$RuleSource,
-  [string]$RequiredVersion = '13.0',
+  [string]$RequiredVersion = '13.1.1',
   [string]$ProjectRoot,
   [switch]$Json
 )
