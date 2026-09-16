@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "v13.0-rules-wiring source snapshot; excludes runtime state and this manifest itself",
-  "captured_at": "2026-09-16T11:06:18+08:00",
+  "captured_at": "2026-09-16T11:06:44+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -30,8 +30,8 @@
     },
     {
       "path": "docs/video-prompts-v13-rules-wiring.md",
-      "sha256": "A3E67581A726A7F89FA31C5A1F6965FDD56B8EEE14E96BCB87226C1DAB29F847",
-      "bytes": 7950
+      "sha256": "A6146559AED4B39505FB9CA1FF1803523AF699D1DA19CCF1C2C58417FBC06A62",
+      "bytes": 8230
     },
     {
       "path": "scripts/extract_last_video_frame.cjs",
@@ -335,8 +335,8 @@
     },
     {
       "path": "skills/video-prompts-v13/references/installed-rule-source.md",
-      "sha256": "FB669E463C126E57E2CF4AB803DF7AFFC8290A7330BB082AAA5A183FBA9CA78C",
-      "bytes": 3304
+      "sha256": "78A02823DA902FD8E900B574B9F340C1E7379F1E39520AD8755586CEBD966402",
+      "bytes": 3646
     },
     {
       "path": "skills/video-prompts-v13/references/output-and-handoff-contract.md",

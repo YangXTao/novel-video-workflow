@@ -32,6 +32,8 @@ pwsh -NoProfile -File scripts/verify_rule_source.ps1 -RuleSource "D:\path\to\xia
 pwsh -NoProfile -File scripts/verify_rule_source.ps1 -Json      # 机器可读，供上游写入审计
 ```
 
+> 脚本以 UTF-8 **带 BOM** 保存，Windows PowerShell 5.1 与 pwsh 7 均可运行。原因：5.1 会把**无 BOM**的 `.ps1` 按系统 ANSI 代码页解码，脚本里的中文随即乱码，本脚本会直接抛参数绑定异常并以退出码 1 结束。编辑后请确认 BOM 仍在（仓库内其余含中文的 `.ps1` 同理）。
+
 校验失败时：**停机报告实际路径、版本、缺失项；不得回落到其他版本的规则源，不得凭记忆复述规则**。
 
 ## 3. 只读纪律

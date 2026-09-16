@@ -43,6 +43,8 @@ skills/video-prompts-v13/                 ← 新增入口（薄适配层，不�
 pwsh -NoProfile -File skills/video-prompts-v13/scripts/verify_rule_source.ps1 -Json
 ```
 
+> 仓库内含中文的 `.ps1` 一律以 UTF-8 **带 BOM** 保存：Windows PowerShell 5.1 会把无 BOM 的脚本按 ANSI 解码，中文乱码并使校验直接失败。实测加 BOM 后 `verify_rule_source.ps1` 在 5.1 下正确输出 `version 13.0 / references 29 / rc=0`。
+
 ## 5. 已同步的耦合点
 
 | 文件 | 改动 |
