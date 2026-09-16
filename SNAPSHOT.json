@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "description": "v13.1.1-rules-wiring source snapshot; tracked files only; excludes this manifest itself",
-  "captured_at": "2026-09-16T17:52:38+08:00",
+  "description": "v13.0-rules-wiring source snapshot; excludes runtime state and this manifest itself",
+  "captured_at": "2026-09-16T23:10:00+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -30,8 +30,8 @@
     },
     {
       "path": "docs/video-prompts-v13-rules-wiring.md",
-      "sha256": "8923DA15B267230966368466BF084F8A13F1CDEDAA3BE29034B75880F8799663",
-      "bytes": 12340
+      "sha256": "4A703C2E2BA416BB44D05C7D86D831D779C1F89395A70C56B3995BC56B8F7081",
+      "bytes": 15738
     },
     {
       "path": "scripts/extract_last_video_frame.cjs",
@@ -245,7 +245,7 @@
     },
     {
       "path": "skills/novel-video-orchestrator/references/isolated-creative-tasks.md",
-      "sha256": "BA9D2774AF098F89C1974B79B67F917CC183AEA11693ADF599E521306298A2FC",
+      "sha256": "18CA8642889545AC38303CD06D1FA9332D1D82B3E56AD54192B324C5516CEC46",
       "bytes": 3939
     },
     {
@@ -255,8 +255,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/references/workflow.md",
-      "sha256": "C3926E488FC7FEB4478B95AD5464455F4A0ECF594FF551AD24CDD1326EB39EA5",
-      "bytes": 19367
+      "sha256": "CF32D1BE64EEEDC6502054D9DE9C1772410369D68762CAEC3CE5DF8CA277DA02",
+      "bytes": 20285
     },
     {
       "path": "skills/novel-video-orchestrator/scripts/creative_task_io.ps1",
@@ -325,7 +325,7 @@
     },
     {
       "path": "skills/video-prompts-v13/SKILL.md",
-      "sha256": "1B3BAD5761BA6F33C84077026DE473A0723AB5A072864896F953C72FF813F0AD",
+      "sha256": "40102E67A49515351513EF6C1852BB8C131D72B83D175F07F11E23FE0073EC0B",
       "bytes": 6418
     },
     {
@@ -340,13 +340,13 @@
     },
     {
       "path": "skills/video-prompts-v13/references/output-and-handoff-contract.md",
-      "sha256": "0EF2F4CCC3CE750C85B0ED75E0BEF5C838B7887E67FF51172A67D288ECD4DAB8",
-      "bytes": 4911
+      "sha256": "519F7EB4B317AEC693B3B20F79A9082993790FE2AC57941BF4081B6306F35896",
+      "bytes": 6826
     },
     {
       "path": "skills/video-prompts-v13/references/quota-selfcheck.md",
-      "sha256": "164BFBA75D513AD55772F698AE50CF1E2848BD3B5BA06CA3D8142FA1D9E209A2",
-      "bytes": 5059
+      "sha256": "A62E2ECFF2BB2D6FED8F75A8F3B8AFA7374E4F78C61FC0B741A9F7E3ADDAD734",
+      "bytes": 6157
     },
     {
       "path": "skills/video-prompts-v13/scripts/verify_rule_source.ps1",
