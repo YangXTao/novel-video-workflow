@@ -48,18 +48,6 @@ mklink /J "%USERPROFILE%\.codex\skills\xiaojia-prompt-generator" "%USERPROFILE%\
 - 若联接不可用（权限/文件系统限制），本入口仍能按绝对路径直接读取规则源文件，功能不受影响；只是 Codex 的 Skill 列表里看不到它。
 - 禁止把规则源整体复制进 `~/.codex/skills/` 当“第二份”用，否则升级后必然漂移。
 
-### 3.1 Codex 侧接入方式（推荐目录联接，不复制规则）
-
-Codex 只从 `~/.codex/skills/` 加载 Skill。为了让它复用同一份安装版规则源，推荐建立目录联接（无需管理员）：
-
-```bat
-mklink /J "%USERPROFILE%\.codex\skills\xiaojia-prompt-generator" "%USERPROFILE%\.workbuddy\skills\xiaojia-prompt-generator"
-```
-
-- 联接不是复制：内容仍只有一份，由作者在安装目录维护，两边同步生效。
-- 若联接不可用（权限/文件系统限制），本入口仍能按绝对路径直接读取规则源文件，功能不受影响；只是 Codex 的 Skill 列表里看不到它。
-- 禁止把规则源整体复制进 `~/.codex/skills/` 当“第二份”用，否则升级后必然漂移。
-
 ## 3. 只读纪律
 
 - 只读：读取 SKILL.md 与 96 号契约点名的 `references/` 子节。

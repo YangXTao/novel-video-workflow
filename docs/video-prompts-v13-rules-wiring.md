@@ -72,3 +72,29 @@ pwsh -NoProfile -File skills/video-prompts-v13/scripts/verify_rule_source.ps1 -J
 ```
 
 总控会自动走到视频提示词阶段并调用 v13 入口；若需指定其他章节范围、时长口径或模型，按原模板传入即可。规则源路径不在默认位置时，优先写进项目配置，而不是改 Skill。
+
+## 8. 出稿后强制配额自检（工作流侧，不动规则源）
+
+规则源只保证「规则怎么读、怎么落稿」，**不负责在出稿后回头数一遍**。因此本工作流在交付侧加了一道机械自检：
+
+| 项 | 内容 |
+|---|---|
+| 合同 | `skills/video-prompts-v13/references/quota-selfcheck.md` |
+| 脚本 | `storyboard-quota-check/scripts/quota_check.py`（已装为独立用户级 Skill，**不在本仓库内**） |
+| 定位顺序 | 项目配置 `video_prompt_generation.quota_checker` → 环境变量 `XIAOJIA_QUOTA_CHECK` → 默认 `~/.workbuddy/skills/...`（WorkBuddy）/ `~/.codex/skills/...`（Codex） |
+| 触发器 | 视频提示词阶段**出稿后必跑**；硬项非空不得交付，改完须重跑 |
+
+已接入的耦合点（共 7 个文件）：
+
+- `video-prompts-v13/SKILL.md`：执行流程新增第 7 步；输出合同与异常处理补条目；版本升 `13.0.0-wiring.2`
+- `video-prompts-v13/references/output-and-handoff-contract.md`：交接检查增加「附自检结果」项 + 配额自检门禁
+- `video-prompts-v13/references/quota-selfcheck.md`：**新增**，自检合同全文
+- `novel-video-orchestrator/SKILL.md`：外围交接检查与唯一交付两条各补门禁
+- `novel-video-orchestrator/references/workflow.md`：`v10_prompts` 阶段完成条件 + 固定调用模板新增「出稿后自检」行
+- `novel-video-orchestrator/references/isolated-creative-tasks.md`：独立创作子任务的交付要求
+- `novel-video-orchestrator/references/state-contract.md`：`v10_prompts` 阶段完成条件
+
+**两道防线**：本层出稿后自己跑并把结果附在交付说明（流程契约）；总控接回后**独立重跑同一脚本**作门禁，两次结果应一致（机械校验，不是逐拍内容审计）。
+
+**自检管不到的**：运镜动机闸、戏成立终审、剧本逐句映射、画质词是否真为 10 号 2.1 原文、正文是否泄漏内部口径——这些仍由本层按规则源 70 号与 96 号完成。自检通过不等于内容合规。
+
