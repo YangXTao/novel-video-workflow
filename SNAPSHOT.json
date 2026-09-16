@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "v13.0-rules-wiring source snapshot; excludes runtime state and this manifest itself",
-  "captured_at": "2026-09-16T11:06:44+08:00",
+  "captured_at": "2026-09-16T11:36:22+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -340,8 +340,8 @@
     },
     {
       "path": "skills/video-prompts-v13/references/output-and-handoff-contract.md",
-      "sha256": "B7FF59414F5E85817C3D669440085FB2291857B5ACB0D036232C9C289E79FF4B",
-      "bytes": 4325
+      "sha256": "15FA0AE609B65C56038BEBB71D12077D7E78F5D7F700876D65E017699C52426B",
+      "bytes": 4850
     },
     {
       "path": "skills/video-prompts-v13/references/quota-selfcheck.md",
