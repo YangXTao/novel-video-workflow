@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $dir = Join-Path ([IO.Path]::GetTempPath()) ('submission-bindings-' + [guid]::NewGuid())
 New-Item -ItemType Directory -Path $dir | Out-Null
 $shell = (Get-Process -Id $PID).Path

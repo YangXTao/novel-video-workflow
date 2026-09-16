@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   校验 video-prompts-v13 使用的规则源（已安装的小家 v13.0 skill）。
 

@@ -1,4 +1,4 @@
-$ErrorActionPreference='Stop'
+﻿$ErrorActionPreference='Stop'
 $dir=Join-Path ([System.IO.Path]::GetTempPath()) ('screenplay-test-'+[guid]::NewGuid())
 New-Item -ItemType Directory -Path $dir | Out-Null
 $validator=Join-Path $PSScriptRoot 'validate_screenplay_output.ps1'

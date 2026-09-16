@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('Init', 'EnableEditing', 'SetStage', 'RegisterArtifact', 'SetShot', 'Validate', 'Summary')]
     [string]$Action,
