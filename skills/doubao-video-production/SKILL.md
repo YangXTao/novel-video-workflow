@@ -9,7 +9,7 @@ description: 根据完整逐镜提示词和asset_manifest.json，通过豆包网
 
 开始生产前必须取得：
 
-1. 完整的逐镜视频提示词文件（含当前v12.4或已锁定历史稿）与每镜目标秒数；参考资产和图号必须与实际上传绑定一致，不虚构编号。
+1. 完整的逐镜视频提示词文件（含当前 v13.0 版或已锁定历史稿）与每镜目标秒数；参考资产和图号必须与实际上传绑定一致，不虚构编号。
 2. 同章 `asset_manifest.json`。
 3. 章节目录和全局图片资产库。
 4. 用户对本次实际网页视频生成范围的明确授权。用户要求开始、继续或恢复一个明确章节时，可由总控记录为章节级运行授权，无需逐镜重复确认。
@@ -49,7 +49,7 @@ description: 根据完整逐镜提示词和asset_manifest.json，通过豆包网
 
 云电脑额度耗尽后的入口切换必读故障日志 ER-019：检查对话视频生成能力和额度；有重拆授权时先交提示词Skill重建10秒完整稿及映射，再恢复生产，不把云电脑额度阻断当作全账号阻断。
 
-1. 根据最终章节Markdown建立或核对asset_manifest.json的shots（静态资产、纯文字实体、尾帧依赖），不是创作分镜；上游只有资产清单时不能要求V12.6补计划。运行 `scripts/validate_asset_manifest.ps1 -Stage Production` 验证整章清单。
+1. 根据最终章节Markdown建立或核对asset_manifest.json的shots（静态资产、纯文字实体、尾帧依赖），不是创作分镜；上游只有资产清单时不能要求视频提示词层补分镜计划。运行 `scripts/validate_asset_manifest.ps1 -Stage Production` 验证整章清单。
 2. 初始化或读取章节 `video_progress.json`，从最早未完成镜头恢复。
 3. 每镜提交前先建立该镜完整的 `required_identity_assets`、`identity_requirement_reasons`、可选 `identity_waivers`、`static_reference_assets` 和 `body_reference_bindings`，再运行 `scripts/resolve_shot_bindings.ps1`。将该镜原样正文以内存字符串传入-PromptText；脚本校验未豁免的可见开口角色与核心身份图没有遗漏、资产真实可用，并按正文生成最终上传顺序。逐镜shots不存在、未传PromptText、核心身份图缺失或脚本失败都不得浏览器提交。
 4. 通过项目级 `doubao_playwright` MCP控制豆包专用Chrome，按本镜计划选择“对话→视频生成”或“工作任务→云电脑”，不是固定单一入口。核对套餐与该入口的模型、时长、比例。首次每镜使用独立对话/工作任务，恢复时返回原任务，不重复新建。云电脑仍指豆包网页功能，不是Codex云端工作任务。

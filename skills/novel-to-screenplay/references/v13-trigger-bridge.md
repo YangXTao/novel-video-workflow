@@ -1,6 +1,4 @@
-# v12.6 语义桥接
-
-> 文件名保留历史名（v12-trigger-bridge）；内容已指向 v13 规则源入口与已安装的小家 v13.0 skill。
+# v13.0 语义桥接
 ## 读取与版本
 完整读取同级 video-prompts-v13/SKILL.md 入口，并按 video-prompts-v13/references/installed-rule-source.md 定位**已安装的小家 v13.0 规则源**（默认 `~/.workbuddy/skills/xiaojia-prompt-generator`）。规则正文只存在于安装版 skill；本仓库不保存规则副本、control.md、rule-bundle.json 或规则读取脚本。审计中的 rule_sha256 记录**规则源 SKILL.md** 的 SHA-256（由 video-prompts-v13/scripts/verify_rule_source.ps1 -Json 输出）；规则源升级后重新读取并重新计算，不沿用缓存配方。规则源缺失时可完成普通分场剧本，但标记桥接未核验，不能宣称已完成触发验收。
 

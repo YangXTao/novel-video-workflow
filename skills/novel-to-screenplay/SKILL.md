@@ -1,12 +1,12 @@
 ---
 name: novel-to-screenplay
-description: 将中文小说章节改编为简洁完整的分场基准剧本，保留剧情、逐句声音与连续性，并按小家v12.4语义事件辅助下游触发；不直接生成图片或视频。
+description: 将中文小说章节改编为简洁完整的分场基准剧本，保留剧情、逐句声音与连续性，并按小家 v13.0 语义事件辅助下游触发；不直接生成图片或视频。
 ---
 
 # 小说转分场剧本
 
 1. 完整读取本章原文、用户要求、实际可读的既有角色/声音/资产资料。
-2. 完整读取 [references/original-prompt.md](references/original-prompt.md)、[references/execution-contract.md](references/execution-contract.md) 和 [references/v12-trigger-bridge.md](references/v12-trigger-bridge.md)。
+2. 完整读取 [references/original-prompt.md](references/original-prompt.md)、[references/execution-contract.md](references/execution-contract.md) 和 [references/v13-trigger-bridge.md](references/v13-trigger-bridge.md)。
 3. 按桥接规则读取当前 video-prompts-v13 母版主控及本章涉及的事件条目，先核实事实再选择语义事件；不执行下游视频特效扩写。
 4. 按 original-prompt.md「主场与场内转换」组织完整戏剧单元，按「六项戏剧表达」落实人物表演与事件推进；静默复核关键事件的起因、相关反应与后果，以及对白推进、权力/证据/物件归属变化和关键停顿。完成剧情分级、原著表达保留、时长可行性、语义事件与连续性检查，输出三部分分场剧本。使用 SC01 主场编号，不预造 S01 视频镜头。
 5. 按 execution-contract.md 完成下游可拆镜与歧义门禁：关键动作能还原起点、路径、接触/受阻、反馈和结束位置；持物、伤损、站位、场景破坏与信息状态可连续继承。无法由原文解决且会影响资产、参考图或逐镜连续性的歧义不得脑补，记录到独立审计并将 downstream_gate 标为 needs-resolution。

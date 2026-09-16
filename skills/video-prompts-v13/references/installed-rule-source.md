@@ -7,14 +7,12 @@
 1. **项目配置**：项目根目录 `novel_video_production_config.json` 中的
    `video_prompt_generation.rule_source`（绝对路径或 `~` 开头）与可选 `rule_source_version`。
 2. **环境变量**：`XIAOJIA_SKILL_DIR`。
-3. **默认安装位置（按运行环境依次尝试）**：
-   - WorkBuddy：`~/.workbuddy/skills/xiaojia-prompt-generator`
-   - Codex：`~/.codex/skills/xiaojia-prompt-generator`（推荐做成指向 WorkBuddy 安装目录的目录联接，见 §3.1，保证两边是同一份规则源）
+3. **默认安装位置（WorkBuddy）**：`~/.workbuddy/skills/xiaojia-prompt-generator`
 
-   命中任一即可；两者都存在但内容不一致时，停机报告，不擅自选一个。
+   本工作流**只接 WorkBuddy**：只从 WorkBuddy 的用户级 Skill 目录解析规则源，不从其他客户端的 Skill 目录取用、也不做跨客户端目录联接。规则源全局**只有一份**，即在 WorkBuddy 里安装的这份。
 
 命中目录后，必须同时存在 `SKILL.md` 与 `references/` 目录，才算定位成功。
-若运行环境支持按名加载 skill（如 WorkBuddy 会话内），可直接加载 `xiaojia-prompt-generator`，但仍须完成第 2 步校验并记录同一份 SHA-256。
+若在 WorkBuddy 会话内，可直接按名加载 `xiaojia-prompt-generator`，但仍须完成第 2 步校验并记录同一份 SHA-256。
 
 ## 2. 校验项（缺一即停机）
 
@@ -34,19 +32,7 @@ pwsh -NoProfile -File scripts/verify_rule_source.ps1 -RuleSource "D:\path\to\xia
 pwsh -NoProfile -File scripts/verify_rule_source.ps1 -Json      # 机器可读，供上游写入审计
 ```
 
-校验失败时：**停机报告实际路径、版本、缺失项；不得回落到其他版本的规则源（v12 入口已从本分支移除），不得凭记忆复述规则**。
-
-### 3.1 Codex 侧接入方式（推荐目录联接，不复制规则）
-
-Codex 只从 `~/.codex/skills/` 加载 Skill。为了让它复用同一份安装版规则源，推荐建立目录联接（无需管理员）：
-
-```bat
-mklink /J "%USERPROFILE%\.codex\skills\xiaojia-prompt-generator" "%USERPROFILE%\.workbuddy\skills\xiaojia-prompt-generator"
-```
-
-- 联接不是复制：内容仍只有一份，由作者在安装目录维护，两边同步生效。
-- 若联接不可用（权限/文件系统限制），本入口仍能按绝对路径直接读取规则源文件，功能不受影响；只是 Codex 的 Skill 列表里看不到它。
-- 禁止把规则源整体复制进 `~/.codex/skills/` 当“第二份”用，否则升级后必然漂移。
+校验失败时：**停机报告实际路径、版本、缺失项；不得回落到其他版本的规则源，不得凭记忆复述规则**。
 
 ## 3. 只读纪律
 
@@ -56,13 +42,12 @@ mklink /J "%USERPROFILE%\.codex\skills\xiaojia-prompt-generator" "%USERPROFILE%\
 - 禁缓存替换：不得在仓库内维护"规则副本 + 哈希"来代替现场读取；升级后重新读取、重新计算哈希。
 - 版本漂移防护：作者发布 v13.x 更新时，本层无需改动，只要 `metadata.version` 仍满足要求即自动跟随。
 
-## 4. 与 v12.6 的差异（为什么必须换）
+## 4. 为什么必须是委派形态
 
-| 项 | v12.6 旧入口（已从本分支移除） | video-prompts-v13（v13.0 规则源） |
+| 项 | 内联单文件（已废弃形态） | 委派已安装规则源（当前） |
 |---|---|---|
-| 形态 | 781 KB 单文件母版直接作为 SKILL.md，全量内联 | 总控 19 KB + `references/` 29 个文件，按 96 号契约按需读取 |
+| 形态 | 全量规则内联成单个 SKILL.md | 总控 19 KB + `references/` 29 个文件，按 96 号契约按需读取 |
 | 截断风险 | 高：单文件过长会被压缩/截断，导致规则丢失、输出精简 | 低：渐进式披露，逐子节读取并留证据 |
-| 打戏句法 | 12.9.2 之前口径 | v13.0 打戏句法对齐九处（曲线制呼吸点、张力铺垫三选一、四类功能母版、阶梯拉远计一次 EWS 等） |
 | 依赖与验收 | 无独立执行契约文件 | 96 号执行契约 + 事实账本 + 缺口账本 + 规则卡 + 证据回执 + 100 号最终覆盖 |
 
-旧入口目录已从本分支移除（历史留存在 git 的 `v12.6-reference-budget` 分支）；新章节一律走 v13 入口，需要旧规则时从该分支取回，不在工作副本里并存两套。
+新章节一律走 v13 入口；工作副本内不并存两套规则。

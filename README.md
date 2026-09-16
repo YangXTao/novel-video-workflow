@@ -2,15 +2,15 @@
 
 当前实际使用的 8 个 Skill、专用 Chrome 启动配置、Playwright MCP 执行工具及图片/视频文件处理脚本的完整快照。图片通过 ChatGPT 网页生成，视频通过豆包网页生成，暂不包含剪辑流程。
 
-Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新及小说转剧本流水线门禁优化。`SNAPSHOT.json` 记录归档文件的 SHA-256，可检查快照完整性。
+Skill 来自当前已安装目录；当前分支已包含规则源接线与小说转剧本流水线门禁优化。`SNAPSHOT.json` 记录归档文件的 SHA-256，可检查快照完整性。
 
 ## v13.0 规则源接线（当前分支 `v13.0-rules-wiring`）
 
-视频提示词阶段不再使用 v12.6 单文件母版，改为 `video-prompts-v13` 入口：本仓库**不含任何规则副本**，入口只负责定位并校验**已安装的小家 v13.0 skill**（默认 `~/.workbuddy/skills/xiaojia-prompt-generator`），把工作流输入原样交给它、把唯一完整章节 Markdown 原样接回。规则源只读，仍由作者维护，升级后工作流自动跟随。
+视频提示词阶段不再内联规则，改为 `video-prompts-v13` 入口：本仓库**不含任何规则副本**，入口只负责定位并校验**已安装的小家 v13.0 skill**（默认 `~/.workbuddy/skills/xiaojia-prompt-generator`），把工作流输入原样交给它、把唯一完整章节 Markdown 原样接回。规则源只读，仍由作者维护，升级后工作流自动跟随。
 
-要点：输出改名 `<章节名>_完整视频提示词_v13.0.md`；入口禁止精简、禁止自创、禁止用摘要替代剧本；规则源缺失或版本不符时停机，不回落 v12.6。总控、剧本桥接、图片提示词、豆包制作的引用已同步指向 v13 入口。
+要点：输出改名 `<章节名>_完整视频提示词_v13.0.md`；入口禁止精简、禁止自创、禁止用摘要替代剧本；规则源缺失或版本不符时停机，不回落其他版本。总控、剧本桥接、图片提示词、豆包制作的引用已同步指向 v13 入口。
 
-详见 [v13.0 规则源接线说明](docs/video-prompts-v13-rules-wiring.md)。v12.6 相关说明文档作为历史记录保留；旧入口目录已从本分支移除，需要时从 `v12.6-reference-budget` 分支取回。
+详见 [v13.0 规则源接线说明](docs/video-prompts-v13-rules-wiring.md)。本分支只保留 v13.0 这一套规则源入口与文档。
 
 ## 小说转剧本流水线门禁更新
 
@@ -40,10 +40,10 @@ Skill 来自当前已安装目录；当前分支包含已记录的 v12.6 更新�
 
 这是 Windows/PowerShell 工作流快照，不是免配置安装包。需要 PowerShell 7、Node.js、pnpm、Google Chrome；视频检查后端还使用 Microsoft Edge。可选的 Python 联系表脚本需要 Pillow。
 
-1. 将 `skills/` 下的 8 个文件夹复制到目标 AI 客户端的 Skill 目录。Codex 默认为用户目录下 `.codex/skills/`。覆盖已有版本前先备份。
+1. 将 `skills/` 下的 8 个文件夹部署到 WorkBuddy 的用户级 Skill 目录 `%USERPROFILE%\.workbuddy\skills\`（也可以直接建目录联接指向本仓库，改仓库即刻生效）。覆盖已有版本前先备份。
 2. 原机器的工具部署位置是 `D:\jimeng\novel-video-tools`，将 `tools/` 下两个目录部署到该处；浏览器运行数据根目录是 `D:\jimeng\novel-video-browser`，首次启动时创建。
 3. 在两个工具目录分别运行 `pnpm install --frozen-lockfile`，恢复锁定的依赖。Playwright MCP 版本为 `0.0.80`，依赖源码和 `node_modules` 不在仓库中。
-4. 把 `config/codex-mcp.example.toml` 中对应的两个 MCP 配置段合并进项目 `.codex/config.toml`，不要覆盖其他服务配置；其他支持 STDIO MCP 的客户端使用相同启动脚本注册服务。
+4. 按 `config/codex-mcp.example.toml` 里记的两个 MCP 启动命令，写成 WorkBuddy 的 `%USERPROFILE%\.workbuddy\mcp.json`：`mcpServers` 结构，每项 `command` 用 `C:\Windows\System32\cmd.exe`、`args` 为 `["/c", "<对应目录>\start-mcp.cmd"]`。不要覆盖该文件里其他服务配置；写入后需在连接器管理页对这两个服务点「信任」才会加载。
 5. 检查脚本中的 Node.js、Chrome 和工作目录路径。原始快照保留了 `C:\Users\Y\...` 和 `D:\jimeng\...`；换机器时必须调整，特别是 `start-mcp.cmd`、`start-image-worker.cmd`、`image-worker.cjs`、`image-worker-control.ps1` 和图片下载恢复脚本。Skill 文档中的绝对部署路径也需对应更新。
 6. `playwright_video_backend.cjs` 可通过环境变量 `CODEX_PLAYWRIGHT_PATH` 指向已安装的 Playwright 模块目录；默认使用原机器的 Codex 依赖路径。其他独立抽帧脚本也保留了原始模块路径。
 7. 重新加载客户端 MCP 后打开对应专用浏览器，首次在新机器上由用户手工登录。两个专用用户目录分别为 `doubao-profile`、`chatgpt-image-profile`，以后保留在本机即可复用登录状态。

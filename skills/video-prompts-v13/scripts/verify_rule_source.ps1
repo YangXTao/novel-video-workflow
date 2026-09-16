@@ -38,11 +38,11 @@ function Resolve-RuleSourceDir {
   }
   if ($env:XIAOJIA_SKILL_DIR) { return (Resolve-Path -LiteralPath $env:XIAOJIA_SKILL_DIR).Path }
   $h = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
-  foreach ($cand in @('.workbuddy/skills/xiaojia-prompt-generator', '.codex/skills/xiaojia-prompt-generator')) {
-    $p2 = Join-Path $h $cand
-    if (Test-Path -LiteralPath $p2) { return (Resolve-Path -LiteralPath $p2).Path }
-  }
-  return (Join-Path $h '.workbuddy/skills/xiaojia-prompt-generator')
+  # 本工作流只接 WorkBuddy：默认位置固定为 ~/.workbuddy/skills/xiaojia-prompt-generator，
+  # 不从其他客户端的 Skill 目录解析规则源。
+  $p2 = Join-Path $h '.workbuddy/skills/xiaojia-prompt-generator'
+  if (Test-Path -LiteralPath $p2) { return (Resolve-Path -LiteralPath $p2).Path }
+  return $p2
 }
 
 function Test-LowerVersion {
