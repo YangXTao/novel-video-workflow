@@ -20,6 +20,8 @@ description: 串联中文小说单章的剧本改编、人物/场景/道具提�
 
 图片和豆包网页分别使用 `chatgpt_image_playwright`、`doubao_playwright` MCP；剪映通过 `computer-use:computer-use` Skill 使用 `node_repl` 与 `@oai/sky` 操作 Windows 桌面。执行工具和登录/窗口状态必须现场验证，不能以 Skill 文件存在代替运行成功。
 
+**进入 `image_production` 阶段前必须先现场确认图片环境就绪**（否则会一直卡在"打不开"，典型报错 `connect ECONNREFUSED 127.0.0.1:34192`）：`netstat -ano | findstr ":34191 :34192"`。两个都监听则继续；缺 34191（worker，含任务账本）用 `explorer.exe "D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\start-image-worker.cmd"`，缺 34192 用同目录 `start-chrome.cmd`；等待约 12 秒复核，最多重试 2 次，仍缺即报阻断并请用户双击对应 cmd，**不得反复重试或持续等待**。全程**同一时间只用一条通道驱动那台 Chrome**（worker 或 `chatgpt_image_playwright` MCP，二选一）。禁止在 MCP 加载、重连、App 启动或普通状态检查时自动启动它们。豆包侧不需要此检查：其专用 Chrome 由 `doubao_playwright` MCP 自持启动。
+
 开始任何整章任务前，完整读取 [references/workflow.md](references/workflow.md) 和 [references/state-contract.md](references/state-contract.md)。使用 `scripts/orchestrator_state.ps1` 初始化、更新、验证和汇总章节状态。
 
 如果项目根目录存在 `novel_video_production_config.json`，读取其中的V10规则生效章节、账号顺序、项目特殊恢复方式，以及可选的 `video_prompt_generation.additional_directive`。该附加创作要求只作为项目级用户要求原样传给 `video-prompts-v13`，总控不得改写、概括或扩展；当前任务中用户更新的明确要求优先。账号名称、生效章节、创作偏好和特殊操作不得写死在通用 Skill 中。

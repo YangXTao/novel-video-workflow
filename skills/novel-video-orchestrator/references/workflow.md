@@ -22,6 +22,14 @@ SCREENPLAY-SCENE-v2 输入不预造 S 镜头。图片阶段负责形成可直接
 - `screenplay`：基准剧本完整并通过小说转剧本 Skill 的检查，同时登记 `screenplay_trigger_audit.json`。新产物须为 `screenplay-trigger-audit-v2` 且 `downstream_gate.status=ready`；`needs-resolution` 时将剧本阶段标记 blocked，先解决其中会影响资产、实体状态、参考图映射、镜头衔接、对白归属或结果正确性的阻断项。非阻断备注不影响继续。
 - 三类提示词：分别由对应 Skill 基于同一份正式剧本生成；不能用其中一类代替另一类。
 - `image_production`：新建项均为 `qa_approved`，复用项均为 `reuse_approved`，免建图项没有被误生成。
+  - **本阶段入场的第一个动作是确认图片环境就绪**，不确认就开始会导致后续一直卡在"打不开"（典型报错 `connect ECONNREFUSED 127.0.0.1:34192`）：
+    1. `netstat -ano | findstr ":34191 :34192"`。两个都监听 → 继续；只缺 34192 → 跳到第 3 步。
+    2. 缺 34191（图片 worker，持有任务账本）→ `explorer.exe "D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\start-image-worker.cmd"`；worker 会自行拉起或附着专用 Chrome（34192）。
+    3. 只缺 34192（专用 Chrome）→ `explorer.exe "D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\start-chrome.cmd"`。
+    4. 等待约 12 秒后复核两个端口；仍缺 → 最多再重试 1 次（合计 2 次）；仍失败即**报阻断**并给出兜底：请用户双击对应 `start-image-worker.cmd` / `start-chrome.cmd`（均幂等）后回复继续。
+    5. 全程禁止无上限重试、禁止"边等边轮询"，也禁止改用工具命令直接 spawn（会被回合回收）。等待期间某端口就绪即继续，不额外建任务。
+    6. **同一时间只用一条通道驱动那台 Chrome**：worker（34191）或 `chatgpt_image_playwright` MCP（34192 附着），二选一；同时驱动会争抢同一页面状态。
+  - 上述拉起只在本阶段（或任何需要 ChatGPT 网页的动作）按需发生；**MCP 加载、重连、App 启动、普通状态检查一律不得自动启动它们**。豆包侧无需此步，其浏览器由 `doubao_playwright` MCP 自持。
 - `asset_manifest`：生图后只校验真实资产身份、版本、状态、路径、哈希及SC场次关联；使用validate_asset_manifest.ps1 -Stage AssetsOnly，不要求尚未产生的S镜头或尾帧。完整视频提示词产生后，由总控登记镜间连续性类型，再由视频制作阶段建立shots、精选参考资产与尾帧依赖，最后用-Stage Production校验。`static_reference_assets`只列本镜实际准备上传的图片，不等于把所有出场实体全部上传。
 - 从视频提示词进入视频制作时，不能以空的shots清单直接生产。视频制作阶段须先逐镜识别关键身份节点并登记 `required_identity_assets`：画面内开口、近景/特写、首次出场/换装、身份辨认、关键剧情动作及连续性落点角色为核心身份资产；纯画外音、不可辨认远景或静止背景角色可显式登记豁免。再据此生成 `static_reference_assets`、正文图号绑定和上传顺序。绑定解析脚本未通过时，该镜保持阻塞，不能由总控临时挑图绕过。
 - `v10_prompts`：由当前 video-prompts-v13 基于完整正式剧本、已有资产清单和用户规格生成唯一的完整章节提示词Markdown；镜头正文不得自行精简。该阶段交付必须附配额自检结果（硬项为空），细则见 video-prompts-v13/references/quota-selfcheck.md。
