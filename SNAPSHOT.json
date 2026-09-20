@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "description": "v13.0-alpha Codex-adapted source snapshot; excludes runtime state and this manifest itself",
-  "captured_at": "2026-09-20T10:22:04.1631087+08:00",
+  "description": "v13.0-codex-alpha source snapshot; excludes runtime state and this manifest itself",
+  "captured_at": "2026-09-20T11:04:09.2853624+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -25,8 +25,8 @@
     },
     {
       "path": "docs/additional-directive-guide.md",
-      "sha256": "F5AD4604FE2614297DE84E09484CB791A55B8D13C83B48FAC48B4936BE231743",
-      "bytes": 6788
+      "sha256": "C899D501F550596524C2319D29A8F8857E41AE9326F935564098AFA667E03ACB",
+      "bytes": 5102
     },
     {
       "path": "docs/novel-to-screenplay-v2.1-changes.md",
@@ -235,8 +235,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/SKILL.md",
-      "sha256": "DE8DDE4F5B06BE54EF15BDF21203EEE8198C0284EFA455AE5523146765871438",
-      "bytes": 12359
+      "sha256": "A2A663D726F1B2E85A160384CAC6207D99983236824A84420BF387883A5BF71A",
+      "bytes": 12667
     },
     {
       "path": "skills/novel-video-orchestrator/agents/openai.yaml",
@@ -250,8 +250,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/references/isolated-creative-tasks.md",
-      "sha256": "B4D172C03A9E1ADD75E35DB6E29ACA4401ACA2BC084914C129EA3692B8B878A2",
-      "bytes": 4773
+      "sha256": "7801DA649A91B0CF4017B762FE5D8F6D563C2B4C3092190B8A2FC02957C1478C",
+      "bytes": 4929
     },
     {
       "path": "skills/novel-video-orchestrator/references/state-contract.md",
@@ -259,9 +259,14 @@
       "bytes": 5319
     },
     {
+      "path": "skills/novel-video-orchestrator/references/combat-style-presets.md",
+      "sha256": "8FC77B46FDCDD17B0EC50137F1E2754DFE199C4DE8768B7B7AAEBF48B88B07DD",
+      "bytes": 4866
+    },
+    {
       "path": "skills/novel-video-orchestrator/references/workflow.md",
-      "sha256": "F9AEDDB6C5BEBBBDE3302436093C486D99344C5FB2BACB6E77AE61427B6CFEED",
-      "bytes": 22256
+      "sha256": "27CF1CDAD7AB2162F2BF675323E783D08857D3149FE48EFC1EF338015C1F942B",
+      "bytes": 23067
     },
     {
       "path": "skills/novel-video-orchestrator/scripts/creative_task_io.ps1",
