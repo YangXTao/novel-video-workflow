@@ -12,7 +12,8 @@ $assets = [ordered]@{}
 foreach ($id in @('A','B','SCENE','TAIL')) {
     $path = Join-Path $dir "$id.fixture"
     [IO.File]::WriteAllText($path, "fixture-$id")
-    $assets[$id] = @{name=$id;type='prop';status='approved';file_path=$path;sha256=(Get-FileHash $path).Hash}
+    $type = if ($id -in @('A','B')) { 'character' } elseif ($id -eq 'SCENE') { 'scene' } else { 'prop' }
+    $assets[$id] = @{name=$id;type=$type;status='approved';file_path=$path;sha256=(Get-FileHash $path).Hash}
 }
 $manifest = [ordered]@{schema_version='novel-video-asset-manifest-v1';reference_policy=@{eligible_statuses=@('approved','reuse_approved');preferred_images_per_shot_min=2;preferred_images_per_shot_max=4;soft_max_images_per_shot=5;max_images_per_shot=10};assets=$assets}
 SaveManifest
@@ -22,7 +23,7 @@ Assert ($LASTEXITCODE -eq 0) 'Asset-only stage incorrectly requires shots.'
 Assert ($LASTEXITCODE -eq 1) 'Production accepted no shots.'
 $body = "## S01`n【角色·场景·核心设定】`n角色甲=@image1，角色乙=@image2。`n【时间轴】`n完整动作、声线与对白。"
 $originalBody = $body
-$shot = @{static_reference_assets=@('B','SCENE','A');text_only_entities=@();body_reference_bindings=@{'@image1'='A';'@image2'='B'};tail_frame=@{eligible=$true;status='approved';source_shot='S00';asset_id_when_created='TAIL';file_path=$assets.TAIL.file_path;sha256=$assets.TAIL.sha256}}
+$shot = @{required_identity_assets=@('A','B');identity_requirement_reasons=@{A='speaking_or_key_action';B='speaking_or_key_action'};static_reference_assets=@('B','SCENE','A');text_only_entities=@();body_reference_bindings=@{'@image1'='A';'@image2'='B'};tail_frame=@{eligible=$true;status='approved';source_shot='S00';asset_id_when_created='TAIL';file_path=$assets.TAIL.file_path;sha256=$assets.TAIL.sha256}}
 $manifest.shots = [ordered]@{S01=$shot}
 SaveManifest
 $console = @(& $resolver -ManifestPath $manifestPath -ShotId S01 -PromptText $body -OutputPath $resultPath)

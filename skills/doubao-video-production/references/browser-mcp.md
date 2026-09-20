@@ -3,12 +3,7 @@
 ## 固定实现
 
 - MCP名称：`doubao_playwright`。
-- 传输方式：项目级STDIO MCP；不依赖Plugin。
-- 启动脚本：`D:\jimeng\novel-video-tools\doubao-playwright-mcp\start-mcp.cmd`。
-- Chrome程序：`C:\Program Files\Google\Chrome\Application\chrome.exe`。
-- 独立用户目录：`D:\jimeng\novel-video-browser\doubao-profile`。
-- 浏览器产物目录：`D:\jimeng\novel-video-browser\artifacts`。
-- 由上述MCP启动有界面的专用Chrome，使用原持久化目录；不要求另启调试端口。
+- 使用当前 Codex 已加载的 MCP 工具及其既有持久化浏览器配置。仓库内 `tools/doubao-playwright-mcp` 只作历史源码，不在本工作流中部署、启动或覆盖当前 Codex 配置。
 
 该用户目录只供此MCP实例使用。不得同时启动两个使用同一目录的浏览器实例，也不得改用用户日常Chrome配置目录。
 
@@ -69,10 +64,8 @@
 
 正文的唯一真源是 `_submit_<镜>.txt`。投递由 MCP 常驻进程完成，**不需要**本地回环服务、系统剪贴板或任何后台常驻脚本。
 
-1. 生成片段：`python C:\Users\Y\WorkBuddy\2026-09-16-15-47-57\deliver\make_deliver.py --shot S07` → `deliver\out\_deliver_S07.js`。
-2. 调用 `browser_run_code_unsafe`，只给 `filename`，盘符必须**小写**（`c:\...`；写 `C:\...` 会被“允许根”校验拒绝），且文件内容必须是**单个表达式**（顶层出现 `if`/`const` 语句会报 `SyntaxError: Unexpected token ';'`）。
-3. 片段动作：`page.context().newPage()` → `goto('file:///.../_submit_<镜>.txt')` → `pre.textContent` 读原文（与磁盘逐字节一致）→ 关闭临时页 → 在主页定位最靠下的可见 `[contenteditable]`/`textarea` → 清空后 `execCommand('insertText')` → 回读输入框并用页内 `crypto.subtle` 计算 SHA-256。
-4. 门禁：`ok=true` 才可按 Enter。`matchStrict` = 回读与源文件逐字节一致；`matchContent` = 忽略空白差异的内容哈希一致（contenteditable 会把连续空行读成多一个 `\n`，属正常，不是丢字）。两者皆 false 时停止，不重试、不换号。
-5. 片段自带护栏：`live` 模式下当前页 URL 不含 `doubao.com` 时直接返回 `stage=host-guard`，不注入。
+1. 由当前 `doubao_playwright` MCP 在进程内读取 `_submit_<镜>.txt` 并注入页面；不使用系统剪贴板，也不调用任何 WorkBuddy 交付脚本。
+2. 读取后回读输入框并计算或核对内容哈希；正文与磁盘源文件不一致时停止，不提交、不换号。
+3. 注入动作必须先确认当前页属于 `doubao.com`，并使用当次可见页面定位最靠下的可编辑输入框；页面不匹配时停止。
 
 禁止把这一通道改回“会话派生的常驻服务”（早先的 `serve_text.py`/8765 与 Chrome 保活托盘均已退役）：那些进程会随回合或会话结束被整棵进程树回收，表现为“起完就退”。也不要为此改用 CDP 附着或后台浏览器——见本文开头“固定实现”。

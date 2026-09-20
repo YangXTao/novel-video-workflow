@@ -14,13 +14,13 @@ description: 串联中文小说单章的剧本改编、人物/场景/道具提�
 1. `novel-to-screenplay`
 2. `character-image-prompts`、`scene-image-prompts`、`prop-image-prompts`
 3. `chatgpt-image-production`
-4. `video-prompts-v13`（委派已安装的小家 v13.1.1 规则源；本仓库不含规则副本）
+4. `video-prompts-v13`（委派同一工作流包内的独立小家 v13.1.1 规则 Skill）
 5. `doubao-video-production`
 6. `jianying-editing`（视频与整章审核通过后，按章启用）
 
-图片和豆包网页分别使用 `chatgpt_image_playwright`、`doubao_playwright` MCP；剪映通过 `computer-use:computer-use` Skill 使用 `node_repl` 与 `@oai/sky` 操作 Windows 桌面。执行工具和登录/窗口状态必须现场验证，不能以 Skill 文件存在代替运行成功。
+图片和豆包网页分别使用当前 Codex 已加载的 `chatgpt_image_playwright`、`doubao_playwright` MCP；剪映通过 `computer-use:computer-use` Skill 操作 Windows 桌面。执行工具和登录/窗口状态必须现场验证，不能以 Skill 文件存在代替运行成功。
 
-**进入 `image_production` 阶段前必须先现场确认图片环境就绪**（否则会一直卡在"打不开"，典型报错 `connect ECONNREFUSED 127.0.0.1:34192`）：`netstat -ano | findstr ":34191 :34192"`。两个都监听则继续；缺 34191（worker，含任务账本）用 `explorer.exe "D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\start-image-worker.cmd"`，缺 34192 用同目录 `start-chrome.cmd`；等待约 12 秒复核，最多重试 2 次，仍缺即报阻断并请用户双击对应 cmd，**不得反复重试或持续等待**。全程**同一时间只用一条通道驱动那台 Chrome**（worker 或 `chatgpt_image_playwright` MCP，二选一）。禁止在 MCP 加载、重连、App 启动或普通状态检查时自动启动它们。豆包侧不需要此检查：其专用 Chrome 由 `doubao_playwright` MCP 自持启动。
+**进入 `image_production` 阶段前必须先确认当前 Codex 会话已加载 `chatgpt_image_playwright` MCP 工具**；进入 `video_production` 前同样确认 `doubao_playwright`。工具存在时直接使用当前 Codex 连接及其持久化浏览器配置，不部署、不启动本仓库 `tools/` 中的旧服务，也不改写 Codex MCP 配置。工具缺失或连接关闭时按 Codex 当前插件/MCP恢复方式处理并保留断点；不得另外启动第二套控制器争用同一配置目录。浏览器页面实际未登录、出现验证码或安全校验时才交由用户处理。
 
 开始任何整章任务前，完整读取 [references/workflow.md](references/workflow.md) 和 [references/state-contract.md](references/state-contract.md)。使用 `scripts/orchestrator_state.ps1` 初始化、更新、验证和汇总章节状态。
 
@@ -36,7 +36,7 @@ Seedance参考图数量属于制作约束，不由总控代写镜头：总控在
 
 视频提示词阶段按 [references/workflow.md](references/workflow.md) 的“完整输入直交”固定调用模板执行：整章生成明确指定“完整正式剧本、生成、完整档、不因篇幅降档”，交付整章正式剧本、已有设定、上游真实资产清单及用户时长/模型要求；用户明确指定其他模式或档位时除外。总控不预写分镜、不扫描图片、不增加计划或审计任务；该Skill独立规划后只交付一个完整章节Markdown，总控原样接回，不要求用户每章重复这些交接指令。
 
-工作流不是另一个精简生成器：执行者必须读取 video-prompts-v13 入口，并按 video-prompts-v13/references/installed-rule-source.md 定位已安装的小家 v13.1.1 规则源和当前任务适用的原规则，完整剧本不得替换为总控摘要。批量任务按母版完成创作及自身质检后原样汇总，不能用机械拆旧稿、拉伸时间戳或通用passed=true代替实际工作。恢复任务时重新读取此入口及子Skill当前合同，不能仅照旧章节脚本运行。
+工作流不是另一个精简生成器：执行者必须读取 video-prompts-v13 入口，并按 video-prompts-v13/references/installed-rule-source.md 定位本工作流包中的小家 v13.1.1 规则源和当前任务适用的原规则，完整剧本不得替换为总控摘要。批量任务按母版完成创作及自身质检后原样汇总，不能用机械拆旧稿、拉伸时间戳或通用passed=true代替实际工作。恢复任务时重新读取此入口及子Skill当前合同，不能仅照旧章节脚本运行。
 
 外围仅做输入、输出、提交三处交接检查：输入完整；唯一完整章节Markdown存在且正文未被二次改写；提交版本、真实图片、模型、时长、比例正确。内容质检由所属Skill按自身规则完成，总控不重复逐拍审计。未变化的正式产物沿用，仅复查修改项及受影响衔接。视频提示词阶段的输出侧另设**配额自检门禁**：接回后由总控独立重跑该阶段自检脚本，硬项非空或与交付说明不一致即退回该阶段（见 `video-prompts-v13/references/quota-selfcheck.md`）。
 

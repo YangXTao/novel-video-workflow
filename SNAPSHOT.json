@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "description": "v13.0-rules-wiring source snapshot; excludes runtime state and this manifest itself",
-  "captured_at": "2026-09-16T23:16:11+08:00",
+  "description": "v13.0-alpha Codex-adapted source snapshot; excludes runtime state and this manifest itself",
+  "captured_at": "2026-09-20T10:22:04.1631087+08:00",
   "files": [
     {
       "path": ".gitattributes",
@@ -15,8 +15,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "ECFCE4A911B9823A1469826C0D38CD18A870D1B33C53B2BD3B1A89D4FCB11D95",
-      "bytes": 7482
+      "sha256": "B948A3547C1AA660EBB606526CE42227A37CE6422004C885450674FF8FF81A2C",
+      "bytes": 6044
     },
     {
       "path": "config/codex-mcp.example.toml",
@@ -35,8 +35,8 @@
     },
     {
       "path": "docs/video-prompts-v13-rules-wiring.md",
-      "sha256": "D0E099DA6B0E248E9E70825A550C8BF2FA7AB2A392B4A571C372479A27BDE0D2",
-      "bytes": 17402
+      "sha256": "525C0FFE32EBADCCD1403CFF5B7FA06F3DABED8A6B4C1BA3A577E2987DEF5B5D",
+      "bytes": 17591
     },
     {
       "path": "scripts/extract_last_video_frame.cjs",
@@ -90,8 +90,8 @@
     },
     {
       "path": "skills/chatgpt-image-production/SKILL.md",
-      "sha256": "D6C8C4258EB9DC3F4B6DB2397FC7CF95EAE1726D27D7F9587DF5F6D10756D8EA",
-      "bytes": 4340
+      "sha256": "074A2CE04257CBA6DE463EC20D98975F89300711ACA28060BD15F8CBE48CFD24",
+      "bytes": 4884
     },
     {
       "path": "skills/chatgpt-image-production/agents/openai.yaml",
@@ -105,13 +105,13 @@
     },
     {
       "path": "skills/chatgpt-image-production/references/browser-mcp.md",
-      "sha256": "406AFA5F3EE2F1CA0891C7CC791DF454A573E70E9478A0D0093F417129B694C1",
-      "bytes": 5046
+      "sha256": "0DA24181EB851C51E6C49E1D2E3CD0E97E22345BC19908FC9E1A61E0AC07C390",
+      "bytes": 5021
     },
     {
       "path": "skills/chatgpt-image-production/references/troubleshooting.md",
-      "sha256": "3E28FDFCB72C184921EE8DF98689D9EB83690D69DE5BBFF6A7DDE5F832DEDD01",
-      "bytes": 3705
+      "sha256": "EF0004E0D58EF419ABE0DE0073EDE8811D75459AC27FBBBEAD41FEF2C31408CB",
+      "bytes": 4289
     },
     {
       "path": "skills/chatgpt-image-production/references/workflow.md",
@@ -150,8 +150,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/browser-mcp.md",
-      "sha256": "46D56E938C3F7A4BC9A79BFBD780A3A4DB0A2DE2AD96579938036B66E27C41FA",
-      "bytes": 5239
+      "sha256": "64C77885FC347B55F22EFB136F56FD5F8D1EE516134722BD766D34997DFD884C",
+      "bytes": 5989
     },
     {
       "path": "skills/doubao-video-production/references/error-recovery-log.md",
@@ -165,8 +165,8 @@
     },
     {
       "path": "skills/doubao-video-production/references/workflow.md",
-      "sha256": "DE4F85CCA76D096204F76476EE9ABB62CB0B5C19476C82FF7220E74269FA813E",
-      "bytes": 38920
+      "sha256": "29A80564B09C0A56DAA4F9E9EACF9B348265D0F9189D3D42A100E8539E30B733",
+      "bytes": 39166
     },
     {
       "path": "skills/doubao-video-production/scripts/playwright_video_backend.cjs",
@@ -185,8 +185,8 @@
     },
     {
       "path": "skills/doubao-video-production/scripts/test_submission_bindings.ps1",
-      "sha256": "62D6BE22185E86AF0386A446757A6D8F2D7C3098607554BB8ECD51C8388C2A54",
-      "bytes": 6028
+      "sha256": "D55B17A9E5FBAD5B0D9A6DC606670C8F2CEB7376494ABCF16C6506C1B2E3380D",
+      "bytes": 6254
     },
     {
       "path": "skills/doubao-video-production/scripts/validate_asset_manifest.ps1",
@@ -220,8 +220,8 @@
     },
     {
       "path": "skills/novel-to-screenplay/references/v13-trigger-bridge.md",
-      "sha256": "87DC31C97C114D101D6AE5CED31B8EAA50CD20AB011812E541668A4171C64734",
-      "bytes": 6650
+      "sha256": "D81D4D63264AF2B1A4A1E8571D0B729FCE4F640DC200C8D17EA9E00AE5AC43C3",
+      "bytes": 6667
     },
     {
       "path": "skills/novel-to-screenplay/scripts/test_screenplay_validator.ps1",
@@ -235,8 +235,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/SKILL.md",
-      "sha256": "2F3447A396B74C1CB0B16D84E47FFA34D7363AF87E8753835809D3C3E67078A7",
-      "bytes": 11765
+      "sha256": "DE8DDE4F5B06BE54EF15BDF21203EEE8198C0284EFA455AE5523146765871438",
+      "bytes": 12359
     },
     {
       "path": "skills/novel-video-orchestrator/agents/openai.yaml",
@@ -250,8 +250,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/references/isolated-creative-tasks.md",
-      "sha256": "18CA8642889545AC38303CD06D1FA9332D1D82B3E56AD54192B324C5516CEC46",
-      "bytes": 3939
+      "sha256": "B4D172C03A9E1ADD75E35DB6E29ACA4401ACA2BC084914C129EA3692B8B878A2",
+      "bytes": 4773
     },
     {
       "path": "skills/novel-video-orchestrator/references/state-contract.md",
@@ -260,8 +260,8 @@
     },
     {
       "path": "skills/novel-video-orchestrator/references/workflow.md",
-      "sha256": "4D4D105DE66A028C43BA0E134D3734F6A82B880B04301BE5351906ED84F63F93",
-      "bytes": 21388
+      "sha256": "F9AEDDB6C5BEBBBDE3302436093C486D99344C5FB2BACB6E77AE61427B6CFEED",
+      "bytes": 22256
     },
     {
       "path": "skills/novel-video-orchestrator/scripts/creative_task_io.ps1",
@@ -329,9 +329,19 @@
       "bytes": 12305
     },
     {
+      "path": "skills/storyboard-quota-check/SKILL.md",
+      "sha256": "AA429A10D39BA31FF358A262528C156DBD1A0F5C4D02BF825793CC258D65DA82",
+      "bytes": 20674
+    },
+    {
+      "path": "skills/storyboard-quota-check/scripts/quota_check.py",
+      "sha256": "C87FB1304A6EA2F9DC7D1466920EF1AAA694F140D79C6299274F8F61C18B85AE",
+      "bytes": 44350
+    },
+    {
       "path": "skills/video-prompts-v13/SKILL.md",
-      "sha256": "40102E67A49515351513EF6C1852BB8C131D72B83D175F07F11E23FE0073EC0B",
-      "bytes": 6418
+      "sha256": "A5967507E7443E3FDCEB041046222FD310EF8FDC88F9D1210F3FC419ACADAED1",
+      "bytes": 6518
     },
     {
       "path": "skills/video-prompts-v13/agents/openai.yaml",
@@ -340,8 +350,8 @@
     },
     {
       "path": "skills/video-prompts-v13/references/installed-rule-source.md",
-      "sha256": "36974D15A57568251FFC231A2B7B2C04A7D7B2FD99AEA90F028A2C70F91AE024",
-      "bytes": 3650
+      "sha256": "4D6363D6C5E66FCF8EF67067D9EBE7CBEC92D7324C8F7A4327D7C567E0D47C57",
+      "bytes": 3882
     },
     {
       "path": "skills/video-prompts-v13/references/output-and-handoff-contract.md",
@@ -350,13 +360,18 @@
     },
     {
       "path": "skills/video-prompts-v13/references/quota-selfcheck.md",
-      "sha256": "A62E2ECFF2BB2D6FED8F75A8F3B8AFA7374E4F78C61FC0B741A9F7E3ADDAD734",
-      "bytes": 6157
+      "sha256": "F492B78510AB85588732C97FB2C18ECD5187D2A50EC59567EC241B7FB0F193B9",
+      "bytes": 6567
     },
     {
       "path": "skills/video-prompts-v13/scripts/verify_rule_source.ps1",
-      "sha256": "06C687364D7CFE421D6661C1BE117113B68172487C1F0581A168C59E3C056A6A",
-      "bytes": 4936
+      "sha256": "FC3CA9B37C90E70F7539795A1AF1A400DB462A93F22FED95899E19E79988DA89",
+      "bytes": 5297
+    },
+    {
+      "path": "skills/xiaojia-prompt-generator/SKILL.md",
+      "sha256": "98155CAF8F5034806092AF54DDC3876397B80DB3F5FA0C83449B552AE2398DEF",
+      "bytes": 16433
     },
     {
       "path": "tools/chatgpt-image-playwright-mcp/close-empty-image-tabs.cjs",

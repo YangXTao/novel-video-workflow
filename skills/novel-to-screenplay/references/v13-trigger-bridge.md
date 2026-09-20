@@ -1,6 +1,6 @@
 # v13.1.1 语义桥接
 ## 读取与版本
-完整读取同级 video-prompts-v13/SKILL.md 入口，并按 video-prompts-v13/references/installed-rule-source.md 定位**已安装的小家 v13.1.1 规则源**（默认 `~/.workbuddy/skills/xiaojia-prompt-generator`）。规则正文只存在于安装版 skill；本仓库不保存规则副本、control.md、rule-bundle.json 或规则读取脚本。审计中的 rule_sha256 记录**规则源 SKILL.md** 的 SHA-256（由 video-prompts-v13/scripts/verify_rule_source.ps1 -Json 输出）；规则源升级后重新读取并重新计算，不沿用缓存配方。规则源缺失时可完成普通分场剧本，但标记桥接未核验，不能宣称已完成触发验收。
+完整读取同级 video-prompts-v13/SKILL.md 入口，并按 video-prompts-v13/references/installed-rule-source.md 定位**同一工作流包或 Codex 用户目录中的小家 v13.1.1 规则源**。规则正文位于独立的 `xiaojia-prompt-generator` Skill，不复制进本桥接文件、control.md、rule-bundle.json 或摘要规则。审计中的 rule_sha256 记录**实际解析到的规则源 SKILL.md** 的 SHA-256（由 video-prompts-v13/scripts/verify_rule_source.ps1 -Json 输出）；规则源升级后重新读取并重新计算，不沿用缓存配方。规则源缺失时可完成普通分场剧本，但标记桥接未核验，不能宣称已完成触发验收。
 
 本Skill处于上游语义标注任务，不执行视频导演：只读取适用事件定义、匹配条件与边界；不在上游展开整套画质/运镜/特效参数。
 索引（在当前完整母版内按标题或关键词定位，并完整读取命中条目及上下文）：
@@ -32,7 +32,7 @@
 文件名 screenplay_trigger_audit.json，结构：
 - schema_version: screenplay-trigger-audit-v2
 - rule_version: 从活动SKILL.md的metadata.version读取，不硬编码旧版本
-- rule_sha256: 活动规则源（已安装的小家 v13.1.1 skill）SKILL.md 的 SHA-256，与本次读取来源一致，取自 verify_rule_source.ps1 输出，不调用旧规则包校验脚本
+- rule_sha256: 活动规则源（本次实际解析到的小家 v13.1.1 skill）SKILL.md 的 SHA-256，与本次读取来源一致，取自 verify_rule_source.ps1 输出，不调用旧规则包校验脚本
 - scenes: 数组，每项 scene_id 为SC01等，events为数组；无匹配写空数组。
 - events每项：source_quote（原文可定位短原句），content_type，event（实际表项名或内容分支），rule_locator（规则组编号+小节/表项），screenplay_phrase（正文实际采用的完整动作短句），reason（说明语义如何相符）。
 - downstream_gate：独立的下游门禁对象。

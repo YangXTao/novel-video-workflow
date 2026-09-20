@@ -2,11 +2,7 @@
 
 ## 固定实现
 
-- MCP名称：`chatgpt_image_playwright`，使用项目级STDIO MCP；启动脚本仅启动工具服务，通过 `--cdp-endpoint http://127.0.0.1:34192` 附着。**工具加载、重连、MCP服务启动、App启动和普通状态检查，一律不得自动启动Chrome**——启动App或重连MCP时无故弹出专用浏览器属错误设计（2026-09-17 曾误加该步骤，已回退）。专用Chrome在**进入图片阶段时按需拉起**，见下方“专用Chrome的启动入口”。
-- 启动脚本：`D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\start-mcp.cmd`。
-- Chrome程序：`C:\Program Files\Google\Chrome\Application\chrome.exe`。
-- 独立用户目录：`D:\jimeng\novel-video-browser\chatgpt-image-profile`。
-- 浏览器产物目录：`D:\jimeng\novel-video-browser\chatgpt-image-artifacts`。
+- MCP名称：`chatgpt_image_playwright`，使用当前 Codex 已加载的 MCP 工具及其既有持久化浏览器配置。仓库内 `tools/chatgpt-image-playwright-mcp` 只作历史源码，不在本工作流中部署、启动或覆盖当前 Codex 配置。
 - 生图网站：`https://chatgpt.com/`。
 
 该用户目录只供ChatGPT图片专用MCP使用，不与日常Chrome或豆包专用Chrome共用。由独立启动器启动有界面的Chrome并使用原持久化目录，MCP只附着、不拥有浏览器生命周期；不得同时启动两个使用同一目录的浏览器实例，不读取Cookie、密码、localStorage或其他浏览器存储。
@@ -17,7 +13,7 @@
 
 ## 首次连接
 
-1. 确认 `chatgpt_image_playwright` MCP工具可用（已授权开始/恢复图片任务时）。**进入图片阶段的第一步**先 `netstat -ano | findstr :34192`：已监听则直接用；未监听则按“专用Chrome的启动入口”按需拉起，再用 `netstat` 复核，只有确认监听才继续。**不得**在MCP加载、重连、App启动或普通状态检查时自动启动浏览器。已有页面时先列出标签页，不覆盖未完成任务。
+1. 确认当前 Codex 会话中的 `chatgpt_image_playwright` MCP 工具可用（已授权开始/恢复图片任务时）。已有页面时先列出标签页，不覆盖未完成任务；工具不可用时按 Codex 当前插件/MCP恢复方式恢复同一连接，不运行仓库旧启动脚本。
 2. 打开 `https://chatgpt.com/`；第一次会出现独立Chrome窗口。
 3. 如果未登录、出现验证码或安全校验，停止自动操作，让用户亲自完成。
 4. 登录成功后只读取可见页面，确认账号和图片生成入口；不得读取、导出或保存密码、Cookie、localStorage、令牌或其他敏感浏览器存储。
@@ -55,23 +51,6 @@
 - 登录、验证码、订阅购买、额度不足和账号切换交还用户处理。
 - 网页只允许访问用户明确要求的ChatGPT生图相关页面。
 
-## 专用Chrome的启动入口（按需拉起，禁止自动）
+## Codex连接恢复
 
-**原则：用到才拉起。** 专用Chrome只在**进入图片阶段**时启动；启动App、加载/重连MCP、普通状态检查都**不得**触发它。2026-09-17 曾把“确保浏览器就绪”写进 `start-mcp.cmd`（MCP服务启动时执行），后果是**一开App就无故弹出浏览器**——已回退，不得恢复该做法。
-
-**正常路径（工作流第一步，按需）：**
-
-1. 先 `netstat -ano | findstr :34192`；已监听则跳过。
-2. 未监听则用 explorer 派生拉起：
-```
-explorer.exe "D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\start-chrome.cmd"
-```
-3. 等待后用 `netstat` 复核，**只有确认34192监听才继续**；否则报告并停止。
-
-explorer 派生会脱离工具命令的进程树（实测：脚本进程链已完全解体，浏览器仍存活并持续监听34192），因此可从工作流内部按需打开。
-
-**恢复路径（浏览器被误关后）：** 双击 `start-chrome.cmd`，或把该cmd放入启动项快捷方式。它幂等，复用原端口与原持久化目录。
-
-**不得**在MCP启动脚本、工具命令或后台任务里直接 spawn：从回合派生的进程会随该回合的进程树被回收（早先的Node保活托盘即因此退役）；同一脚本在常驻终端宿主（如Codex命令行进程）下能存活，差别在**父链归属**，不在运行时。`schtasks.exe` 在本机程序黑名单内，计划任务方式不可用。
-
-`browser.contextOptions.viewport: null` 与 `headless: false` 沿用不变；附着脚本短时运行后自行退出属**正常**行为，不要为它加保活。
+当前工作流不管理 MCP 服务进程、Chrome 可执行文件、调试端口或用户目录。`Transport closed`、工具缺失或浏览器退出时，保留账本与原对话地址，按 Codex 当前插件/MCP恢复方式恢复同一连接；恢复前不重新生成、不新建登录目录、不启动仓库里的旧服务。工具恢复后先回到原对话核对状态，再继续下载或提交。

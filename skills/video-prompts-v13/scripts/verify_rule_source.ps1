@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-  校验 video-prompts-v13 使用的规则源（已安装的小家 v13.1.1 skill）。
+  校验 video-prompts-v13 使用的规则源（同一工作流包或 Codex 用户目录中的小家 v13.1.1 skill）。
 
 .DESCRIPTION
   按 项目配置 → 环境变量 → 默认安装位置 的顺序解析规则源目录，校验：
@@ -37,12 +37,21 @@ function Resolve-RuleSourceDir {
     } catch { }
   }
   if ($env:XIAOJIA_SKILL_DIR) { return (Resolve-Path -LiteralPath $env:XIAOJIA_SKILL_DIR).Path }
+
+  # Self-contained workflow bundle: prefer the sibling rule-source skill in
+  # this checkout/install so a stale WorkBuddy copy cannot mask this branch.
+  $bundled = Join-Path $PSScriptRoot '../../xiaojia-prompt-generator'
+  if (Test-Path -LiteralPath $bundled) { return (Resolve-Path -LiteralPath $bundled).Path }
+
   $h = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
-  # 本工作流只接 WorkBuddy：默认位置固定为 ~/.workbuddy/skills/xiaojia-prompt-generator，
-  # 不从其他客户端的 Skill 目录解析规则源。
-  $p2 = Join-Path $h '.workbuddy/skills/xiaojia-prompt-generator'
-  if (Test-Path -LiteralPath $p2) { return (Resolve-Path -LiteralPath $p2).Path }
-  return $p2
+  foreach ($relative in @(
+    '.codex/skills/xiaojia-prompt-generator',
+    '.workbuddy/skills/xiaojia-prompt-generator'
+  )) {
+    $candidate = Join-Path $h $relative
+    if (Test-Path -LiteralPath $candidate) { return (Resolve-Path -LiteralPath $candidate).Path }
+  }
+  return (Join-Path $h '.codex/skills/xiaojia-prompt-generator')
 }
 
 function Test-LowerVersion {

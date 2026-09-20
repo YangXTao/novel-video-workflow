@@ -15,7 +15,7 @@ description: 根据人物、场景和道具图片提示词，通过ChatGPT网页
 4. 本次实际生图范围的明确授权。用户要求开始、继续或恢复一个明确章节时，可由总控记录为章节级运行授权，无需逐项重复确认。
 
 先完整读取 [references/workflow.md](references/workflow.md) 和 [references/asset-contract.md](references/asset-contract.md)。需要连接或操作ChatGPT网页时，再完整读取 [references/browser-mcp.md](references/browser-mcp.md)。
-**开始任何网页动作之前**先确认图片环境就绪（`netstat -ano | findstr ":34191 :34192"`）：缺 34191 用 `explorer.exe "D:\jimeng\novel-video-tools\chatgpt-image-playwright-mcp\start-image-worker.cmd"`，缺 34192 用同目录 `start-chrome.cmd`；等待约 12 秒复核，**最多2次**；仍缺即报阻断并请用户双击对应 cmd，**不得反复重试或持续等待**。**同一时间只用一条通道驱动那台 Chrome**（worker 或本 MCP，二选一）。这些拉起只发生在这里，MCP加载/重连/App启动/状态检查一律不得自动启动。
+**开始任何网页动作之前**先确认当前 Codex 会话已加载 `chatgpt_image_playwright` MCP。工具存在时直接复用该连接和其持久化浏览器状态；不得部署或启动仓库 `tools/` 下的旧 MCP/worker，也不得改写 Codex MCP 配置。工具缺失或返回 `Transport closed` 时保留账本与原对话断点，按 Codex 当前插件/MCP恢复方式恢复同一连接；恢复前不重提任务、不启动第二套控制器。实际页面未登录、出现验证码或安全校验时才请求用户处理。
 发生网页断线、错图、串会话、提示词提取越界或下载异常时，完整读取并按 [references/troubleshooting.md](references/troubleshooting.md) 恢复。
 
 ## 硬性边界

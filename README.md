@@ -1,12 +1,12 @@
 # 小说转视频工作流
 
-当前实际使用的 8 个 Skill、专用 Chrome 启动配置、Playwright MCP 执行工具及图片/视频文件处理脚本的完整快照。图片通过 ChatGPT 网页生成，视频通过豆包网页生成，暂不包含剪辑流程。
+面向 Codex 的小说视频工作流 Skill 集合。图片通过 ChatGPT 网页生成，视频通过豆包网页生成；网页操作复用 Codex 当前已加载的两个 Playwright MCP，不部署仓库中的旧 MCP 副本。
 
-Skill 来自当前已安装目录；当前分支已包含规则源接线与小说转剧本流水线门禁优化。`SNAPSHOT.json` 记录归档文件的 SHA-256，可检查快照完整性。
+当前分支包含 v13.1.1 规则源、配额检查器、规则源接线和小说转剧本流水线门禁。`SNAPSHOT.json` 记录当前归档文件的 SHA-256，可检查快照完整性。
 
-## v13.1.1 规则源接线（当前分支 `v13.0-rules-wiring`）
+## v13.1.1 规则源接线（当前分支 `v13.0-alpha`）
 
-视频提示词阶段不再内联规则，改为 `video-prompts-v13` 入口：本仓库**不含任何规则副本**，入口只负责定位并校验**已安装的小家 v13.1.1 skill**（默认 `~/.workbuddy/skills/xiaojia-prompt-generator`），把工作流输入原样交给它、把唯一完整章节 Markdown 原样接回。规则源只读，仍由作者维护，升级后工作流自动跟随。
+视频提示词阶段不在入口内联规则，而由 `video-prompts-v13` 定位并校验同一工作流包中的独立 `xiaojia-prompt-generator` v13.1.1 Skill，把工作流输入原样交给它、把唯一完整章节 Markdown 原样接回。安装到 `~/.codex/skills/` 后两个 Skill 保持同级；项目配置和环境变量仍可显式覆盖规则源路径。
 
 要点：输出名为 `<章节名>_完整视频提示词.md`（要时间戳或多版本时追加 `_<YYYYMMDD_HHMM>`，**不绑规则版本号**）；入口禁止精简、禁止自创、禁止用摘要替代剧本；规则源缺失或版本不符时停机，不回落其他版本。总控、剧本桥接、图片提示词、豆包制作的引用已同步指向 v13 入口。
 
@@ -18,7 +18,7 @@ Skill 来自当前已安装目录；当前分支已包含规则源接线与小�
 
 ## 流程与目录
 
-小说 → 基准剧本 → 人物/场景/道具提示词 → ChatGPT 网页生图 → 资产登记 → 小家 v13.1.1 视频提示词（`video-prompts-v13` 委派已安装规则源）→ 豆包逐镜生成 → 下载、检查、尾帧、进度记录。
+小说 → 基准剧本 → 人物/场景/道具提示词 → ChatGPT 网页生图 → 资产登记 → 小家 v13.1.1 视频提示词（`video-prompts-v13` 委派同级规则 Skill）→ 豆包逐镜生成 → 下载、检查、尾帧、进度记录。
 
 | 路径 | 用途 |
 | --- | --- |
@@ -28,27 +28,24 @@ Skill 来自当前已安装目录；当前分支已包含规则源接线与小�
 | `skills/scene-image-prompts` | 场景图片提示词 |
 | `skills/prop-image-prompts` | 道具图片提示词 |
 | `skills/chatgpt-image-production` | ChatGPT 网页图片生产、下载、命名、登记 |
-| `skills/video-prompts-v13` | **当前视频提示词入口**：定位并校验已安装的小家 v13.1.1 skill，委派执行；本仓库不含规则副本 |
+| `skills/video-prompts-v13` | **当前视频提示词入口**：定位并校验小家 v13.1.1 Skill，委派执行 |
+| `skills/xiaojia-prompt-generator` | v13.1.1 独立规则源，正文只读 |
+| `skills/storyboard-quota-check` | 视频提示词出稿后的 A–I 配额检查 |
 | `skills/doubao-video-production` | 豆包参考图映射、提交、下载、检查与尾帧登记 |
-| `tools/doubao-playwright-mcp` | 豆包 MCP 启动脚本、连接测试、依赖及锁文件 |
-| `tools/chatgpt-image-playwright-mcp` | ChatGPT MCP、可恢复图片执行器、下载恢复及页面诊断工具 |
-| `config/codex-mcp.example.toml` | 当前两套 MCP 的项目配置样例 |
+| `tools/*-playwright-mcp` | 历史 MCP 源码快照；Codex 适配版不部署、不启动 |
+| `config/codex-mcp.example.toml` | 历史配置样例；不覆盖当前 Codex MCP 配置 |
 | `scripts/` | 独立尾帧提取、指定时间抽帧与联系表脚本 |
 | `shared/scripts/` | 历史共享资产校验；当前流程使用豆包 Skill 内支持 AssetsOnly/Production 的校验脚本 |
 
-## 环境和恢复部署
+## Codex安装与运行
 
-这是 Windows/PowerShell 工作流快照，不是免配置安装包。需要 PowerShell 7、Node.js、pnpm、Google Chrome；视频检查后端还使用 Microsoft Edge。可选的 Python 联系表脚本需要 Pillow。
+这是 Windows/PowerShell 工作流。运行脚本需要 PowerShell 7；配额检查需要 Codex 工作区依赖提供的 Python 或当前环境可用的 Python。
 
-1. 将 `skills/` 下的 8 个文件夹部署到 WorkBuddy 的用户级 Skill 目录 `%USERPROFILE%\.workbuddy\skills\`（也可以直接建目录联接指向本仓库，改仓库即刻生效）。覆盖已有版本前先备份。
-2. 原机器的工具部署位置是 `D:\jimeng\novel-video-tools`，将 `tools/` 下两个目录部署到该处；浏览器运行数据根目录是 `D:\jimeng\novel-video-browser`，首次启动时创建。
-3. 在两个工具目录分别运行 `pnpm install --frozen-lockfile`，恢复锁定的依赖。Playwright MCP 版本为 `0.0.80`，依赖源码和 `node_modules` 不在仓库中。
-4. 按 `config/codex-mcp.example.toml` 里记的两个 MCP 启动命令，写成 WorkBuddy 的 `%USERPROFILE%\.workbuddy\mcp.json`：`mcpServers` 结构，每项 `command` 用 `C:\Windows\System32\cmd.exe`、`args` 为 `["/c", "<对应目录>\start-mcp.cmd"]`。不要覆盖该文件里其他服务配置；写入后需在连接器管理页对这两个服务点「信任」才会加载。
-5. 检查脚本中的 Node.js、Chrome 和工作目录路径。原始快照保留了 `C:\Users\Y\...` 和 `D:\jimeng\...`；换机器时必须调整，特别是 `start-mcp.cmd`、`start-image-worker.cmd`、`image-worker.cjs`、`image-worker-control.ps1` 和图片下载恢复脚本。Skill 文档中的绝对部署路径也需对应更新。
-6. `playwright_video_backend.cjs` 可通过环境变量 `CODEX_PLAYWRIGHT_PATH` 指向已安装的 Playwright 模块目录；默认使用原机器的 Codex 依赖路径。其他独立抽帧脚本也保留了原始模块路径。
-7. 重新加载客户端 MCP 后打开对应专用浏览器，首次在新机器上由用户手工登录。两个专用用户目录分别为 `doubao-profile`、`chatgpt-image-profile`，以后保留在本机即可复用登录状态。
-
-ChatGPT 图片执行器使用本机 `127.0.0.1:34191`，Chrome CDP 使用 `127.0.0.1:34192`。MCP 直连模式与图片执行器不可同时争用同一 Chrome 用户目录。连接测试会真实启动浏览器，应在没有生产任务占用该目录时运行。
+1. 覆盖任何当前 Skill 前先备份 `%USERPROFILE%\.codex\skills\` 中对应目录。
+2. 将 `skills/` 下各 Skill 目录原样安装到 `%USERPROFILE%\.codex\skills\`，保持 `video-prompts-v13`、`xiaojia-prompt-generator` 和 `storyboard-quota-check` 同级。
+3. 不安装 `tools/` 下的两个 MCP，不覆盖 Codex 配置；确认当前 Codex 会话已能调用 `chatgpt_image_playwright` 和 `doubao_playwright`。
+4. 使用 `pwsh` 运行仓库测试。视频检查脚本如需 Playwright 模块，可通过 `CODEX_PLAYWRIGHT_PATH` 指向当前 Codex 依赖路径。
+5. 首次网页生产时在 Codex 当前 MCP 打开的可见浏览器中由用户完成登录。登录、验证码和安全校验不由工作流绕过。
 
 ## 下载、命名与连续性
 

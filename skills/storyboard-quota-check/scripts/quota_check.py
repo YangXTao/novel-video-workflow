@@ -45,7 +45,7 @@
     --no-verbatim 关闭 F 段原文覆盖率
 
 运行环境:
-    仅针对 WorkBuddy：默认路径按当前用户目录解析（~/.workbuddy/skills/...），不写死盘符与用户名。
+    优先使用同一工作流包或 Codex 用户 Skill 目录中的规则源；保留 WorkBuddy 目录作兼容回退。
 
 只认 v13.1.1 四段式成稿格式:
     镜标题   ## S01｜戏剧功能词（15秒）      ← 镜号完全来自稿子自身的小节标题，脚本不重编号
@@ -69,7 +69,7 @@
                      "把形态词（兽相）当另一个实体"两个误报源
     v3.4 2026-09-16  新增 G 段「尺度四件套」代理（铁律19），逐拍给画框分数/参照物覆盖率与疑点拍
     v3.3 2026-09-15  新增 F 段「锁死画质原文覆盖率」与 --no-verbatim；默认路径改为按 ~ 解析，
-                     不再硬编码盘符与用户名（只服务 WorkBuddy）
+                     不再硬编码盘符与用户名（历史版本当时只服务 WorkBuddy）
     v3.2 2026-09-15  现版。新增 E 段「运镜标签越界」与 --rules；标签清单改为
                      方括号 ∪ 「视觉目标（…）」纯文本枚举（238 → 242），
                      避免把铁律52 纯文本点名的 [压迫逼近]/[收束定场] 误判为越界
@@ -97,7 +97,24 @@ TAG_HINT = ("\u8ddf", "\u5c55", "\u805a\u7126")  # 跟*/展*/聚焦*：可生成
 TAG_FAMILY = ("\u8ddf", "\u5c55", "\u805a\u7126", "\u538b\u8feb", "\u6536\u675f", "\u53cd\u9988",
               "\u5de8\u7269", "\u7a92\u606f", "\u627e", "\u8f6c\u573a")  # 运镜目标族（用于计数展示）
 HOME = os.path.expanduser("~")
-RULES_DEFAULT = os.path.join(HOME, ".workbuddy", "skills", "xiaojia-prompt-generator", "references")
+
+
+def resolve_default_rules():
+    """Resolve the v13.1.1 rule source without preferring stale client copies."""
+    script_path = os.path.abspath(__file__)
+    skills_dir = os.path.dirname(os.path.dirname(os.path.dirname(script_path)))
+    candidates = (
+        os.path.join(skills_dir, "xiaojia-prompt-generator", "references"),
+        os.path.join(HOME, ".codex", "skills", "xiaojia-prompt-generator", "references"),
+        os.path.join(HOME, ".workbuddy", "skills", "xiaojia-prompt-generator", "references"),
+    )
+    for candidate in candidates:
+        if os.path.isdir(candidate):
+            return candidate
+    return candidates[1]
+
+
+RULES_DEFAULT = resolve_default_rules()
 # G 段：铁律19 尺度四件套（偏宽代理，只查字面证据，供定位用）
 SCALE_RE = re.compile(r"占[^\uff0c\u3002\uff1b\u3001]{0,10}(\u6210|\u5e45|\u534a)|\u5360\u6bd4|\u5343\u5206\u4e4b\u4e00|\u6781\u5c0f\u6bd4\u4f8b")
 REF_RE = re.compile(r"\u53cd\u886c|\u53c2\u7167|\u5982\u5fae\u5c18|\u4eba\u5f62|\u5343\u5206\u4e4b\u4e00|\u4e0d\u8db3[^\uff0c\u3002\uff1b]{0,6}\u5206\u4e4b\u4e00")

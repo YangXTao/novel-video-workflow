@@ -2,27 +2,29 @@
 
 本文件规定 `video-prompts-v13` **交付前必须完成**的自动配额自检。
 
-它是**工作流侧验收合同**，不是创作规则：不新增任何创作要求、不改变规则源任何内容、不替代规则源自身的 70 号质检与 96 号最终放行闸。规则源仍在安装目录只读存在。
+它是**工作流侧验收合同**，不是创作规则：不新增任何创作要求、不改变规则源任何内容、不替代规则源自身的 70 号质检与 96 号最终放行闸。规则源仍以独立 Skill 只读存在。
 
-## 1. 定位自检脚本（三步，先命中先用）
+## 1. 定位自检脚本（顺序固定，先命中先用）
 
 1. **项目配置**：项目根目录 `novel_video_production_config.json` 中的 `video_prompt_generation.quota_checker`（绝对路径或 `~` 开头）。
 2. **环境变量**：`XIAOJIA_QUOTA_CHECK`。
-3. **默认安装位置（WorkBuddy）**：`~/.workbuddy/skills/storyboard-quota-check/scripts/quota_check.py`
-   （本工作流当前**只接 WorkBuddy**。）
+3. **同一工作流包内置脚本**：`video-prompts-v13` 的同级目录 `../storyboard-quota-check/scripts/quota_check.py`。
+4. **Codex 用户级位置**：`~/.codex/skills/storyboard-quota-check/scripts/quota_check.py`。
+5. **兼容回退位置**：`~/.workbuddy/skills/storyboard-quota-check/scripts/quota_check.py`。
 
-Python 解释器解析顺序：项目配置 `video_prompt_generation.quota_checker_python` → 环境变量 `XIAOJIA_QUOTA_PYTHON` → 运行环境自带 python。
+Python 解释器解析顺序：项目配置 `video_prompt_generation.quota_checker_python` → 环境变量 `XIAOJIA_QUOTA_PYTHON` → Codex 工作区依赖提供的 Python → 当前运行环境的 `python`。
 
 脚本缺失或不可运行时**不要新建、不要复制、不要临时改写**：按 §3 停机处理。
 
 ## 2. 运行
 
 ```text
-<python> "<quota_checker>" "<本章完整视频提示词MD路径>" --max15 <N>
+<python> "<quota_checker>" "<本章完整视频提示词MD路径>" --rules "<本次校验通过的规则源>/references" --max15 <N>
 ```
 
 - `--max15 N` 取用户给定的「>10s 镜数量上限」。用户未给定时省略该参数（脚本默认 3），并在交付说明里注明使用了默认值。
 - 镜标题缺 `（N秒）` 声明时追加 `--dur N`。
+- `--rules` 必须指向本次 `verify_rule_source.ps1` 实际校验通过的同一份规则源，防止脚本误读其他客户端的旧副本。
 - 脚本只读稿子，不写任何文件；可一次传多份做对比。
 
 ## 3. 判读与处置（硬项与软项分开处理）
@@ -61,4 +63,4 @@ Python 解释器解析顺序：项目配置 `video_prompt_generation.quota_check
 
 ## 6. 与规则源的关系
 
-自检脚本是工作流侧工具，不被规则源引用、不修改规则源、不进 `~/.workbuddy/skills/xiaojia-prompt-generator`。规则源升级后本层无需改动；但若规则源改变成稿结构（四段式标记或拍的行首写法），需同步更新脚本的解析规则。
+自检脚本是工作流侧工具，不被规则源引用、不修改规则源、不进入 `xiaojia-prompt-generator` 目录。规则源升级后本层无需改动；但若规则源改变成稿结构（四段式标记或拍的行首写法），需同步更新脚本的解析规则。

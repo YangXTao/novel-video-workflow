@@ -1,12 +1,12 @@
-# v13.1.1 规则源接线说明（`v13.0-rules-wiring` 分支）
+# v13.1.1 规则源接线说明（`v13.0-alpha` Codex适配）
 
 ## 1. 目标
 
-视频提示词阶段不再内联规则，改为**委派已安装的小家 v13.1.1 skill**：
+视频提示词阶段不再在入口内联规则，改为**委派同一工作流包中的小家 v13.1.1 Skill**：
 
 - 用户只需说"做第 N 章（或第 N–M 章）"，总控按依赖顺序调用各 Skill 与 MCP，产出剧本 → 三类图片提示词 → 图片与资产清单 → **完整章节视频提示词** → 逐镜视频。
-- 视频提示词的规则来源是安装版 skill，**严格按 v13.1.1 执行，不精简、不自创、不替换**。
-- 本仓库不含任何规则副本；安装版 skill 由作者维护，工作流自动跟随其升级。
+- 视频提示词的规则来源是独立的 `xiaojia-prompt-generator` Skill，**严格按 v13.1.1 执行，不精简、不自创、不替换**。
+- 该规则 Skill 随分支一并交付，但不复制进适配入口；版本与 SHA-256 必须现场校验。
 
 ## 2. 为什么必须是委派形态
 
@@ -25,6 +25,8 @@ skills/video-prompts-v13/                 ← 新增入口（薄适配层，不�
 ├── references/output-and-handoff-contract.md  交付物命名、逐镜自包含、图号与参考图预算、连续性三分类
 ├── scripts/verify_rule_source.ps1        校验规则源并输出路径/版本/哈希（JSON 可用）
 └── agents/openai.yaml                    入口默认提示词
+skills/xiaojia-prompt-generator/          ← v13.1.1 独立规则源（SKILL.md + 29份 references）
+skills/storyboard-quota-check/            ← 出稿后 A–I 配额检查
 ```
 
 > 本分支只保留 `video-prompts-v13` 一个视频提示词入口；内联式入口已彻底移除，工作副本内不并存两套规则。
@@ -33,9 +35,11 @@ skills/video-prompts-v13/                 ← 新增入口（薄适配层，不�
 
 1. 项目根 `novel_video_production_config.json` → `video_prompt_generation.rule_source`（可加 `rule_source_version`）
 2. 环境变量 `XIAOJIA_SKILL_DIR`
-3. 默认 `~/.workbuddy/skills/xiaojia-prompt-generator`
+3. 与 `video-prompts-v13` 同级的 `xiaojia-prompt-generator`
+4. `~/.codex/skills/xiaojia-prompt-generator`
+5. `~/.workbuddy/skills/xiaojia-prompt-generator`（兼容回退）
 
-本工作流**只接 WorkBuddy**：第 3 步只解析 WorkBuddy 的用户级 Skill 目录，不从其他客户端的 Skill 目录取用、也不做跨客户端目录联接。规则源全局只有一份，即在 WorkBuddy 里安装的那一份。
+同级内置规则源优先，避免旧客户端残留副本掩盖当前分支版本。命中后只使用这一份，不混读其他副本。
 
 校验：`SKILL.md` 存在、`metadata.version` 达标（默认 `13.1.1`）、`references/` 含 29 个现行规则文件、96 号契约文件存在；输出 `rule_sha256` 供 `screenplay_trigger_audit.json` 使用。校验失败**停机**，不回落其他版本。
 
@@ -83,8 +87,8 @@ pwsh -NoProfile -File skills/video-prompts-v13/scripts/verify_rule_source.ps1 -J
 | 项 | 内容 |
 |---|---|
 | 合同 | `skills/video-prompts-v13/references/quota-selfcheck.md` |
-| 脚本 | `storyboard-quota-check/scripts/quota_check.py`（已装为独立用户级 Skill，**不在本仓库内**） |
-| 定位顺序 | 项目配置 `video_prompt_generation.quota_checker` → 环境变量 `XIAOJIA_QUOTA_CHECK` → 默认 `~/.workbuddy/skills/storyboard-quota-check/scripts/quota_check.py`（本工作流只接 WorkBuddy） |
+| 脚本 | `skills/storyboard-quota-check/scripts/quota_check.py`（随工作流一并交付的独立 Skill） |
+| 定位顺序 | 项目配置 → 环境变量 → 同级内置 Skill → `~/.codex/skills/` → WorkBuddy兼容回退；调用时显式传入本次校验通过的 `--rules` |
 | 触发器 | 视频提示词阶段**出稿后必跑**；硬项非空不得交付，改完须重跑 |
 | 自检段 | A 章节级 / B 逐镜配额 / C 证据项密度 / D 硬软项分档 / E 运镜标签越界 / **F 锁死画质原文覆盖率**（F 为信息项，不做通过否决） |
 | 交付说明必带 | ①规则源路径+版本+SHA256 ②实际读取的 `references/` 文件与子节清单 ③A–I 九段结果原样。三项只进交付说明，不进正文、不落盘 |
@@ -198,4 +202,3 @@ pwsh -NoProfile -File skills/video-prompts-v13/scripts/verify_rule_source.ps1 -J
 ### 11.2 写法指南
 
 见 → `docs/additional-directive-guide.md`：口语强度词 → 规则源条款的映射表（"特效拉满"=铁律19 禁退回平常档、"拖尾"=12 号 2.9.1 ⑨、"持续时长长的特效"=生命周期必写…），以及一份**可直接复制进配置的建议文本**。两条红线：不得凭空新增剧本没有的法阵/法相/领域（铁律48）；不得写工程参数（铁律58）。
-
